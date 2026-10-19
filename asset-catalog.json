@@ -1,0 +1,154 @@
+[
+  {
+    "path": "furniture/bookcaseopen.glb",
+    "bytes": 18020,
+    "sha256": "750702218d68c062b15dfef6ab06a4014d1cfa8bd05f02e57c53b7e13bec157c",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "furniture/books.glb",
+    "bytes": 6864,
+    "sha256": "b8dc56e5d29f6fc1f4727fccb1b9642627fee9942c48060a00034e98df02701c",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "furniture/chairdesk.glb",
+    "bytes": 39016,
+    "sha256": "46406619186034cbe92b19b79a5f1a8e3f442a17a70a7524ef2c0ad0f35095c6",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "furniture/computerscreen.glb",
+    "bytes": 6404,
+    "sha256": "5942cbad29a2d2b956619569926e81d50a4174403d592fece6556e57632dc643",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "furniture/desk.glb",
+    "bytes": 15048,
+    "sha256": "0164fe828f028b321730fb8c74502e353583f751be74da1682d42fff7d3c5a42",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "furniture/kitchencabinet.glb",
+    "bytes": 10444,
+    "sha256": "7238c57778935ae25db5e57e9f7af3ba7068c71b005ff7cfbff3b6f3b1a13200",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "furniture/kitchencoffeemachine.glb",
+    "bytes": 13332,
+    "sha256": "063f582c6fa0f00a9f24e3393dac2295491c4becdaf5513c893ab1a2826b6ec3",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "furniture/laptop.glb",
+    "bytes": 5540,
+    "sha256": "5fa8a1f4a71ab8d82ef64da77a6973ffd350c6d4557516069a4ffd4bb8d808af",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "furniture/loungedesignchair.glb",
+    "bytes": 9136,
+    "sha256": "f0766a7d5698974b711adac18a2108f0e74e3a036fa4e4e0ccf91195b0ee5abf",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "furniture/loungedesignsofa.glb",
+    "bytes": 9128,
+    "sha256": "b4f4e6850118e409da301df678228c703b6ac02e94fbb9dbde61543af817fa53",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "furniture/plantsmall1.glb",
+    "bytes": 8224,
+    "sha256": "2b9c022feb47be857b2c4fdc29f36522766ba9b70c578c31d7c05d71b4377d15",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "furniture/pottedplant.glb",
+    "bytes": 7576,
+    "sha256": "5b760eda2766f75fda36b2c5df652a1662f82981ef64cd8fa7fe7bcd386b3a15",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "furniture/tablecoffee.glb",
+    "bytes": 8256,
+    "sha256": "e38bea760fbd514efbb75528d09b4752c91af44677bbb97e6d4386c263525179",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "draco/draco_decoder.js",
+    "bytes": 512465,
+    "sha256": "8625489da79a805f4f2a7d511c3e52d8b4085608a9d2a4d5f4f9de5db0aea04f",
+    "license": "Apache-2.0",
+    "source": "https://github.com/google/draco",
+    "provenance": "Existing local distributed runtime/license, preserved without edits."
+  },
+  {
+    "path": "draco/draco_decoder.wasm",
+    "bytes": 192420,
+    "sha256": "a680d927bed9cb864ddbd63521868891af2bfbe755092761b4837487618df8ac",
+    "license": "Apache-2.0",
+    "source": "https://github.com/google/draco",
+    "provenance": "Existing local distributed runtime/license, preserved without edits."
+  },
+  {
+    "path": "draco/draco_wasm_wrapper.js",
+    "bytes": 58456,
+    "sha256": "8bb2952d2ba7d67e1414f8df819410cb0434a666be53f671fff75f68843d76f6",
+    "license": "Apache-2.0",
+    "source": "https://github.com/google/draco",
+    "provenance": "Existing local distributed runtime/license, preserved without edits."
+  },
+  {
+    "path": "licenses/Draco-LICENSE.txt",
+    "bytes": 13898,
+    "sha256": "d3709b0fb4b8a94bbb1d02b8a2e484f258b0d9c5c5a01f940391f3fe662cd1a4",
+    "license": "Apache-2.0",
+    "source": "https://github.com/google/draco",
+    "provenance": "Existing local distributed runtime/license, preserved without edits."
+  },
+  {
+    "path": "licenses/Kenney-CC0.txt",
+    "bytes": 510,
+    "sha256": "6913dd72bdc20532b7f02d86469058f45d886c9dabf60831275ed16927aa523b",
+    "license": "CC0-1.0",
+    "source": "https://kenney.nl/assets/furniture-kit",
+    "provenance": "Existing local CC0 GLB conversion; upstream original Furniture Kit is CC0, checked 2026-10-19."
+  },
+  {
+    "path": "licenses/Three-LICENSE.txt",
+    "bytes": 1081,
+    "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc",
+    "license": "MIT",
+    "source": "https://github.com/mrdoob/three.js",
+    "provenance": "Existing local distributed runtime/license, preserved without edits."
+  }
+]

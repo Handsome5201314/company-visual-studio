@@ -1,0 +1,7 @@
+{
+  "name":"@tongyimohe/company-visual-studio","version":"0.1.0","private":true,"type":"module",
+  "engines":{"node":">=24.15"},
+  "scripts":{"dev":"vite --host 127.0.0.1 --port 5312 --strictPort","build":"tsc --noEmit && vite build","preview":"vite preview --host 127.0.0.1 --port 5312 --strictPort","test":"node --test tests/*.test.mjs","validate":"node tools/validate-assets.mjs","check:publish":"node tools/check-publish.mjs"},
+  "dependencies":{"three":"0.186.0"},
+  "devDependencies":{"@types/three":"^0.183.1","typescript":"^5.6.3","vite":"^8.0.0"}
+}

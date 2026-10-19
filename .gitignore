@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.local/
+.impeccable/review/
+.env
+.env.*
+*.log
+*.sqlite*
+*.blend1
+*.blend2
+*.pem
+*.key

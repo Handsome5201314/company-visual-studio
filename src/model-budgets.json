@@ -1,0 +1,54 @@
+{
+  "bookcaseopen": {
+    "widthPerHeight": 0.4845,
+    "depthPerHeight": 0.3141
+  },
+  "books": {
+    "widthPerHeight": 1.478,
+    "depthPerHeight": 0.9395
+  },
+  "chairdesk": {
+    "widthPerHeight": 0.5813,
+    "depthPerHeight": 0.5473
+  },
+  "computerscreen": {
+    "widthPerHeight": 1.3644,
+    "depthPerHeight": 0.3834
+  },
+  "desk": {
+    "widthPerHeight": 1.9407,
+    "depthPerHeight": 1.0505
+  },
+  "kitchencabinet": {
+    "widthPerHeight": 0.9856,
+    "depthPerHeight": 1.03
+  },
+  "kitchencoffeemachine": {
+    "widthPerHeight": 1.0979,
+    "depthPerHeight": 1.3831
+  },
+  "laptop": {
+    "widthPerHeight": 1.6615,
+    "depthPerHeight": 1.5136
+  },
+  "loungedesignchair": {
+    "widthPerHeight": 1.854,
+    "depthPerHeight": 1.055
+  },
+  "loungedesignsofa": {
+    "widthPerHeight": 2.83,
+    "depthPerHeight": 1.055
+  },
+  "plantsmall1": {
+    "widthPerHeight": 0.7061,
+    "depthPerHeight": 0.7061
+  },
+  "pottedplant": {
+    "widthPerHeight": 0.3542,
+    "depthPerHeight": 0.3992
+  },
+  "tablecoffee": {
+    "widthPerHeight": 2.9039,
+    "depthPerHeight": 1.7691
+  }
+}

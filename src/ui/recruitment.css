@@ -1,0 +1,18 @@
+@layer interface {
+ .top-actions a{font-size:13px;padding:11px 13px;min-height:44px;background:var(--paper);border-radius:12px;display:inline-flex;align-items:center;text-decoration:underline}
+ .entry-copy h1 .company-name{display:block;font-family:"Microsoft YaHei","PingFang SC",sans-serif;font-size:18px;line-height:1.8;letter-spacing:0;margin-bottom:8px}
+ .entry-copy .entry-recruitment{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+ .entry-recruitment a{font-size:16px;font-weight:600;display:inline-block;padding-block:7px}
+ .entry-recruitment p{font-size:12px;line-height:1.8;color:var(--muted);margin-top:4px}
+ .careers-page{position:fixed;inset:96px 32px 24px;z-index:3;background:var(--paper);border-radius:16px;padding:32px;overflow:auto;box-shadow:0 16px 60px #463e2826;scrollbar-gutter:stable}
+ .careers-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+ .careers-heading h2{font-size:20px;line-height:1.8;font-weight:500}.careers-heading strong{font-family:"STKaiti","KaiTi",serif;font-size:34px;font-weight:600;letter-spacing:-.02em;line-height:1.4}.careers-heading p{font-size:13px;color:var(--muted);margin-top:12px}
+ .careers-heading button{flex-shrink:0}.careers-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,.58fr);gap:clamp(24px,5vw,72px);padding-top:32px}
+ .careers-copy{max-width:72ch}.careers-copy section+section{margin-top:32px}.careers-page h3{margin-bottom:14px}.careers-page p,.careers-page li,.careers-page dd{font-size:14px;line-height:1.9;overflow-wrap:anywhere}.careers-copy p+p{margin-top:14px}.careers-page ul,.careers-page ol{padding-left:22px;margin:12px 0}.careers-page li+li{margin-top:10px}
+ .careers-directions{grid-template-columns:130px 1fr;gap:16px;margin-bottom:18px}.careers-directions dt{font-weight:600;color:var(--ink);font-size:14px;line-height:1.9}
+ .careers-terms{padding-left:28px;border-left:1px solid var(--line)}.careers-terms dl{display:block;margin-top:24px}.careers-terms dt{font-weight:600;color:var(--ink);font-size:14px;margin-top:20px}.careers-terms dd{margin-top:6px}.careers-terms>p{color:var(--muted);font-size:12px}.careers-terms .careers-availability{font-size:14px;color:var(--ink)}.careers-actions{display:grid;gap:10px;margin-top:24px}.careers-actions+p{margin-top:12px}
+ .application-note{font-size:13px;line-height:1.9;color:var(--muted);margin-bottom:22px}.application-note button{margin-top:12px}.application-row{border-top:1px solid var(--line);padding-block:22px}
+ #entry{max-height:100dvh;overflow:auto;padding-top:110px}.entry-copy{flex-shrink:0}
+ @media(max-width:1000px){.careers-layout{grid-template-columns:1fr}.careers-copy{max-width:none}.careers-terms{padding:28px 0 0;border-left:0;border-top:1px solid var(--line)}}
+ @media(max-width:700px){.top-actions a{font-size:11px;padding:7px 9px;min-height:36px}.entry-copy h1 .company-name{font-size:16px}.careers-page{inset:128px 12px 12px;padding:21px}.careers-heading{gap:12px;padding-bottom:22px}.careers-heading h2{font-size:16px}.careers-heading strong{font-size:27px}.careers-heading button{font-size:12px;padding:9px}.careers-layout{padding-top:24px;gap:24px}.careers-directions{display:block}.careers-directions dt{margin-top:18px}.careers-directions dd{margin-top:6px}.careers-page p,.careers-page li,.careers-page dd{font-size:14px}.company-entered .careers-page{top:202px}#entry{padding-top:140px}.entry-copy{margin-top:auto}}
+}

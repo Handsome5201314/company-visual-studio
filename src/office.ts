@@ -1,0 +1,198 @@
+import * as T from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
+import {validateTheme,DEFAULT_THEME,applyCharacterSkin} from './theme.js';
+import budgets from './model-budgets.json';
+
+export type ProjectArtwork={title:string;image:string};
+// Rendering only. Movement, access control, domain records and MCP stay in the host.
+export class OfficeVisuals {
+ readonly root=new T.Group();
+ readonly officeDoor=new T.Group();
+ readonly officeWalls:T.Object3D[]=[];
+ private scene=this.root;
+ private models=new Map<string,T.Object3D>();
+ private materials:T.MeshStandardMaterial[]=[];
+ private theme=DEFAULT_THEME;
+ private ambient=new T.HemisphereLight('#fff4df','#82735d',1.7);
+ private sun=new T.DirectionalLight('#ffdfab',4.2);
+ private fill=new T.DirectionalLight('#dae4de',1);
+ constructor(private world:T.Scene,private baseUrl:string,private projects:ProjectArtwork[]=[],theme:unknown=DEFAULT_THEME) {
+  this.theme=validateTheme(theme);
+  this.root.name='company-visual-root';world.add(this.root);
+  this.sun.position.set(-14,13,1);this.sun.target.position.set(2,0,-3);
+  this.sun.castShadow=true;this.sun.shadow.mapSize.set(2048,2048);
+  Object.assign(this.sun.shadow.camera,{left:-18,right:18,top:16,bottom:-16,near:.5,far:50});
+  this.sun.shadow.bias=-.00015;this.sun.shadow.normalBias=.035;
+  this.fill.position.set(7,6,9);this.root.add(this.ambient,this.sun,this.sun.target,this.fill);
+  this.build();this.setTheme(this.theme);
+ }
+ attachTo(world:T.Scene){this.world=world;world.add(this.root);this.setTheme(this.theme);}
+ private assetUrl(path:string){return this.baseUrl.replace(/\/$/,'')+'/'+path;}
+ setTheme(input:unknown) {
+  const theme=validateTheme(input);this.theme=theme;
+  for(const material of this.materials){const base=material.userData.baseColor;material.color.set(theme.environment.palette[base] || base);}
+  this.world.background=new T.Color(theme.environment.background);
+  this.world.fog=new T.Fog(theme.environment.background,45,100);
+  this.ambient.color.set(theme.environment.sky);this.ambient.groundColor.set(theme.environment.ground);this.ambient.intensity=theme.environment.ambient;
+  this.sun.color.set(theme.environment.sunColor);this.sun.intensity=theme.environment.sun;
+  this.fill.color.set(theme.environment.fillColor);this.fill.intensity=theme.environment.fill;
+ }
+ recolorCharacter(root:T.Object3D,skin:string){applyCharacterSkin(root,skin);}
+ dispose(){
+  const geometries=new Set<T.BufferGeometry>(),materials=new Set<T.Material>(),textures=new Set<T.Texture>();
+  this.root.traverse(o=>{if(o instanceof T.Mesh){geometries.add(o.geometry);for(const m of [o.material].flat()){materials.add(m);for(const v of Object.values(m))if(v instanceof T.Texture)textures.add(v);}}});
+  geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());
+  this.sun.shadow.dispose();this.root.removeFromParent();this.models.clear();this.materials=[];
+ }
+ private mat(color:string,roughness=.8){const m=new T.MeshStandardMaterial({color:this.theme.environment.palette[color] || color,roughness});m.userData.baseColor=color;this.materials.push(m);return m;}
+ private box(w:number,h:number,d:number,x:number,y:number,z:number,color:string,parent:T.Object3D=this.scene){
+  const mesh=new T.Mesh(new T.BoxGeometry(w,h,d),this.mat(color));mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;
+ }
+ private cylinder(r:number,h:number,x:number,y:number,z:number,color:string,parent:T.Object3D=this.scene){
+  const mesh=new T.Mesh(new T.CylinderGeometry(r,r,h,24),this.mat(color));mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;
+ }
+ private text(text:string,w:number,h:number,x:number,y:number,z:number,color='#f6f0db',bg='#3b5144',ry=0){
+  const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=Math.round(1024*h/w);
+  const ctx=canvas.getContext('2d')!;ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle=color;ctx.font=`500 ${Math.min(canvas.height*.5,100)}px "Microsoft YaHei",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,512,canvas.height/2,970);
+  const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;
+  const plane=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:texture}));plane.position.set(x,y,z);plane.rotation.y=ry;this.scene.add(plane);return plane;
+ }
+ private rail(x1:number,z1:number,x2:number,z2:number,y1:number,y2=y1){
+  const a=new T.Vector3(x1,y1,z1),b=new T.Vector3(x2,y2,z2),delta=b.clone().sub(a);
+  const mesh=new T.Mesh(new T.CylinderGeometry(.035,.035,delta.length(),12),this.mat('#3f4c3d'));
+  mesh.position.copy(a.add(b).multiplyScalar(.5));mesh.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),delta.normalize());this.scene.add(mesh);
+ }
+ private build(){
+  this.box(20.5,.5,16.5,0,-.28,0,'#78634c');
+  for(let i=0;i<40;i++)this.box(.493,.08,16,-9.75+i*.5,-.02,0,i%3===0?'#c7a47d':i%3===1?'#cba980':'#c1a079');
+  this.box(20.3,7,.22,0,3.5,-8,'#e6dcc6');
+  this.box(.2,.9,16,-10,.45,0,'#bbae90');
+  // Left wall is a real wood window lattice; the sunlight crosses its mullions.
+  for(let z=-8;z<=8;z+=2)this.box(.19,6.3,.12,-10,3.8,z,'#806d50');
+  for(let y=1.1;y<=7;y+=1.18)this.box(.19,.10,16,-10,y,0,'#806d50');
+  const glass=new T.Mesh(new T.PlaneGeometry(16,6),new T.MeshPhysicalMaterial({color:'#f0dfb5',transparent:true,opacity:.11,roughness:.2,side:T.DoubleSide,depthWrite:false}));glass.position.set(-10.05,4,0);glass.rotation.y=Math.PI/2;this.scene.add(glass);
+  this.box(.3,7,.3,-10,3.5,-8,'#6c5e43');this.box(20.2,.23,.28,0,7,-8,'#6c5e43');
+  // Full-size mezzanine with a walkable staircase and protected edges.
+  this.box(11,.26,5,4.45,3.27,-5.5,'#796246');
+  for(let i=0;i<22;i++)this.box(.492,.05,4.9,-.8+i*.5,3.42,-5.5,i%2?'#c9a983':'#bd9973');
+  for(let i=0;i<18;i++){const h=(i+1)/18*3.4;this.box(2.1,h,.335,0,h/2,3-(i+.5)*6/18,'#b28a61');}
+  for(let i=0;i<=6;i++){const z=3-i;const y=i/6*3.4;this.cylinder(.035,1,-1.07,y+.5,z,'#3f4c3d');this.cylinder(.035,1,1.07,y+.5,z,'#3f4c3d');}
+  this.rail(-1.07,3,-1.07,-3,1,4.4);this.rail(1.07,3,1.07,-3,1,4.4);
+  for(let x=1.35;x<10;x+=.65)this.cylinder(.025,1,x,3.95,-3,'#3f4c3d');this.rail(1.35,-3,10,-3,4.45);
+  for(let z=-8;z<-3;z+=.7)this.cylinder(.025,1,-1.07,3.95,z,'#3f4c3d');this.rail(-1.07,-8,-1.07,-3.3,4.45);
+  this.box(.19,3.3,.2,9,1.65,-3.2,'#806748');this.box(.19,3.3,.2,2.6,1.65,-3.2,'#806748');
+  // Sage green back wall, wood acoustic slats, warm practical lighting.
+  this.box(8.5,2.8,.08,5.1,5.2,-7.83,'#6c805a');
+  for(let i=0;i<24;i++)this.box(.065,2.8,.06,1.1+i*.35,5.2,-7.73,'#85936b');
+  this.text('童医魔盒科技',5.4,.75,4.8,5.45,-7.66);
+  this.text('把真实问题，做成真实作品',4.5,.38,4.8,4.8,-7.65,'#ede5cd','#6c805a');
+  // A closed private office, with one server-authorized doorway on the west.
+  this.officeWalls.push(this.box(6.9,3.15,.18,6.45,5.0,-3.35,'#788364'));
+  this.officeWalls.push(this.box(.18,3.15,2.4,3,5.0,-6.8,'#bda883'));
+  this.officeWalls.push(this.box(.18,3.15,1.05,3,5.0,-3.875,'#bda883'));
+  this.officeWalls.push(this.box(.18,3.15,4.5,9.9,5,-5.6,'#bda883'));
+  this.officeWalls.push(this.box(6.9,.13,4.5,6.45,6.62,-5.6,'#c7b38e'));
+  this.box(.18,.48,1.2,3,6.38,-5,'#bda883');
+  this.officeDoor.position.set(3,3.4,-5.6);this.scene.add(this.officeDoor);
+  this.box(.10,2.75,1.2,0,1.375,.6,'#725d42',this.officeDoor);
+  this.cylinder(.035,.22,-.1,1.25,1.03,'#e6c78d',this.officeDoor);
+  this.text('老板办公室 · 预约请到一楼前台',4.9,.36,6.4,5.1,-3.24,'#f5ead4','#526247');
+  // Dedicated upstairs journal corner; published articles live in the content service.
+  this.box(2.7,1.65,.13,1.25,5.15,-7.55,'#9b7954');
+  this.box(2.45,1.4,.04,1.25,5.15,-7.46,'#3e5544');
+  this.text('内容放映室',2.1,.34,1.25,5.55,-7.42,'#f9ecd0','#3e5544');
+  this.text('行业观察 · 研究新知 · 医生故事',2.2,.25,1.25,5.12,-7.41,'#dfd6bb','#3e5544');
+  this.text('靠近后按 E 阅读公告栏',2.0,.24,1.25,4.75,-7.41,'#dfd6bb','#3e5544');
+  this.text('接待 · 需求登记',2.6,.4,-5,1.0,1.49,'#f4ead6','#496051');
+  this.text('作品与进行中的事',4.6,.5,-5.4,3.2,-7.84,'#443e31','#e6dcc6');
+  this.text('个人工作区 · 可由本人或授权智能体操作',5.3,.42,5.2,2.55,-7.82,'#544d3c','#e6dcc6');
+  this.box(3.6,1.05,.9,-5,.525,1,'#aa7954');
+  for(let i=0;i<25;i++)this.box(.065,.88,.03,-6.65+i*.136,.49,1.467,'#895c3e');
+  this.box(3.8,.09,1.05,-5,1.1,1,'#e7d9b8');
+  this.box(4.3,.018,3,-5,.045,3.2,'#8a9975');
+  this.box(6.5,.018,6.9,4.7,.045,.7,'#a59d7b');
+  this.box(3.7,.018,4,-7.3,.045,-3.8,'#c2906b');
+  this.box(5.8,.022,4.0,6.25,.05,5.8,'#9ca282');
+  this.box(2.4,.12,1.1,6,.80,5.9,'#d7ba91');
+  for(const x of [5.1,6.9])for(const z of [5.55,6.25])this.box(.09,.74,.09,x,.37,z,'#52594a');
+  for(const z of [4.95,6.85]){this.box(2,.14,.5,6,.48,z,'#916b4e');this.box(2,.7,.1,6,.9,z+(z<6?-.23:.23),'#817d59');}
+  this.text('会客室 · 预约双方私密交流',3.8,.36,6,2.4,7.7,'#3a4f3e','#f0e6d1',Math.PI);
+  const robot=this.makeAvatar('reception');robot.position.set(-5,0,-.05);this.scene.add(robot);
+  this.text('接待员 · 需求咨询',2.1,.34,-5,2.5,-.03,'#3a4f3e','#f0e6d1');
+  // Pending workstations remain unoccupied, rather than acting out fake work.
+  for(const z of [-.7,2.2]){
+   this.box(5.7,.12,1.35,4.5,.79,z,'#d7ba91');
+   for(const x of [2.1,6.9])for(const dz of [-.45,.45])this.box(.08,.74,.08,x,.37,z+dz,'#52594a');
+   for(const x of [3,6]){this.box(1,.65,.08,x,1.35,z-.25,'#34483b');this.box(.9,.52,.015,x,1.35,z-.2,'#b0c4aa');this.cylinder(.045,.28,x,.98,z-.25,'#34483b');this.text('本人工作台',.92,.20,x,1.36,z-.18,'#30483b','#b0c4aa');}
+  }
+  // Pendant lamps are local forms, not a post-processing color filter.
+  for(const[x,z,y]of [[-5,1,5.7],[4.5,1,6.2],[5,-5.7,6.5]]){
+   this.cylinder(.013,7-y,x,(7+y)/2,z,'#4f4c3a');
+   const shade=new T.Mesh(new T.ConeGeometry(.5,.25,32,1,true),this.mat('#57654d'));shade.position.set(x,y,z);this.scene.add(shade);
+   const bulb=new T.Mesh(new T.SphereGeometry(.09,16,12),new T.MeshBasicMaterial({color:'#ffe0a1'}));bulb.position.set(x,y-.13,z);this.scene.add(bulb);
+  }
+  // Distant greenery is scenery only. No buildings or clinical files are imported.
+  this.box(90,.2,90,0,-.8,-5,'#c3bc95');
+  for(let i=0;i<9;i++){
+   const x=-15-(i%3)*4,z=-15+i*4;
+   this.cylinder(.14,2.6,x,.5,z,'#8a7959');
+   const tree=new T.Mesh(new T.IcosahedronGeometry(2,2),this.mat(i%2?'#9ba977':'#acb887'));tree.scale.y=1.5;tree.position.set(x,3,z);tree.castShadow=true;this.scene.add(tree);
+  }
+ }
+ makeAvatar(kind:string){
+  const g=new T.Group(),coat=kind==='reception'?'#e6d4ae':'#708c7b';
+  const head=new T.Mesh(new T.CapsuleGeometry(.28,.16,5,16),this.mat('#e4e2cb'));head.position.y=1.55;g.add(head);
+  this.box(.43,.24,.05,0,1.57,.265,'#283f36',g);
+  for(const x of [-.11,.11])this.box(.045,.055,.025,x,1.58,.3,'#dceab9',g);
+  const body=new T.Mesh(new T.CapsuleGeometry(.24,.42,6,16),this.mat(coat));body.position.y=.94;g.add(body);
+  const limbs:T.Group[]=[];
+  for(const x of [-.16,.16]){const pivot=new T.Group();pivot.position.set(x,.59,0);g.add(pivot);this.cylinder(.09,.48,0,-.25,0,'#515b48',pivot);this.box(.18,.13,.29,0,-.51,.055,'#454c3d',pivot);limbs.push(pivot);}
+  for(const x of [-.36,.36]){const pivot=new T.Group();pivot.position.set(x,1.2,0);g.add(pivot);const arm=new T.Mesh(new T.CapsuleGeometry(.075,.38,4,12),this.mat(coat));arm.position.y=-.22;pivot.add(arm);limbs.push(pivot);}
+  g.userData.limbs=limbs;g.userData.gait=0;
+  g.traverse(o=>{if(o instanceof T.Mesh){o.castShadow=true;o.receiveShadow=true;}});return g;
+ }
+ async load(onProgress:(text:string)=>void){
+  const loader=new GLTFLoader(),draco=new DRACOLoader();draco.setDecoderPath(this.assetUrl('draco/'));loader.setDRACOLoader(draco);
+  const names=['chairdesk','computerscreen','plantsmall1','pottedplant','loungedesignsofa','loungedesignchair','tablecoffee','bookcaseopen','books','desk','laptop','kitchencabinet','kitchencoffeemachine'];
+  let loaded=0;
+  try {
+  const jobs=await Promise.allSettled(names.map(async name=>{const gltf=await loader.loadAsync(this.assetUrl(this.theme.models[name] || `furniture/${name}.glb`));this.models.set(name,gltf.scene);onProgress(`布置总部 ${++loaded}/${names.length}`);}));
+  const failed=jobs.find(r=>r.status==='rejected');if(failed?.status==='rejected')throw failed.reason;
+  for(const z of [-.7,2.2])for(const x of [3,6]){
+   this.furniture('computerscreen',x,.86,z-.42,.58);
+   this.furniture('chairdesk',x,0,z+.95,1.18);
+   this.furniture('plantsmall1',x+.85,.86,z,.34);
+  }
+  this.furniture('desk',6,3.4,-5.8,.85);this.furniture('chairdesk',6,3.4,-6.9,1.17,Math.PI);this.furniture('laptop',6,4.25,-5.8,.38);
+  this.furniture('books',7,4.25,-5.7,.16);
+  this.furniture('loungedesignsofa',-7.7,0,-4.6,1.05,Math.PI/2);
+  this.furniture('loungedesignchair',-5.4,0,-6.1,.95,-.4);this.furniture('tablecoffee',-5.6,0,-4.3,.48);
+  this.furniture('books',-5.6,.48,-4.3,.16);
+  for(const[x,z,y]of [[-9,-7,0],[-9,6.8,0],[8.7,6.7,0],[8.9,-6.9,3.4],[-1.8,-7,0]])this.furniture('pottedplant',x,y,z,1.55);
+  this.furniture('bookcaseopen',8.6,0,5.5,2.1,-Math.PI/2);
+  for(const x of [2.4,3.5])this.furniture('kitchencabinet',x,0,-7,.85);
+  this.furniture('kitchencoffeemachine',2.5,.85,-7,.5);
+  await Promise.all(this.projects.map(async(p,i)=>{
+   const x=-8.5+i*1.68;
+   this.box(1.36,1.6,.08,x,1.91,-7.75,'#937452');
+   this.box(1.24,1.48,.03,x,1.91,-7.69,'#f5ecd7');
+   const texture=await new T.TextureLoader().loadAsync(p.image);texture.colorSpace=T.SRGBColorSpace;
+   const artwork=new T.Mesh(new T.PlaneGeometry(.86,.86),new T.MeshBasicMaterial({map:texture,transparent:true}));artwork.position.set(x,2.08,-7.66);this.scene.add(artwork);
+   this.text(p.title,1.18,.25,x,1.37,-7.66,'#394832','#f5ecd7');
+  }));
+  onProgress('总部准备好了');
+  }finally{draco.dispose();}
+ }
+ private furniture(name:string,x:number,y:number,z:number,height:number,ry=0){
+  const source=this.models.get(name);if(!source)throw new Error(`家具缺失：${name}`);
+  const mesh=source.clone(true),b=new T.Box3().setFromObject(mesh),size=b.getSize(new T.Vector3()),c=b.getCenter(new T.Vector3());
+  if(![size.x,size.y,size.z].every(Number.isFinite)||size.y<=0)throw new Error(`模型尺寸无效：${name}`);
+  const limit=budgets[name as keyof typeof budgets];
+  if(!limit||size.x/size.y>limit.widthPerHeight||size.z/size.y>limit.depthPerHeight)throw new Error(`模型超出原家具包围盒：${name}。请缩减比例；布局变更须迁移碰撞。`);
+  const s=height/size.y;mesh.scale.setScalar(s);mesh.position.set(-c.x*s,-b.min.y*s,-c.z*s);
+  mesh.traverse(o=>{if(o instanceof T.Mesh){o.castShadow=true;o.receiveShadow=true;}});
+  const group=new T.Group();group.add(mesh);group.position.set(x,y,z);group.rotation.y=ry;this.scene.add(group);
+ }
+}
