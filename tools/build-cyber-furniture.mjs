@@ -25,7 +25,7 @@ function batchModel(source){
  for(const [mat,geometries]of groups){const merged=mergeGeometries(geometries,false);if(!merged)throw new Error('Incompatible authored geometry: '+source.name);result.add(new T.Mesh(merged,mat));geometries.forEach(g=>g.dispose());}
  return result;
 }
-function box(g,w,h,d,x,y,z,key='shell',r=.04){const m=new T.Mesh(new RoundedBoxGeometry(w,h,d,2,Math.min(r,w/3,h/3,d/3)),mats[key]);m.position.set(x,y,z);g.add(m);return m;}
+function box(g,w,h,d,x,y,z,key='shell',r=.04){const m=new T.Mesh(new RoundedBoxGeometry(w,h,d,1,Math.min(r,w/3,h/3,d/3)),mats[key]);m.position.set(x,y,z);g.add(m);return m;}
 function cyl(g,r1,r2,h,x,y,z,key='metal'){const m=new T.Mesh(new T.CylinderGeometry(r1,r2,h,16),mats[key]);m.position.set(x,y,z);g.add(m);return m;}
 function tube(g,points,r,key='light'){const curve=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p)));const m=new T.Mesh(new T.TubeGeometry(curve,32,r,6,false),mats[key]);g.add(m);return m;}
 function model(id){const g=new T.Group();g.name='atelier-cyber-'+id;

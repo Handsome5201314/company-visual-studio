@@ -297,3 +297,13 @@ npm run validate
 `node tools/validate-theme-packages.mjs` 扫描 `themes/` 内贡献的 `theme-package.json`，复用同一校验器。PR CI 已加入该步骤；没有贡献包时明确报告零个，不生成假市场项目。清单读取前限制 1 MiB，遍历目录最多 1000 项，每个文件在读取前核对字节预算。
 
 原有两个主题仍为内置演示，不因可导出就自动成为市场认证版本。可执行宿主代码与第三方声明式主题包始终分开。
+
+## 9. 2026-10-20 的实际创作与预览扩展
+
+`scene.json` 可选 `surfaces:[{id,color,roughness,metalness}]` 与 `fixtures:[{id,model}]`。允许ID分别见 `SURFACE_IDS`（8项）和 `FIXTURE_SLOTS`（7项）；重复/未知字段、未知模型均拒绝。可编辑陈设须另通过 `validateDecorationSafety` 的完整包围盒校验。灯光最多4项；这些数据不能改变碰撞、导航和门禁。
+
+编辑器“导出完整主题ZIP”使用 `src/theme-package-export.js`，含实际13类模型、PNG和许可。`verifyPackageArchive` 校验stored ZIP；私有宿主可兼容旧gzip JSON分发格式。完整包不能缺少运行时实际需要的模型，不能用默认模型静默补齐缺件。
+
+PR工作流改为 `pr-package-check.yml`：只安装/执行可信base提交的校验与预览工具，将PR head视为只读数据。`node tools/theme-package.mjs pr-preview <submission/themes> <artifact>` 读取规范路径下的包，校验静态字节，编译可信3D查看器；artifact须通过HTTP服务访问其中的预览入口。界面使用独立只读预览页，保留宿主的防嵌入安全策略。
+
+源码基线提交与实际PR head SHA分别记录。私有导入工具会在固定PR head读取真实清单及逐文件字节，核对哈希后才允许进入审核队列。合并代码、Actions绿色、技术校验均不会产生 `APPROVED` 或 `LISTED`；总部审核与单独上架仍须真人执行。此工作流须先进入目标分支；本轮本地等价流程通过不代表已在GitHub线上执行。

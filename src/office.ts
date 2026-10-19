@@ -71,7 +71,7 @@ export class OfficeVisuals {
   this.sun.shadow.dispose();this.root.removeFromParent();this.models.clear();this.materialCache.clear();this.materials=[];
  }
  private mat(color:string,roughness=.8){const key=color+':'+roughness,cached=this.materialCache.get(key);if(cached)return cached;const m=new T.MeshStandardMaterial({color:this.theme.environment.palette[color] || color,roughness});m.userData.baseColor=color;m.userData.baseRoughness=roughness;this.materials.push(m);this.materialCache.set(key,m);return m;}
- private round(w:number,h:number,d:number,x:number,y:number,z:number,color:string,r=.08,parent:T.Object3D=this.scene){const mesh=new T.Mesh(new RoundedBoxGeometry(w,h,d,3,Math.min(r,w/3,h/3,d/3)),this.mat(color,.55));mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;}
+ private round(w:number,h:number,d:number,x:number,y:number,z:number,color:string,r=.08,parent:T.Object3D=this.scene){const mesh=new T.Mesh(new RoundedBoxGeometry(w,h,d,1,Math.min(r,w/3,h/3,d/3)),this.mat(color,.55));mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;}
  private box(w:number,h:number,d:number,x:number,y:number,z:number,color:string,parent:T.Object3D=this.scene){
   const mesh=new T.Mesh(new T.BoxGeometry(w,h,d),this.mat(color));mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;
  }

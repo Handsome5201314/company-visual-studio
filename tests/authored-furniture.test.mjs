@@ -13,6 +13,8 @@ test('authored static props fit interaction envelopes and bounded material draw 
   assert.equal(skins,0);assert.equal(clips.length,0);
   const primitives=json.meshes.flatMap(m=>m.primitives);
   assert.ok(primitives.length<=8,asset.path+' has too many static draw parts');
+  const triangles=primitives.reduce((count,p)=>count+json.accessors[p.indices??p.attributes.POSITION].count/3,0);
+  assert.ok(triangles<=3000,asset.path+' exceeds the authored furniture triangle budget');
   const positions=primitives.map(p=>json.accessors[p.attributes.POSITION]);
   const min=[0,1,2].map(i=>Math.min(...positions.map(p=>p.min[i])));
   const max=[0,1,2].map(i=>Math.max(...positions.map(p=>p.max[i])));
