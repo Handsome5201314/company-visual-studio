@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "items": [],
+  "categories": [
+    {"id": "warm-wood", "label": "温馨木质"},
+    {"id": "futuristic", "label": "未来科技"},
+    {"id": "low-poly", "label": "低多边形"},
+    {"id": "pixel", "label": "像素风格"},
+    {"id": "modern-business", "label": "现代商务"},
+    {"id": "sci-fi-lab", "label": "科幻实验室"}
+  ]
+}
