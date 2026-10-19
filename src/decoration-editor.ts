@@ -72,6 +72,8 @@ export function createDecorationEditor(host:HTMLElement,initial:Partial<Design>=
   fixtureModel.replaceChildren(...slot.models.map(id=>opt(id,id)));fixtureModel.value=model;
  }
  function reflect(){
+  const choices=THEMES.some(t=>t.id===design.theme.id)?THEMES:[...THEMES,design.theme];
+  themes.replaceChildren(...choices.map(t=>opt(t.id,t.name)));
   const locked=busy||compare||submitted||Boolean(options.readOnly);
   host.setAttribute('aria-busy',String(busy));host.querySelectorAll<HTMLInputElement|HTMLButtonElement|HTMLSelectElement|HTMLTextAreaElement>('.de-tools input,.de-tools button,.de-tools select,.de-tools textarea').forEach(el=>el.disabled=locked);$<HTMLButtonElement>('[data-compare]').disabled=busy;
   surfaceFieldset.disabled=locked;fixtureFieldset.disabled=locked;
