@@ -22,4 +22,4 @@ Showroom 以完整可环绕总部证明共享视觉，页头进入市场或创�
 
 ## Evidence
 
-`.impeccable/review/decoration/` 的8张截图以及 browser-result.json；测试结果和正式切换边界记录在私有主工程 `docs/装修市场交付与切换-20261019.md`。截图包含显式隔离QA账号和上架样品，不是正式审批。当前无新生成的品牌位图；构建共享Three块约691kB有体积警告，软件Chromium约14–18FPS，尚未取得逐包实机性能认证。
+`.impeccable/review/decoration/` 的8张场景截图、5张错误/保存/审批记录证据以及 browser-result.json；测试结果和正式切换边界记录在私有主工程 `docs/装修市场交付与切换-20261019.md`。截图包含显式隔离QA账号和上架样品，不是正式审批。当前无新生成的品牌位图；构建共享Three块约691kB有体积警告，软件Chromium约13–18FPS，尚未取得逐包实机性能认证。
