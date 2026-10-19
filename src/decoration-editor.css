@@ -5,3 +5,5 @@
 @media(max-width:720px){.decoration-editor{grid-template-columns:1fr;min-height:0;gap:16px}.de-stage{min-height:380px}.de-tools{max-height:none;padding:0 8px 20px}.de-tools button{min-height:44px}}
 
 .de-comparison{position:absolute;bottom:62px;left:16px;min-height:40px;padding:8px 16px;border:1px solid var(--line,#c7c8ae);border-radius:6px;background:var(--paper,#fbf5e8);color:inherit;cursor:pointer}.de-comparison:focus-visible{outline:3px solid #8c4d26;outline-offset:3px}
+
+.de-scene-error{position:absolute;left:16px;right:16px;top:62px;padding:12px;background:var(--paper,#fbf5e8);color:var(--error,#973b29);border:1px solid var(--error,#973b29);border-radius:8px;font-size:14px;line-height:1.6}.de-scene-error[hidden]{display:none}.de-scene-error p{margin:0 0 8px}.de-scene-error button{min-height:40px;padding:8px 14px;border:1px solid currentColor;border-radius:6px;background:var(--paper,#fbf5e8);color:inherit;cursor:pointer}.de-scene-error button:focus-visible{outline:3px solid #8c4d26;outline-offset:3px}
