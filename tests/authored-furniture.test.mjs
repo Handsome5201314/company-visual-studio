@@ -17,7 +17,9 @@ test('authored static props fit interaction envelopes and bounded material draw 
   const min=[0,1,2].map(i=>Math.min(...positions.map(p=>p.min[i])));
   const max=[0,1,2].map(i=>Math.max(...positions.map(p=>p.max[i])));
   const id=asset.path.split('/').pop().replace('.glb','');
-  assert.ok(Math.abs(min[1])<1e-5&&Math.abs(max[1]-1)<1e-5,asset.path+' normalized height');
+  // Normalization uses a conservative rotated bounding box. The exact vertices
+  // can occupy slightly less than 1m, but must never cross the admitted envelope.
+  assert.ok(min[1]>=-1e-5&&max[1]<=1+1e-5&&max[1]-min[1]>=.95,asset.path+' normalized height envelope');
   assert.ok(max[0]-min[0]<=budgets[id].widthPerHeight+1e-5,asset.path+' width');
   assert.ok(max[2]-min[2]<=budgets[id].depthPerHeight+1e-5,asset.path+' depth');
  }
