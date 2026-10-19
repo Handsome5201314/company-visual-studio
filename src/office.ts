@@ -124,11 +124,11 @@ export class OfficeVisuals {
   this.officeWalls.push(this.box(.18,3.15,1.05,3,5.0,-3.875,'#bda883'));
   this.officeWalls.push(this.box(.18,3.15,4.5,9.9,5,-5.6,'#bda883'));
   this.officeWalls.push(this.box(6.9,.13,4.5,6.45,6.62,-5.6,'#c7b38e'));
-  this.box(.18,.48,1.2,3,6.38,-5,'#bda883');
+  this.officeWalls.push(this.box(.18,.48,1.2,3,6.38,-5,'#bda883'));
   this.officeDoor.position.set(3,3.4,-5.6);this.scene.add(this.officeDoor);
   this.box(.10,2.75,1.2,0,1.375,.6,'#725d42',this.officeDoor);
   this.cylinder(.035,.22,-.1,1.25,1.03,'#e6c78d',this.officeDoor);
-  this.text('老板办公室 · 预约请到一楼前台',4.9,.36,6.4,5.1,-3.24,'#f5ead4','#526247');
+  this.officeWalls.push(this.text('老板办公室 · 预约请到一楼前台',4.9,.36,6.4,5.1,-3.24,'#f5ead4','#526247'));
   // Dedicated upstairs journal corner; published articles live in the content service.
   this.box(2.7,1.65,.13,1.25,5.15,-7.55,'#9b7954');
   this.box(2.45,1.4,.04,1.25,5.15,-7.46,'#3e5544');

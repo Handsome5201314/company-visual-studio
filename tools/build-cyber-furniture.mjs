@@ -3,6 +3,7 @@
 import * as T from 'three';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
+import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {writeFile,mkdir,readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
@@ -14,6 +15,16 @@ globalThis.FileReader=class {readAsArrayBuffer(blob){blob.arrayBuffer().then(v=>
 const palette={shell:'#d5e7ed',dark:'#183247',seat:'#335c71',metal:'#819eab',light:'#71e4e3',glass:'#173f5b',gold:'#dbb375'};
 const material=(key)=>new T.MeshStandardMaterial({color:palette[key],roughness:key==='metal'?.28:.5,metalness:key==='metal'?.7:.12,...(key==='light'?{emissive:palette.light,emissiveIntensity:.7}:{})});
 const mats=Object.fromEntries(Object.keys(palette).map(k=>[k,material(k)]));
+// These authored props are static. Bake their normalized transforms and merge
+// only parts sharing the exact same material; each furniture instance remains
+// separately editable in the host. No collision/navigation geometry is changed.
+function batchModel(source){
+ source.updateMatrixWorld(true);const groups=new Map();
+ source.traverse(o=>{if(!o.isMesh)return;const rows=groups.get(o.material)||[];let geometry=o.geometry.clone().applyMatrix4(o.matrixWorld);if(geometry.index){const indexed=geometry;geometry=indexed.toNonIndexed();indexed.dispose();}rows.push(geometry);groups.set(o.material,rows);});
+ const result=new T.Group();result.name=source.name;
+ for(const [mat,geometries]of groups){const merged=mergeGeometries(geometries,false);if(!merged)throw new Error('Incompatible authored geometry: '+source.name);result.add(new T.Mesh(merged,mat));geometries.forEach(g=>g.dispose());}
+ return result;
+}
 function box(g,w,h,d,x,y,z,key='shell',r=.04){const m=new T.Mesh(new RoundedBoxGeometry(w,h,d,2,Math.min(r,w/3,h/3,d/3)),mats[key]);m.position.set(x,y,z);g.add(m);return m;}
 function cyl(g,r1,r2,h,x,y,z,key='metal'){const m=new T.Mesh(new T.CylinderGeometry(r1,r2,h,16),mats[key]);m.position.set(x,y,z);g.add(m);return m;}
 function tube(g,points,r,key='light'){const curve=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p)));const m=new T.Mesh(new T.TubeGeometry(curve,32,r,6,false),mats[key]);g.add(m);return m;}
@@ -54,7 +65,7 @@ function model(id){const g=new T.Group();g.name='atelier-cyber-'+id;
 await mkdir(join(root,'public/furniture/cyber'),{recursive:true});
 const catalog=JSON.parse(await readFile(join(root,'asset-catalog.json'),'utf8'));
 for(const id of ['computerscreen','chairdesk','desk','loungedesignsofa','bookcaseopen','tablecoffee']){
- const object=model(id),bytes=Buffer.from(await new GLTFExporter().parseAsync(object,{binary:true}));inspectGLB(bytes);
+ const object=batchModel(model(id)),bytes=Buffer.from(await new GLTFExporter().parseAsync(object,{binary:true}));inspectGLB(bytes);
  const path='furniture/cyber/'+id+'.glb';await writeFile(join(root,'public',path),bytes);
  const item={path,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),license:'MIT',source:'https://github.com/Handsome5201314/company-visual-studio',provenance:'Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry.'};
  const i=catalog.findIndex(x=>x.path===path);if(i<0)catalog.push(item);else catalog[i]=item;
@@ -64,6 +75,7 @@ for(const id of ['computerscreen','chairdesk','desk','loungedesignsofa','bookcas
 // kidney-shaped writing table, independently authored from the starport set.
 await mkdir(join(root,'public/furniture/warm'),{recursive:true});
 for(const [key,color]of Object.entries({shell:'#c8a677',dark:'#6f5944',seat:'#899b78',metal:'#aa8c5d',light:'#d9bd87',glass:'#314b43',gold:'#b78558'})){mats[key].color.set(color);mats[key].metalness=key==='metal'?.35:0;mats[key].roughness=.7;if(key==='light')mats[key].emissiveIntensity=.08;}
+const leafMats=['#88a271','#5b7757'].map(color=>new T.MeshStandardMaterial({color,roughness:.85,side:T.DoubleSide}));
 function warmModel(id){
  const g=new T.Group();g.name='atelier-warm-'+id;
  if(id==='desk'){
@@ -86,10 +98,10 @@ function warmModel(id){
   for(const x of [-.65,.65])for(const z of [-.38,.38]){const leg=cyl(g,.045,.025,.83,x,.44,z,'dark');leg.rotation.z=x*.2;}
  }else if(id==='pottedplant'){
   cyl(g,.105,.08,.22,0,.11,0,'shell');cyl(g,.09,.09,.015,0,.225,0,'dark');
-  for(let i=0;i<22;i++){const y=.3+i*.03,a=i*2.4;const leafShape=new T.Shape();leafShape.moveTo(0,0);leafShape.bezierCurveTo(-.06,.07,-.065,.13,0,.18);leafShape.bezierCurveTo(.07,.13,.06,.04,0,0);const leaf=new T.Mesh(new T.ShapeGeometry(leafShape,6),new T.MeshStandardMaterial({color:i%2?'#5b7757':'#88a271',roughness:.85,side:T.DoubleSide}));leaf.rotation.set(.45,a,(i%3-1)*.6);leaf.position.set(Math.cos(a)*.045,y,Math.sin(a)*.045);g.add(leaf);}
+  for(let i=0;i<22;i++){const y=.3+i*.03,a=i*2.4;const leafShape=new T.Shape();leafShape.moveTo(0,0);leafShape.bezierCurveTo(-.06,.07,-.065,.13,0,.18);leafShape.bezierCurveTo(.07,.13,.06,.04,0,0);const leaf=new T.Mesh(new T.ShapeGeometry(leafShape,6),leafMats[i%2]);leaf.rotation.set(.45,a,(i%3-1)*.6);leaf.position.set(Math.cos(a)*.045,y,Math.sin(a)*.045);g.add(leaf);}
   cyl(g,.009,.012,.68,0,.56,0,'dark');
  }else return model(id);
  const b=new T.Box3().setFromObject(g),s=b.getSize(new T.Vector3()),c=b.getCenter(new T.Vector3()),limit=budgets[id],sy=1/s.y,sx=Math.min(sy,limit.widthPerHeight*.99/s.x),sz=Math.min(sy,limit.depthPerHeight*.99/s.z);g.scale.set(sx,sy,sz);g.position.set(-c.x*sx,-b.min.y*sy,-c.z*sz);return g;
 }
-for(const id of ['desk','chairdesk','loungedesignsofa','computerscreen','tablecoffee','pottedplant']){const bytes=Buffer.from(await new GLTFExporter().parseAsync(warmModel(id),{binary:true}));inspectGLB(bytes);const path='furniture/warm/'+id+'.glb';await writeFile(join(root,'public',path),bytes);const entry={path,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),license:'MIT',source:'https://github.com/Handsome5201314/company-visual-studio',provenance:'Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs.'};const i=catalog.findIndex(x=>x.path===path);if(i<0)catalog.push(entry);else catalog[i]=entry;console.log('warm/'+id,bytes.length);}
+for(const id of ['desk','chairdesk','loungedesignsofa','computerscreen','tablecoffee','pottedplant']){const bytes=Buffer.from(await new GLTFExporter().parseAsync(batchModel(warmModel(id)),{binary:true}));inspectGLB(bytes);const path='furniture/warm/'+id+'.glb';await writeFile(join(root,'public',path),bytes);const entry={path,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),license:'MIT',source:'https://github.com/Handsome5201314/company-visual-studio',provenance:'Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs.'};const i=catalog.findIndex(x=>x.path===path);if(i<0)catalog.push(entry);else catalog[i]=entry;console.log('warm/'+id,bytes.length);}
 await writeFile(join(root,'asset-catalog.json'),JSON.stringify(catalog,null,2)+'\n');
