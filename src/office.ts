@@ -1,5 +1,5 @@
 import * as T from 'three';
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {createModelLoader} from './model-loader';
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
 import {validateTheme,DEFAULT_THEME,applyCharacterSkin} from './theme.js';
 import budgets from './model-budgets.json';
@@ -27,7 +27,8 @@ export class OfficeVisuals {
  private fill=new T.DirectionalLight('#dae4de',1);
  private shadowPoses=new Map<T.Object3D,string>();
  private contactMaterial?:T.MeshBasicMaterial;
- constructor(private world:T.Scene,private baseUrl:string,private projects:ProjectArtwork[]=[],theme:unknown=DEFAULT_THEME,private packageAssetBase?:string) {
+ private receptionCharacter=new T.Group();
+ constructor(private world:T.Scene,private baseUrl:string,private projects:ProjectArtwork[]=[],theme:unknown=DEFAULT_THEME,private packageAssetBase?:string,private receptionModelUrl?:string) {
   this.theme=validateTheme(theme);
   this.root.name='company-visual-root';world.add(this.root);
   this.sun.position.set(-14,13,1);this.sun.target.position.set(2,0,-3);
@@ -170,7 +171,8 @@ export class OfficeVisuals {
   for(const x of [5.1,6.9])for(const z of [5.55,6.25])this.box(.09,.74,.09,x,.37,z,'#52594a');
   for(const z of [4.95,6.85]){this.box(2,.14,.5,6,.48,z,'#916b4e');this.box(2,.7,.1,6,.9,z+(z<6?-.23:.23),'#817d59');}
   this.text('会客室 · 预约双方私密交流',3.8,.36,6,2.4,7.7,'#3a4f3e','#f0e6d1',Math.PI);
-  const robot=this.makeAvatar('reception');robot.position.set(-5,0,-.05);this.scene.add(robot);
+  this.receptionCharacter.name='reception-character';this.receptionCharacter.position.set(-5,0,-.05);this.scene.add(this.receptionCharacter);
+  if(!this.receptionModelUrl)this.receptionCharacter.add(this.makeAvatar('reception'));
   this.text('接待员 · 需求咨询',2.1,.34,-5,2.5,-.03,'#3a4f3e','#f0e6d1');
   // Pending workstations remain unoccupied, rather than acting out fake work.
   for(const z of [-.7,2.2]){
@@ -278,12 +280,22 @@ export class OfficeVisuals {
   g.traverse(o=>{if(o instanceof T.Mesh){o.castShadow=true;o.receiveShadow=true;}});return g;
  }
  async load(onProgress:(text:string)=>void){
-  const loader=new GLTFLoader(),draco=new DRACOLoader();draco.setDecoderPath(this.assetUrl('draco/'));loader.setDRACOLoader(draco);
+  const loader=createModelLoader(),draco=new DRACOLoader();draco.setDecoderPath(this.assetUrl('draco/'));loader.setDRACOLoader(draco);
   const names=['chairdesk','computerscreen','plantsmall1','pottedplant','loungedesignsofa','loungedesignchair','tablecoffee','bookcaseopen','books','desk','laptop','kitchencabinet','kitchencoffeemachine'];
   let loaded=0;
   try {
   const jobs=await Promise.allSettled(names.map(async name=>{const gltf=await loader.loadAsync(this.assetUrl(this.theme.models[name] || `furniture/${name}.glb`));this.models.set(name,gltf.scene);onProgress(`布置总部 ${++loaded}/${names.length}`);}));
   const failed=jobs.find(r=>r.status==='rejected');if(failed?.status==='rejected')throw failed.reason;
+  if(this.receptionModelUrl){
+   onProgress('接待员准备中');
+   const gltf=await loader.loadAsync(this.receptionModelUrl),model=gltf.scene;
+   const bounds=new T.Box3().setFromObject(model),size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
+   if(![size.x,size.y,size.z].every(Number.isFinite)||size.y<=0)throw new Error('护士接待员模型尺寸无效');
+   const scale=1.65/size.y;model.scale.setScalar(scale);model.position.set(-center.x*scale,-bounds.min.y*scale,-center.z*scale);
+   model.traverse(o=>{if(o instanceof T.Mesh){o.castShadow=true;o.receiveShadow=true;for(const material of [o.material].flat())if(material instanceof T.MeshBasicMaterial)material.toneMapped=false;}});
+   this.receptionCharacter.clear();this.receptionCharacter.add(model);this.receptionCharacter.userData.assetVersion='nurse-reference-20261020';
+   this.contact(.6,.5,-5,.066,-.05,this.root);
+  }
   for(const z of [-.7,2.2])for(const x of [3,6]){
    this.furniture('chairdesk',x,0,z+.95,1.18);
    this.furniture('plantsmall1',x+.85,.86,z,.34);
