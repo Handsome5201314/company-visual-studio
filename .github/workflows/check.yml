@@ -14,5 +14,6 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run validate
+      - run: node tools/validate-theme-packages.mjs
       - run: npm run check:publish
       - run: npm run build
