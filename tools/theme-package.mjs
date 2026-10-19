@@ -235,7 +235,7 @@ export async function buildPreviewArtifact(directory,outputRoot){
  const metadata={schemaVersion:1,id:manifest.id,version:manifest.version,compatibleContract:manifest.compatibleContract,digest:result.digest,totalBytes:result.totalBytes,source:manifest.source,previewPath:manifest.previewPath,previewSource:'包内预览图与可信构建的交互3D查看器',approved:false,listed:false,note:'技术预览，不是总部审核或上架结果。'};
  await writeFile(join(output,'metadata.json'),JSON.stringify(metadata,null,2),{flag:'wx'});
  const viewer=`../viewer/apps/preview/index.html?package=${encodeURIComponent('../../../'+manifest.id+'/data/')}`;
- const html=previewHtml(result,previewName).replace("img-src 'self' data:;","img-src 'self' data:; frame-src 'self';").replace('CI 不执行第三方代码，也不重新渲染 3D。','下方交互场景由可信基线编译，逐文件校验冻结包；不执行投稿代码。').replace('<h2>元数据</h2>',`<h2>实际 3D 场景</h2><iframe title="冻结包3D预览" src="${viewer}" sandbox="allow-scripts allow-same-origin" style="width:100%;height:740px;border:1px solid #c7c8ae"></iframe><h2>元数据</h2>`);
+ const html=previewHtml(result,previewName).replace('CI 不执行第三方代码，也不重新渲染 3D。','交互场景由可信基线编译，逐文件校验冻结包；不执行投稿代码。').replace('<h2>元数据</h2>',`<h2>实际 3D 场景</h2><p><a href="${viewer}" rel="noreferrer">打开实际3D预览</a> · 支持环绕和缩放，只读；不降低宿主的防嵌入策略。</p><h2>元数据</h2>`);
  await writeFile(join(output,'index.html'),html,{flag:'wx'});
  return {output,previewName,metadata,manifest,digest:result.digest,totalBytes:result.totalBytes};
 }
