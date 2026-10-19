@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "id": "cyber",
   "name": "星港协作总部",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": "童医魔盒视觉协作组",
-  "description": "弧形舱架、圆角模块家具、分段光桥与垂直生态墙；保留公司原有通道、楼梯和门禁。",
+  "description": "弧形舱架、悬挑软包会客椅、模块化柜体、独立机壳咖啡机与整合光带；13类家具均为独立星港几何，不是暖木换色。",
   "compatibleContract": "hq-fixed-layout-v1",
   "ui": {
     "paper": "#f2f7fa",
@@ -67,20 +67,34 @@
     }
   },
   "models": {
-    "computerscreen": "furniture/cyber/computerscreen.glb",
     "chairdesk": "furniture/cyber/chairdesk.glb",
-    "desk": "furniture/cyber/desk.glb",
+    "computerscreen": "furniture/cyber/computerscreen.glb",
+    "plantsmall1": "furniture/cyber/plantsmall1.glb",
+    "pottedplant": "furniture/cyber/pottedplant.glb",
     "loungedesignsofa": "furniture/cyber/loungedesignsofa.glb",
+    "loungedesignchair": "furniture/cyber/loungedesignchair.glb",
+    "tablecoffee": "furniture/cyber/tablecoffee.glb",
     "bookcaseopen": "furniture/cyber/bookcaseopen.glb",
-    "tablecoffee": "furniture/cyber/tablecoffee.glb"
+    "books": "furniture/cyber/books.glb",
+    "desk": "furniture/cyber/desk.glb",
+    "laptop": "furniture/cyber/laptop.glb",
+    "kitchencabinet": "furniture/cyber/kitchencabinet.glb",
+    "kitchencoffeemachine": "furniture/cyber/kitchencoffeemachine.glb"
   },
   "assets": [
-    "furniture/cyber/computerscreen.glb",
     "furniture/cyber/chairdesk.glb",
-    "furniture/cyber/desk.glb",
+    "furniture/cyber/computerscreen.glb",
+    "furniture/cyber/plantsmall1.glb",
+    "furniture/cyber/pottedplant.glb",
     "furniture/cyber/loungedesignsofa.glb",
+    "furniture/cyber/loungedesignchair.glb",
+    "furniture/cyber/tablecoffee.glb",
     "furniture/cyber/bookcaseopen.glb",
-    "furniture/cyber/tablecoffee.glb"
+    "furniture/cyber/books.glb",
+    "furniture/cyber/desk.glb",
+    "furniture/cyber/laptop.glb",
+    "furniture/cyber/kitchencabinet.glb",
+    "furniture/cyber/kitchencoffeemachine.glb"
   ],
   "character": "cobalt"
 }

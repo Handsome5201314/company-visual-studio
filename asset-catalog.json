@@ -154,97 +154,209 @@
   {
     "path": "furniture/cyber/computerscreen.glb",
     "bytes": 165684,
-    "sha256": "f36e2faf46c6f14b47d592f3d5468ee2b673933e0791cd9621c7c04d40f7efa0",
+    "sha256": "29c07ea0bc5bec39f9ed7030b236de993d18ff7feb8b4a46fa0f0ec81a98b5b0",
     "license": "MIT",
     "source": "https://github.com/Handsome5201314/company-visual-studio",
-    "provenance": "Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry."
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
   },
   {
     "path": "furniture/cyber/chairdesk.glb",
-    "bytes": 140536,
-    "sha256": "bb0eb6fe24cae2bb140c193197b2f1ee581070f93578f7e4519883301597ea18",
+    "bytes": 140520,
+    "sha256": "03494d4c215fe738be48a020cd9da4ffa6dfe50ee302c7a59a217e05be714b71",
     "license": "MIT",
     "source": "https://github.com/Handsome5201314/company-visual-studio",
-    "provenance": "Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry."
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
   },
   {
     "path": "furniture/cyber/desk.glb",
-    "bytes": 118060,
-    "sha256": "165498b2bba0b7130b6a816c66309c3ecbd0b647559eedf73132d466bac9fdb2",
+    "bytes": 118056,
+    "sha256": "26bfe96015266ea0a8d981f3fb2b07d5822658486d8c626683d94adf8ee9c586",
     "license": "MIT",
     "source": "https://github.com/Handsome5201314/company-visual-studio",
-    "provenance": "Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry."
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
   },
   {
     "path": "furniture/cyber/loungedesignsofa.glb",
-    "bytes": 170204,
-    "sha256": "b95d858138109463984275b0dae801044309f55f252b33a9038cb566c2de7b4a",
+    "bytes": 142516,
+    "sha256": "a2e30097087625f2aa04457068d8fa6cabd3b6e2feb6a3884696eee2f83d10ac",
     "license": "MIT",
     "source": "https://github.com/Handsome5201314/company-visual-studio",
-    "provenance": "Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry."
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
   },
   {
     "path": "furniture/cyber/bookcaseopen.glb",
-    "bytes": 231924,
-    "sha256": "f8a6c6da86ffca86ec6af039b26398ab14a91260ca5501c3b6f7b382b5247432",
+    "bytes": 46372,
+    "sha256": "1b1ee4b43bb5c24d6b16f952575b43999bb9c2427c1acb1065dd334c1169d1da",
     "license": "MIT",
     "source": "https://github.com/Handsome5201314/company-visual-studio",
-    "provenance": "Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry."
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
   },
   {
     "path": "furniture/cyber/tablecoffee.glb",
     "bytes": 77960,
-    "sha256": "89547998fd6483e7c8f87e3697562a7f3061e2f5fae6ef194540dce602c2ebbc",
+    "sha256": "0adb34af00a371b6e52427447bafb3650e9bd705e286b0946092e76bbe05d20a",
     "license": "MIT",
     "source": "https://github.com/Handsome5201314/company-visual-studio",
-    "provenance": "Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry."
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
   },
   {
     "path": "furniture/warm/desk.glb",
-    "bytes": 170876,
-    "sha256": "456ca7ad30c3e84f28947d837d5192629db7ea03d08a7d0623f93ef84375e427",
+    "bytes": 140408,
+    "sha256": "ab0febc0fee80c0aba1b6198a7367661667f5c2c31cfbd7573be5af86cf29943",
     "license": "MIT",
     "source": "https://github.com/Handsome5201314/company-visual-studio",
-    "provenance": "Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs."
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
   },
   {
     "path": "furniture/warm/chairdesk.glb",
-    "bytes": 155128,
-    "sha256": "45a4ab52799f6d647a2eca4ec2f73be7bc6dd71aaf1ba1c731578efceaa237e8",
+    "bytes": 155432,
+    "sha256": "a390d300b79b2c537a7faf992e404f1c2d0338ac934bc632699ccecc0f71936e",
     "license": "MIT",
     "source": "https://github.com/Handsome5201314/company-visual-studio",
-    "provenance": "Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs."
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
   },
   {
     "path": "furniture/warm/loungedesignsofa.glb",
-    "bytes": 131288,
-    "sha256": "881e888dca15c9dd76f4ee838e6b23884824c8d1d4a23e4590f2ddb84a772145",
+    "bytes": 131536,
+    "sha256": "989b0cf88f5e1839ad0f650a43410ff3aa46a69634263b6c64b017f22a2c0b75",
     "license": "MIT",
     "source": "https://github.com/Handsome5201314/company-visual-studio",
-    "provenance": "Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs."
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
   },
   {
     "path": "furniture/warm/computerscreen.glb",
-    "bytes": 165672,
-    "sha256": "a85769dd80be3cdba24c3adfb212a652e265417ec0e62349caf12a170e045c34",
+    "bytes": 57932,
+    "sha256": "7f6cefabfcd20f45b94ee702fc8252399c989186d250a1dc5ccceb5af47712be",
     "license": "MIT",
     "source": "https://github.com/Handsome5201314/company-visual-studio",
-    "provenance": "Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs."
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
   },
   {
     "path": "furniture/warm/tablecoffee.glb",
-    "bytes": 32844,
-    "sha256": "1d1579cb7f62d8475f7c2bbf8d367e267ee601e4db85236b19b09ed46d5aafd9",
+    "bytes": 25368,
+    "sha256": "f8c3a0cdbc33b81e7c5fce4da597938d04a92bda0f9bac749bf51f3984c10a0d",
     "license": "MIT",
     "source": "https://github.com/Handsome5201314/company-visual-studio",
-    "provenance": "Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs."
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
   },
   {
     "path": "furniture/warm/pottedplant.glb",
-    "bytes": 43748,
-    "sha256": "2942a44f637a51c5303251e726d2e17d9223202f9a81f83e44b043b3dbd23409",
+    "bytes": 43932,
+    "sha256": "ef1a9ecefc29999489b0642a668a7835a371fde9f5b01e3aca20bad760e1b374",
     "license": "MIT",
     "source": "https://github.com/Handsome5201314/company-visual-studio",
-    "provenance": "Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs."
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/cyber/plantsmall1.glb",
+    "bytes": 59052,
+    "sha256": "17a8d42b173460dc344c65e778b0a55965bbce0c8e4d77dd71a9371b2240c2c8",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/cyber/pottedplant.glb",
+    "bytes": 112708,
+    "sha256": "9469674a96ce3510996802ca2c694fc14cf305936a08e9127076bf9013c9ebb0",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/cyber/loungedesignchair.glb",
+    "bytes": 77620,
+    "sha256": "3829f3595c1bda4f004ce8dd9d9caabfa25f1238b8e579b3c708fff8caccd859",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/cyber/books.glb",
+    "bytes": 41864,
+    "sha256": "c8d85636b1f91d982fb2dd79e3cf869b4ed08194fc33df8b77b55c8d3458e2eb",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/cyber/laptop.glb",
+    "bytes": 35420,
+    "sha256": "6a9d3e30c1043dec10ca18b7a77e4c43560c75a4de8ca732070b286852281358",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/cyber/kitchencabinet.glb",
+    "bytes": 69668,
+    "sha256": "43e6c3c1054d417eabecd8b7eae6f8f5db4e0a425fe634974a15ec38faacff0c",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/cyber/kitchencoffeemachine.glb",
+    "bytes": 83284,
+    "sha256": "8da469482ae3b074e2d1d97cd7b31f74fa28ea973454e0e136feef1f50c81600",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored starport furniture: cantilevered steel frames, modular bays and integrated light bars; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/warm/plantsmall1.glb",
+    "bytes": 62380,
+    "sha256": "18e90e03388509534b953c2ba1df05a09fbddb2a74b864157804f266091937ee",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/warm/loungedesignchair.glb",
+    "bytes": 97520,
+    "sha256": "d771418de2e9bcc762241c7069bc33e0e7ddf601dbed8acee9a97ce6be3f608e",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/warm/bookcaseopen.glb",
+    "bytes": 74424,
+    "sha256": "04710cd42e9cf3ecea9d82d2d5b253257d63832c04bd1e18805ebbe61892f060",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/warm/books.glb",
+    "bytes": 37532,
+    "sha256": "44ec0ac5b5b0de6d02f763f81b0a70750767cd3a878b14cff6c6c1396cdd95e9",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/warm/laptop.glb",
+    "bytes": 43532,
+    "sha256": "7463088fa2f962df9a6f93313d5a2f6a00699de57a67fc311ba1349530692411",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/warm/kitchencabinet.glb",
+    "bytes": 105376,
+    "sha256": "3b0138abfe97800912a9408195c60bc69235b29c66a4aef1cb520fa452023c60",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
+  },
+  {
+    "path": "furniture/warm/kitchencoffeemachine.glb",
+    "bytes": 88480,
+    "sha256": "b28ae55f032904e5882b191c7d3d9a30728a80f5675a4ffbde9a665ba3c4f873",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored warm-wood furniture: turned oak, upholstered shells, rattan panels and terracotta; independently modeled, no copied third-party geometry."
   }
 ]

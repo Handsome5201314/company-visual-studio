@@ -25,17 +25,26 @@ export class OfficeVisuals {
  private ambient=new T.HemisphereLight('#fff4df','#82735d',1.7);
  private sun=new T.DirectionalLight('#ffdfab',4.2);
  private fill=new T.DirectionalLight('#dae4de',1);
+ private shadowPoses=new Map<T.Object3D,string>();
+ private contactMaterial?:T.MeshBasicMaterial;
  constructor(private world:T.Scene,private baseUrl:string,private projects:ProjectArtwork[]=[],theme:unknown=DEFAULT_THEME,private packageAssetBase?:string) {
   this.theme=validateTheme(theme);
   this.root.name='company-visual-root';world.add(this.root);
   this.sun.position.set(-14,13,1);this.sun.target.position.set(2,0,-3);
   this.sun.castShadow=true;this.sun.shadow.mapSize.set(2048,2048);
+  this.sun.shadow.autoUpdate=false;
   Object.assign(this.sun.shadow.camera,{left:-18,right:18,top:16,bottom:-16,near:.5,far:50});
   this.sun.shadow.bias=-.00015;this.sun.shadow.normalBias=.035;
   this.fill.position.set(7,6,9);this.root.add(this.ambient,this.sun,this.sun.target,this.fill);
   this.build();this.craftDetails();this.mergeStatic();this.root.add(this.decorationLayer,this.fixtureLayer);this.setTheme(this.theme);
  }
  attachTo(world:T.Scene){this.world=world;world.add(this.root);this.setTheme(this.theme);}
+ invalidateShadows(){this.sun.shadow.needsUpdate=true;}
+ updateShadowCasters(roots:T.Object3D[]){
+  const next=new Map<T.Object3D,string>();let changed=this.shadowPoses.size!==roots.length;
+  for(const root of roots){const parts:string[]=[];root.traverse(o=>{parts.push(o.visible?'1':'0',...[...o.position,...o.quaternion,...o.scale].map(n=>n.toFixed(3)));});const pose=parts.join(',');next.set(root,pose);if(this.shadowPoses.get(root)!==pose)changed=true;}
+  this.shadowPoses=next;if(changed)this.invalidateShadows();
+ }
  private assetUrl(path:string){const base=this.packageAssetBase&&this.theme.assets.includes(path)?this.packageAssetBase:this.baseUrl;return base.replace(/\/$/,'')+'/'+path;}
  setTheme(input:unknown) {
   const theme=validateTheme(input);this.theme=theme;
@@ -46,6 +55,7 @@ export class OfficeVisuals {
   this.sun.color.set(theme.environment.sunColor);this.sun.intensity=theme.environment.sun;
   this.fill.color.set(theme.environment.fillColor);this.fill.intensity=theme.environment.fill;
   this.applySurfaces();
+  this.invalidateShadows();
  }
  recolorCharacter(root:T.Object3D,skin:string){applyCharacterSkin(root,skin);}
  setDecoration(input:unknown){
@@ -53,11 +63,12 @@ export class OfficeVisuals {
   for(const o of data.objects){const object=this.furniture(o.model,...o.position as [number,number,number],1,o.rotationY,candidate);object.scale.fromArray(o.scale);object.userData.decorationId=o.id;}
   for(const l of data.lights){const light=new T.PointLight(l.color,l.intensity,l.distance,2);light.position.fromArray(l.position);candidate.add(light);}
   const fixtures=this.createFixtures(data.fixtures||[]);
-  this.decorationLayer.removeFromParent();this.decorationLayer.clear();this.decorationLayer=candidate;this.root.add(candidate);
-  this.fixtureLayer.removeFromParent();this.fixtureLayer.clear();this.fixtureLayer=fixtures;this.root.add(fixtures);
+  this.clearLayer(this.decorationLayer);this.decorationLayer=candidate;this.root.add(candidate);
+  this.clearLayer(this.fixtureLayer);this.fixtureLayer=fixtures;this.root.add(fixtures);
   this.surfaceOverrides=data.surfaces||[];this.setTheme(this.theme);
  }
- private createFixtures(overrides:{id:string;model:string}[]){const layer=new T.Group();layer.name='fixed-furniture-slots';for(const s of FIXTURE_SLOTS){const model=overrides.find(o=>o.id===s.id)?.model||s.model;const object=this.furniture(model,...s.position as [number,number,number],s.height,s.rotationY,layer);object.userData.fixtureId=s.id;}return layer;}
+ private createFixtures(overrides:{id:string;model:string}[]){const layer=new T.Group();layer.name='fixed-furniture-slots';for(const s of FIXTURE_SLOTS){const model=overrides.find(o=>o.id===s.id)?.model||s.model;const object=this.furniture(model,...s.position as [number,number,number],s.height,s.rotationY,layer);object.userData.fixtureId=s.id;}this.batchContacts(layer);return layer;}
+ private clearLayer(layer:T.Group){layer.traverse(o=>{if(o instanceof T.Mesh&&o.name==='contact-shading')o.geometry.dispose();});layer.removeFromParent();layer.clear();}
  private applySurfaces(){
   const groups:Record<string,string[]>={floor:['#c7a47d','#cba980','#c1a079','#d4dfe4'],mezzanine:['#796246','#c9a983','#bd9973'],'back-wall':['#e6dcc6'],acoustic:['#6c805a','#85936b'],'reception-front':['#aa7954','#895c3e'],worktops:['#d7ba91','#e7d9b8'],'office-wall':['#788364','#bda883'],railings:['#3f4c3d']};
   for(const m of this.materials){m.roughness=m.userData.baseRoughness??.8;m.metalness=m.userData.baseMetalness??0;const entry=this.surfaceOverrides.find(s=>groups[s.id]?.includes(m.userData.baseColor));if(entry){m.color.set(entry.color);m.roughness=entry.roughness;m.metalness=entry.metalness;}}
@@ -69,6 +80,7 @@ export class OfficeVisuals {
   this.root.traverse(collect);for(const source of this.models.values())source.traverse(collect);
   geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());
   this.sun.shadow.dispose();this.root.removeFromParent();this.models.clear();this.materialCache.clear();this.materials=[];
+  this.shadowPoses.clear();
  }
  private mat(color:string,roughness=.8){const key=color+':'+roughness,cached=this.materialCache.get(key);if(cached)return cached;const m=new T.MeshStandardMaterial({color:this.theme.environment.palette[color] || color,roughness});m.userData.baseColor=color;m.userData.baseRoughness=roughness;this.materials.push(m);this.materialCache.set(key,m);return m;}
  private round(w:number,h:number,d:number,x:number,y:number,z:number,color:string,r=.08,parent:T.Object3D=this.scene){const mesh=new T.Mesh(new RoundedBoxGeometry(w,h,d,1,Math.min(r,w/3,h/3,d/3)),this.mat(color,.55));mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;}
@@ -90,6 +102,15 @@ export class OfficeVisuals {
   const mesh=new T.Mesh(new T.CylinderGeometry(.035,.035,delta.length(),12),this.mat('#3f4c3d'));
   mesh.position.copy(a.add(b).multiplyScalar(.5));mesh.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),delta.normalize());this.scene.add(mesh);
  }
+ private contact(w:number,d:number,x:number,y:number,z:number,parent:T.Object3D){
+  if(!this.contactMaterial){const c=document.createElement('canvas');c.width=c.height=64;const ctx=c.getContext('2d')!,gradient=ctx.createRadialGradient(32,32,5,32,32,32);gradient.addColorStop(0,'rgba(26,23,17,.32)');gradient.addColorStop(.45,'rgba(26,23,17,.18)');gradient.addColorStop(1,'rgba(26,23,17,0)');ctx.fillStyle=gradient;ctx.fillRect(0,0,64,64);this.contactMaterial=new T.MeshBasicMaterial({map:new T.CanvasTexture(c),transparent:true,depthWrite:false,toneMapped:false});}
+  const shadow=new T.Mesh(new T.PlaneGeometry(w,d),this.contactMaterial);shadow.name='contact-shading';shadow.rotation.x=-Math.PI/2;shadow.position.set(x,y,z);shadow.raycast=()=>{};parent.add(shadow);
+ }
+ private batchContacts(parent:T.Object3D){
+  const rows=parent.children.filter((o):o is T.Mesh=>o instanceof T.Mesh&&o.name==='contact-shading');if(rows.length<2)return;
+  const geometries=rows.map(o=>{o.updateMatrix();return o.geometry.clone().applyMatrix4(o.matrix);});const merged=mergeGeometries(geometries,false);geometries.forEach(g=>g.dispose());if(!merged)return;
+  const mesh=new T.Mesh(merged,this.contactMaterial);mesh.name='contact-shading';mesh.raycast=()=>{};parent.add(mesh);rows.forEach(o=>{o.geometry.dispose();o.removeFromParent();});
+ }
  private build(){
   this.box(20.5,.5,16.5,0,-.28,0,'#78634c');
   if(this.theme.architecture==='cyber'){
@@ -101,7 +122,7 @@ export class OfficeVisuals {
   // Left wall is a real wood window lattice; the sunlight crosses its mullions.
   for(let z=-8;z<=8;z+=2)this.box(.19,6.3,.12,-10,3.8,z,'#806d50');
   for(let y=1.1;y<=7;y+=1.18)this.box(.19,.10,16,-10,y,0,'#806d50');
-  const glass=new T.Mesh(new T.PlaneGeometry(16,6),new T.MeshPhysicalMaterial({color:'#f0dfb5',transparent:true,opacity:.11,roughness:.2,side:T.DoubleSide,depthWrite:false}));glass.position.set(-10.05,4,0);glass.rotation.y=Math.PI/2;this.scene.add(glass);
+  const glass=new T.Mesh(new T.PlaneGeometry(16,6),new T.MeshStandardMaterial({color:'#f0dfb5',transparent:true,opacity:.11,roughness:.2,side:T.DoubleSide,depthWrite:false}));glass.position.set(-10.05,4,0);glass.rotation.y=Math.PI/2;this.scene.add(glass);
   this.box(.3,7,.3,-10,3.5,-8,'#6c5e43');this.box(20.2,.23,.28,0,7,-8,'#6c5e43');
   // Full-size mezzanine with a walkable staircase and protected edges.
   this.box(11,.26,5,4.45,3.27,-5.5,'#796246');
@@ -191,6 +212,16 @@ export class OfficeVisuals {
  }
  private craftDetails(){
   const cyber=this.theme.architecture==='cyber';
+  // Joinery on the closed office facade breaks up the blank upper-storey box.
+  // All pieces remain part of its cutaway group; the host's solid walls stay put.
+  const facade=new T.Group();facade.name='office-facade-joinery';this.root.add(facade);this.officeWalls.push(facade);
+  for(const x of [4.12,6.43,8.74]){
+   this.round(2.15,.88,.045,x,5.79,-3.23,cyber?'#739cae':'#b49973',.025,facade);
+   this.round(2.02,.75,.022,x,5.79,-3.195,cyber?'#183e56':'#40594f',.025,facade);
+   this.box(2.03,.018,.015,x,5.60,-3.18,cyber?'#72cfd7':'#a78f68',facade);
+  }
+  this.box(6.85,.08,.065,6.45,4.18,-3.22,cyber?'#93bccb':'#af9169',facade);
+  for(const z of [-7.25,-5.75,-4.25])this.box(.025,2.94,.035,10.005,5.0,z,cyber?'#6aa4ba':'#8e795d',facade);
   // A precise stair assembly: individual tread caps and shadow gaps follow the
   // authoritative stair, without adding a new footprint or touching navigation.
   for(let i=0;i<18;i++){const y=(i+1)/18*3.4,z=3-(i+.5)/3;this.box(2.04,.035,.31,0,y+.013,z,cyber?'#8cbdca':'#dcc39d');this.box(2.03,.018,.022,0,y+.035,z+.14,cyber?'#71dce1':'#8c7251');}
@@ -273,6 +304,8 @@ export class OfficeVisuals {
    this.text(p.title,1.18,.25,x,1.37,-7.66,'#394832','#f5ecd7');
   }));
   this.fixtureLayer.removeFromParent();this.fixtureLayer=this.createFixtures([]);this.root.add(this.fixtureLayer);
+  this.batchStaticFurniture();this.batchContacts(this.root);
+  this.invalidateShadows();
   onProgress('总部准备好了');
   }finally{draco.dispose();}
  }
@@ -284,6 +317,16 @@ export class OfficeVisuals {
   if(!limit||size.x/size.y>limit.widthPerHeight||size.z/size.y>limit.depthPerHeight)throw new Error(`模型超出原家具包围盒：${name}。请缩减比例；布局变更须迁移碰撞。`);
   const s=height/size.y;mesh.scale.setScalar(s);mesh.position.set(-c.x*s,-b.min.y*s,-c.z*s);
   mesh.traverse(o=>{if(o instanceof T.Mesh){o.castShadow=true;o.receiveShadow=true;}});
-  const group=new T.Group();group.add(mesh);group.position.set(x,y,z);group.rotation.y=ry;parent.add(group);return group;
+  const group=new T.Group();group.add(mesh);group.position.set(x,y,z);group.rotation.y=ry;if(parent===this.root)group.userData.staticFurniture=true;parent.add(group);
+  // Soft contact shading complements the sun without adding real-time lights.
+  const w=size.x*s,d=size.z*s,cos=Math.abs(Math.cos(ry)),sin=Math.abs(Math.sin(ry));
+  this.contact(w*cos+d*sin,d*cos+w*sin,x,y===0?.066:y===3.4?3.45:y+.004,z,parent);
+  return group;
+ }
+ private batchStaticFurniture(){
+  const roots=this.root.children.filter(o=>o.userData.staticFurniture);this.root.updateMatrixWorld(true);const byMaterial=new Map<T.Material,T.BufferGeometry[]>();
+  for(const root of roots)root.traverse(o=>{if(!(o instanceof T.Mesh)||Array.isArray(o.material))return;let geometry=o.geometry.clone().applyMatrix4(o.matrixWorld);if(geometry.index){const indexed=geometry;geometry=indexed.toNonIndexed();indexed.dispose();}const rows=byMaterial.get(o.material)||[];rows.push(geometry);byMaterial.set(o.material,rows);});
+  for(const [material,geometries]of byMaterial){const merged=mergeGeometries(geometries,false);geometries.forEach(g=>g.dispose());if(!merged)throw Error('固定家具几何合批失败');const mesh=new T.Mesh(merged,material);mesh.name='batched-fixed-furniture';mesh.castShadow=true;mesh.receiveShadow=true;this.root.add(mesh);}
+  roots.forEach(o=>o.removeFromParent());
  }
 }

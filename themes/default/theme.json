@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "id": "default",
   "name": "暖阳木质总部",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": "童医魔盒视觉协作组",
-  "description": "暖木挑空、软包会谈家具、弧形办公桌、车制木腿、壁面画廊与细叶植栽。",
+  "description": "暖木挑空、圆润软包会客椅与沙发、弧形办公桌、车制木腿、藤编储物柜、陶土花盆与细叶植栽；13类家具全部为原创暖木几何。",
   "compatibleContract": "hq-fixed-layout-v1",
   "ui": {
     "paper": "#fbf5e8",
@@ -29,20 +29,34 @@
     "palette": {}
   },
   "models": {
-    "computerscreen": "furniture/warm/computerscreen.glb",
     "chairdesk": "furniture/warm/chairdesk.glb",
-    "desk": "furniture/warm/desk.glb",
+    "computerscreen": "furniture/warm/computerscreen.glb",
+    "plantsmall1": "furniture/warm/plantsmall1.glb",
+    "pottedplant": "furniture/warm/pottedplant.glb",
     "loungedesignsofa": "furniture/warm/loungedesignsofa.glb",
+    "loungedesignchair": "furniture/warm/loungedesignchair.glb",
     "tablecoffee": "furniture/warm/tablecoffee.glb",
-    "pottedplant": "furniture/warm/pottedplant.glb"
+    "bookcaseopen": "furniture/warm/bookcaseopen.glb",
+    "books": "furniture/warm/books.glb",
+    "desk": "furniture/warm/desk.glb",
+    "laptop": "furniture/warm/laptop.glb",
+    "kitchencabinet": "furniture/warm/kitchencabinet.glb",
+    "kitchencoffeemachine": "furniture/warm/kitchencoffeemachine.glb"
   },
   "assets": [
-    "furniture/warm/computerscreen.glb",
     "furniture/warm/chairdesk.glb",
-    "furniture/warm/desk.glb",
+    "furniture/warm/computerscreen.glb",
+    "furniture/warm/plantsmall1.glb",
+    "furniture/warm/pottedplant.glb",
     "furniture/warm/loungedesignsofa.glb",
+    "furniture/warm/loungedesignchair.glb",
     "furniture/warm/tablecoffee.glb",
-    "furniture/warm/pottedplant.glb"
+    "furniture/warm/bookcaseopen.glb",
+    "furniture/warm/books.glb",
+    "furniture/warm/desk.glb",
+    "furniture/warm/laptop.glb",
+    "furniture/warm/kitchencabinet.glb",
+    "furniture/warm/kitchencoffeemachine.glb"
   ],
   "character": "sage"
 }
