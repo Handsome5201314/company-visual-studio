@@ -1,0 +1,68 @@
+name: PR theme package safety check
+
+# SECURITY: pull_request (not pull_request_target). No secrets are available.
+# The submission checkout is treated as data only and is never executed.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  package-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout trusted base for validator and preview builder
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Checkout submission as data only
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: submission
+          persist-credentials: false
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.15.0'
+          cache: npm
+          cache-dependency-path: trusted/package-lock.json
+
+      - name: Install trusted dependencies without lifecycle scripts
+        working-directory: trusted
+        run: npm ci --ignore-scripts
+
+      - name: Verify submitted packages with trusted validator and build preview
+        working-directory: trusted
+        run: node tools/theme-package.mjs pr-preview ../submission/themes ../pr-preview
+
+      - name: Upload human-review preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: theme-package-preview-pr-${{ github.event.pull_request.number }}-${{ github.run_id }}
+          path: pr-preview
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: State human-review boundary
+        run: |
+          {
+            echo "## Theme package technical check"
+            echo ""
+            echo "This workflow only validates submitted package data and builds a human-reviewable preview artifact."
+            echo "Submission code is not installed or executed here; trusted branch checks run on push after merge."
+            echo "No secrets are used, and this workflow does not produce APPROVED or LISTED."
+            echo "Market approval and listing require an explicit human action by headquarters."
+            echo ""
+            cat "pr-preview/summary.md"
+          } >> "$GITHUB_STEP_SUMMARY"

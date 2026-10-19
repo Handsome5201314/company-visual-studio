@@ -5,6 +5,13 @@ import layout from './layout-contract.json' with {type:'json'};
 export const PACKAGE_VERSION=1;
 
 const SCENE_KEYS=['schemaVersion','compatibleContract','objects','lights'];
+export const SURFACE_IDS=Object.freeze(['floor','mezzanine','back-wall','acoustic','reception-front','worktops','office-wall','railings']);
+export const FIXTURE_SLOTS=Object.freeze([
+ {id:'lounge-sofa',name:'一楼会谈沙发',model:'loungedesignsofa',position:[-7.7,0,-4.6],height:1.05,rotationY:Math.PI/2,models:['loungedesignsofa']},
+ {id:'library-shelf',name:'一楼资料书架',model:'bookcaseopen',position:[8.6,0,5.5],height:2.1,rotationY:-Math.PI/2,models:['bookcaseopen']},
+ {id:'owner-desk',name:'二楼老板办公桌',model:'desk',position:[6,3.4,-5.8],height:.85,rotationY:0,models:['desk','kitchencabinet']},
+ ...[-.7,2.2].flatMap((z,row)=>[3,6].map((x,col)=>({id:`screen-${row}-${col}`,name:`工作电脑 ${row+1}-${col+1}`,model:'computerscreen',position:[x,.86,z-.42],height:.58,rotationY:0,models:['computerscreen','laptop']})))
+]);
 const OBJECT_KEYS=['id','model','position','rotationY','scale'];
 const LIGHT_KEYS=['id','position','color','intensity','distance'];
 const MANIFEST_KEYS=['schemaVersion','id','name','author','version','description','styles','compatibleContract','license','source','themePath','scenePath','previewPath','files'];
@@ -143,7 +150,7 @@ function validateLight(light,index,ids){
  */
 export function validateScene(input){
  const scene=clonePlain(input,'装修场景');
- exact(scene,SCENE_KEYS,'装修场景');
+ exact(scene,[...SCENE_KEYS,...('surfaces' in scene?['surfaces']:[]),...('fixtures' in scene?['fixtures']:[])],'装修场景');
  if(scene.schemaVersion!==1)throw new Error('装修场景schemaVersion必须为1');
  if(scene.compatibleContract!==CONTRACT)throw new Error(`装修场景布局契约必须是${CONTRACT}`);
  if(!Array.isArray(scene.objects))throw new Error('装修场景objects必须是数组');
@@ -153,6 +160,14 @@ export function validateScene(input){
  const ids=new Set();
  scene.objects.forEach((object,index)=>validateObject(object,index,ids));
  scene.lights.forEach((light,index)=>validateLight(light,index,ids));
+ if(scene.surfaces!==undefined){
+  if(!Array.isArray(scene.surfaces)||scene.surfaces.length>SURFACE_IDS.length)throw Error('建筑饰面数量无效');
+  const seen=new Set();for(const s of scene.surfaces){exact(s,['id','color','roughness','metalness'],'建筑饰面');if(!SURFACE_IDS.includes(s.id)||seen.has(s.id)||!COLOR.test(s.color))throw Error('建筑饰面ID或颜色无效');seen.add(s.id);bounded(s.roughness,'饰面粗糙度',.15,1);bounded(s.metalness,'饰面金属度',0,1);}
+ }
+ if(scene.fixtures!==undefined){
+  if(!Array.isArray(scene.fixtures)||scene.fixtures.length>FIXTURE_SLOTS.length)throw Error('固定家具数量无效');
+  const seen=new Set();for(const f of scene.fixtures){exact(f,['id','model'],'固定家具');const slot=FIXTURE_SLOTS.find(s=>s.id===f.id);if(!slot||seen.has(f.id)||!slot.models.includes(f.model))throw Error('家具替换必须使用匹配的固定槽位与准入模型');seen.add(f.id);}
+ }
  return scene;
 }
 

@@ -44,7 +44,7 @@ function validScene(){
 
 function defaultFiles(){
  return {
-  'theme.json':Buffer.from(JSON.stringify(THEMES[0],null,1)),
+  'theme.json':Buffer.from(JSON.stringify({...THEMES[0],version:'1.0.0',models:{},assets:[]},null,1)),
   'scene.json':Buffer.from(JSON.stringify(validScene(),null,1)),
   'preview.png':Buffer.from(PNG),
   'README.md':Buffer.from('# 测试主题包\n\n仅用于协议测试。\n'),

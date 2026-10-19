@@ -150,5 +150,101 @@
     "license": "MIT",
     "source": "https://github.com/mrdoob/three.js",
     "provenance": "Existing local distributed runtime/license, preserved without edits."
+  },
+  {
+    "path": "furniture/cyber/computerscreen.glb",
+    "bytes": 449840,
+    "sha256": "d10f7063778fecbbf3aa1758625fa79c9cc3f59663599c1bc109787f1aa25ab5",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry."
+  },
+  {
+    "path": "furniture/cyber/chairdesk.glb",
+    "bytes": 365864,
+    "sha256": "ac03f9b9bdabaeed86f47e0bb8bb31e393516c4ffaed9e78233a8b3d11793422",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry."
+  },
+  {
+    "path": "furniture/cyber/desk.glb",
+    "bytes": 326848,
+    "sha256": "687ddd21a523cb35e7bf662d1e2774ef88f86e78363e507b89a6668fa3e9152c",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry."
+  },
+  {
+    "path": "furniture/cyber/loungedesignsofa.glb",
+    "bytes": 326780,
+    "sha256": "d7df07f3a87bb25389834fcb850b01f85f5ed30cdd3d8d81940f0761ec3c5095",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry."
+  },
+  {
+    "path": "furniture/cyber/bookcaseopen.glb",
+    "bytes": 652140,
+    "sha256": "1b9b33daed10ec1cd5ba12b49bde024b8a63a30f19feee487020f36dba96ce67",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry."
+  },
+  {
+    "path": "furniture/cyber/tablecoffee.glb",
+    "bytes": 30456,
+    "sha256": "089f43ebcb0ab5e9bce47a0beebaff75d2a1c7500ea682e1d5218e81cd2d22e8",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored rounded-shell furniture, reproducible from tools/build-cyber-furniture.mjs; no copied third-party geometry."
+  },
+  {
+    "path": "furniture/warm/desk.glb",
+    "bytes": 202264,
+    "sha256": "fe1adb87ff77a41336ce6ddd1d7db6ead44295e1830d29fe8bddc4c502a2a183",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs."
+  },
+  {
+    "path": "furniture/warm/chairdesk.glb",
+    "bytes": 420476,
+    "sha256": "cbeb05b68135bf4e2f3cae99e06eee768e6753631f2a1beea1e3d73e25d773aa",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs."
+  },
+  {
+    "path": "furniture/warm/loungedesignsofa.glb",
+    "bytes": 315576,
+    "sha256": "2f71e2d7b9d7f503bb89617f8cbf61f95a2e699af6d526ee13d1c15ab5345fcc",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs."
+  },
+  {
+    "path": "furniture/warm/computerscreen.glb",
+    "bytes": 449828,
+    "sha256": "e2fc3e5f5d2734ed94290664dfc8d5dd55b8e1e7d9396ad54288b9ea4d1974b5",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs."
+  },
+  {
+    "path": "furniture/warm/tablecoffee.glb",
+    "bytes": 23876,
+    "sha256": "238952253fafdc3e9f180b5666153209c477084dd3e0bcfa5caa59b8e5b3449b",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs."
+  },
+  {
+    "path": "furniture/warm/pottedplant.glb",
+    "bytes": 52576,
+    "sha256": "d7eb6f8e048806c31a64f72ff6b863e8d85188130262356f97a5cfa3b7eda251",
+    "license": "MIT",
+    "source": "https://github.com/Handsome5201314/company-visual-studio",
+    "provenance": "Authored upholstered/oak collection; reproducible modeling source in tools/build-cyber-furniture.mjs."
   }
 ]

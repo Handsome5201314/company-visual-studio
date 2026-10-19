@@ -6,6 +6,7 @@ import {createHash} from 'node:crypto';
 import {THEMES,MODEL_IDS} from '../src/theme.js';
 import {validateAssets} from './validate-assets.mjs';
 import {verifyPackage} from './theme-package.mjs';
+import {effectiveModelPaths} from '../src/theme-package-export.js';
 const root=fileURLToPath(new URL('..',import.meta.url));
 const repository='https://github.com/Handsome5201314/company-visual-studio';
 // Reproducible source-package build only. Does not grant headquarters approval or list a theme.
@@ -13,14 +14,15 @@ export async function buildShippedPackage(id,output){
  const original=THEMES.find(t=>t.id===id);if(!original)throw new Error('未知内置主题');
  validateAssets();const commit=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
  const catalog=JSON.parse(await readFile(join(root,'asset-catalog.json'),'utf8'));
- const models=catalog.filter(a=>a.path.startsWith('furniture/')&&a.path.endsWith('.glb'));
- const theme={...structuredClone(original),models:Object.fromEntries(MODEL_IDS.map(model=>[model,`furniture/${model}.glb`])),assets:models.map(a=>a.path)};
+ const paths=effectiveModelPaths(original);
+ const models=[...new Set(Object.values(paths))].map(path=>{const asset=catalog.find(item=>item.path===path);if(!asset)throw new Error(`asset-catalog缺少家具：${path}`);return asset;});
+ const theme={...structuredClone(original),models:paths,assets:models.map(a=>a.path)};
  const scene={schemaVersion:1,compatibleContract:theme.compatibleContract,objects:[],lights:[]};
  const files=new Map([
   ['theme.json',{bytes:Buffer.from(JSON.stringify(theme)),license:'MIT'}],
   ['scene.json',{bytes:Buffer.from(JSON.stringify(scene)),license:'MIT'}],
   ['preview.png',{bytes:await readFile(join(root,'docs/images',id==='default'?'warm-showroom.png':'cyber-showroom.png')),license:'MIT'}],
-  ['README.md',{bytes:Buffer.from(`# ${theme.name}\n\n原始源码主题包，仅通过技术检查；未自动取得市场认证或公司应用批准。\n\n来源 ${repository}/tree/${commit}\n家具保留Kenney CC0许可。\n`),license:'MIT'}],
+  ['README.md',{bytes:Buffer.from(`# ${theme.name}\n\n原始源码主题包，仅通过技术检查；未自动取得市场认证或公司应用批准。\n\n来源 ${repository}/tree/${commit}\n原创家具使用 MIT；Kenney 家具保留 CC0 许可，逐文件许可见清单。\n`),license:'MIT'}],
   ['LICENSE.txt',{bytes:await readFile(join(root,'LICENSE.md')),license:'MIT'}],
   ['licenses/Kenney-CC0.txt',{bytes:await readFile(join(root,'public/licenses/Kenney-CC0.txt')),license:'CC0-1.0'}]
  ]);

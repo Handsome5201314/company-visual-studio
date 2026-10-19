@@ -34,8 +34,9 @@ let office:OfficeVisuals,avatar:T.Group,imported:T.Group|undefined,mixer:T.Anima
 const modelPad=new T.Group();scene.add(modelPad);modelPad.position.set(-5,0,4.8);
 const markerLayer=new T.Group();scene.add(markerLayer);markerLayer.visible=false;
 for(const anchor of contract.anchors){const mesh=new T.Mesh(new T.CylinderGeometry(.32,.32,.04,24),new T.MeshBasicMaterial({color:'#de733e'}));mesh.position.set(anchor.position[0],anchor.position[1]+.06,anchor.position[2]);mesh.name=anchor.id;markerLayer.add(mesh);}
-const cameras={all:{at:[19,14,23],look:[0,2,0]},desk:{at:[8,5,9],look:[4.4,1,.6]},upstairs:{at:[-5,8,2],look:[4.4,4.4,-5]},model:{at:[-5,1.8,8.5],look:[-5,1,4.8]}};
-function view(name:keyof typeof cameras){const v=cameras[name];camera.position.fromArray(v.at);controls.target.fromArray(v.look);controls.update();document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===name)));}
+const cameras={all:{at:[19,14,23],look:[0,2,0]},desk:{at:[8,5,9],look:[4.4,1,.6]},upstairs:{at:[-5,8,2],look:[4.4,4.4,-5]},close:{at:[-1.3,2.8,5.5],look:[-5,1.0,1]},model:{at:[-5,1.8,8.5],look:[-5,1,4.8]}};
+const closeView=document.createElement('button');closeView.dataset.view='close';closeView.textContent='前台近景';closeView.setAttribute('aria-pressed','false');document.querySelector('.views')!.append(closeView);
+function view(name:keyof typeof cameras){const v=cameras[name];camera.position.fromArray(v.at);controls.target.fromArray(v.look);controls.update();if(office){office.officeWalls.forEach(o=>o.visible=name!=='upstairs');office.officeDoor.visible=name!=='upstairs';}document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===name)));}
 view('all');document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach(b=>b.onclick=()=>view(b.dataset.view as keyof typeof cameras));$('reset').onclick=()=>view('all');
 const resize=new ResizeObserver(()=>{const bounds=$('canvas').getBoundingClientRect();renderer.setSize(bounds.width,bounds.height,false);camera.aspect=bounds.width/Math.max(bounds.height,1);camera.updateProjectionMatrix();});resize.observe($('canvas'));
 function progress(text:string,error=false){$('progress').textContent=text;$('progress').classList.toggle('error',error);}

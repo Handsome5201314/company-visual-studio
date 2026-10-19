@@ -1,7 +1,48 @@
 {
- "schemaVersion":1,"id":"default","name":"暖阳木质总部","version":"1.0.0","author":"童医魔盒视觉协作组",
- "description":"保留现有双层挑空、木地板与鼠尾草绿墙面。","compatibleContract":"hq-fixed-layout-v1",
- "ui":{"paper":"#fbf5e8","ink":"#293c30","muted":"#5f6b58","accent":"#365b43","line":"#c7c8ae","error":"#973b29","horizon":"#e8d6ba","font":"system"},
- "environment":{"background":"#e8d6ba","sky":"#fff4df","ground":"#82735d","sunColor":"#ffdfab","fillColor":"#dae4de","ambient":1.7,"sun":4.2,"fill":1,"exposure":1.08,"palette":{}},
- "models":{},"assets":[],"character":"sage"
+  "schemaVersion": 1,
+  "id": "default",
+  "name": "暖阳木质总部",
+  "version": "1.1.0",
+  "author": "童医魔盒视觉协作组",
+  "description": "暖木挑空、软包会谈家具、弧形办公桌、车制木腿、壁面画廊与细叶植栽。",
+  "compatibleContract": "hq-fixed-layout-v1",
+  "ui": {
+    "paper": "#fbf5e8",
+    "ink": "#293c30",
+    "muted": "#5f6b58",
+    "accent": "#365b43",
+    "line": "#c7c8ae",
+    "error": "#973b29",
+    "horizon": "#e8d6ba",
+    "font": "system"
+  },
+  "environment": {
+    "background": "#e8d6ba",
+    "sky": "#fff4df",
+    "ground": "#82735d",
+    "sunColor": "#ffdfab",
+    "fillColor": "#dae4de",
+    "ambient": 1.7,
+    "sun": 4.2,
+    "fill": 1,
+    "exposure": 1.08,
+    "palette": {}
+  },
+  "models": {
+    "computerscreen": "furniture/warm/computerscreen.glb",
+    "chairdesk": "furniture/warm/chairdesk.glb",
+    "desk": "furniture/warm/desk.glb",
+    "loungedesignsofa": "furniture/warm/loungedesignsofa.glb",
+    "tablecoffee": "furniture/warm/tablecoffee.glb",
+    "pottedplant": "furniture/warm/pottedplant.glb"
+  },
+  "assets": [
+    "furniture/warm/computerscreen.glb",
+    "furniture/warm/chairdesk.glb",
+    "furniture/warm/desk.glb",
+    "furniture/warm/loungedesignsofa.glb",
+    "furniture/warm/tablecoffee.glb",
+    "furniture/warm/pottedplant.glb"
+  ],
+  "character": "sage"
 }

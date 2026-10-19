@@ -30,7 +30,7 @@ function validScene(){
 
 function filesFixture(){
  return {
-  'theme.json':Buffer.from(JSON.stringify(THEMES[0])),
+  'theme.json':Buffer.from(JSON.stringify({...THEMES[0],version:'1.0.0',models:{},assets:[]})),
   'scene.json':Buffer.from(JSON.stringify(validScene())),
   'preview.png':Buffer.from(PNG),
   'assets/screenshot.png':Buffer.from(PNG),
@@ -131,7 +131,7 @@ test('malicious titles remain plain data and search/category/author filters read
 
 test('detail validation binds the listed revision and rejects foreign or unsafe asset bases',()=>{
  const entry=validateMarketEntry(entryFixture());
- const detail={...entryFixture(),theme:THEMES[0],scene:validScene(),assetBase:'/api/market/themes/market-default/files/'};
+ const detail={...entryFixture(),theme:{...THEMES[0],version:'1.0.0',models:{},assets:[]},scene:validScene(),assetBase:'/api/market/themes/market-default/files/'};
  const validated=validateMarketDetail(detail,entry);
  assert.equal(validated.assetBase,'/api/market/themes/market-default/files/');
  assert.equal(validated.theme.id,'default');

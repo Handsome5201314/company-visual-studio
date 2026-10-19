@@ -4,6 +4,9 @@ import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
 import {validateTheme,DEFAULT_THEME,applyCharacterSkin} from './theme.js';
 import budgets from './model-budgets.json';
 import {validateDecorationSafety} from './decoration-safety.js';
+import {FIXTURE_SLOTS} from './decoration-package.js';
+import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
+import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
 export type ProjectArtwork={title:string;image:string};
 // Rendering only. Movement, access control, domain records and MCP stay in the host.
@@ -14,7 +17,10 @@ export class OfficeVisuals {
  private scene=this.root;
  private models=new Map<string,T.Object3D>();
  private materials:T.MeshStandardMaterial[]=[];
+ private materialCache=new Map<string,T.MeshStandardMaterial>();
  private decorationLayer=new T.Group();
+ private fixtureLayer=new T.Group();
+ private surfaceOverrides:{id:string;color:string;roughness:number;metalness:number}[]=[];
  private theme=DEFAULT_THEME;
  private ambient=new T.HemisphereLight('#fff4df','#82735d',1.7);
  private sun=new T.DirectionalLight('#ffdfab',4.2);
@@ -27,7 +33,7 @@ export class OfficeVisuals {
   Object.assign(this.sun.shadow.camera,{left:-18,right:18,top:16,bottom:-16,near:.5,far:50});
   this.sun.shadow.bias=-.00015;this.sun.shadow.normalBias=.035;
   this.fill.position.set(7,6,9);this.root.add(this.ambient,this.sun,this.sun.target,this.fill);
-  this.build();this.root.add(this.decorationLayer);this.setTheme(this.theme);
+  this.build();this.craftDetails();this.mergeStatic();this.root.add(this.decorationLayer,this.fixtureLayer);this.setTheme(this.theme);
  }
  attachTo(world:T.Scene){this.world=world;world.add(this.root);this.setTheme(this.theme);}
  private assetUrl(path:string){const base=this.packageAssetBase&&this.theme.assets.includes(path)?this.packageAssetBase:this.baseUrl;return base.replace(/\/$/,'')+'/'+path;}
@@ -39,22 +45,33 @@ export class OfficeVisuals {
   this.ambient.color.set(theme.environment.sky);this.ambient.groundColor.set(theme.environment.ground);this.ambient.intensity=theme.environment.ambient;
   this.sun.color.set(theme.environment.sunColor);this.sun.intensity=theme.environment.sun;
   this.fill.color.set(theme.environment.fillColor);this.fill.intensity=theme.environment.fill;
+  this.applySurfaces();
  }
  recolorCharacter(root:T.Object3D,skin:string){applyCharacterSkin(root,skin);}
  setDecoration(input:unknown){
   const data=validateDecorationSafety(input),candidate=new T.Group();candidate.name='editable-decoration';
   for(const o of data.objects){const object=this.furniture(o.model,...o.position as [number,number,number],1,o.rotationY,candidate);object.scale.fromArray(o.scale);object.userData.decorationId=o.id;}
   for(const l of data.lights){const light=new T.PointLight(l.color,l.intensity,l.distance,2);light.position.fromArray(l.position);candidate.add(light);}
+  const fixtures=this.createFixtures(data.fixtures||[]);
   this.decorationLayer.removeFromParent();this.decorationLayer.clear();this.decorationLayer=candidate;this.root.add(candidate);
+  this.fixtureLayer.removeFromParent();this.fixtureLayer.clear();this.fixtureLayer=fixtures;this.root.add(fixtures);
+  this.surfaceOverrides=data.surfaces||[];this.setTheme(this.theme);
+ }
+ private createFixtures(overrides:{id:string;model:string}[]){const layer=new T.Group();layer.name='fixed-furniture-slots';for(const s of FIXTURE_SLOTS){const model=overrides.find(o=>o.id===s.id)?.model||s.model;const object=this.furniture(model,...s.position as [number,number,number],s.height,s.rotationY,layer);object.userData.fixtureId=s.id;}return layer;}
+ private applySurfaces(){
+  const groups:Record<string,string[]>={floor:['#c7a47d','#cba980','#c1a079','#d4dfe4'],mezzanine:['#796246','#c9a983','#bd9973'],'back-wall':['#e6dcc6'],acoustic:['#6c805a','#85936b'],'reception-front':['#aa7954','#895c3e'],worktops:['#d7ba91','#e7d9b8'],'office-wall':['#788364','#bda883'],railings:['#3f4c3d']};
+  for(const m of this.materials){m.roughness=m.userData.baseRoughness??.8;m.metalness=m.userData.baseMetalness??0;const entry=this.surfaceOverrides.find(s=>groups[s.id]?.includes(m.userData.baseColor));if(entry){m.color.set(entry.color);m.roughness=entry.roughness;m.metalness=entry.metalness;}}
  }
  get decorations(){return this.decorationLayer;}
  dispose(){
   const geometries=new Set<T.BufferGeometry>(),materials=new Set<T.Material>(),textures=new Set<T.Texture>();
-  this.root.traverse(o=>{if(o instanceof T.Mesh){geometries.add(o.geometry);for(const m of [o.material].flat()){materials.add(m);for(const v of Object.values(m))if(v instanceof T.Texture)textures.add(v);}}});
+  const collect=(o:T.Object3D)=>{if(o instanceof T.Mesh){geometries.add(o.geometry);for(const m of [o.material].flat()){materials.add(m);for(const v of Object.values(m))if(v instanceof T.Texture)textures.add(v);}}};
+  this.root.traverse(collect);for(const source of this.models.values())source.traverse(collect);
   geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());
-  this.sun.shadow.dispose();this.root.removeFromParent();this.models.clear();this.materials=[];
+  this.sun.shadow.dispose();this.root.removeFromParent();this.models.clear();this.materialCache.clear();this.materials=[];
  }
- private mat(color:string,roughness=.8){const m=new T.MeshStandardMaterial({color:this.theme.environment.palette[color] || color,roughness});m.userData.baseColor=color;this.materials.push(m);return m;}
+ private mat(color:string,roughness=.8){const key=color+':'+roughness,cached=this.materialCache.get(key);if(cached)return cached;const m=new T.MeshStandardMaterial({color:this.theme.environment.palette[color] || color,roughness});m.userData.baseColor=color;m.userData.baseRoughness=roughness;this.materials.push(m);this.materialCache.set(key,m);return m;}
+ private round(w:number,h:number,d:number,x:number,y:number,z:number,color:string,r=.08,parent:T.Object3D=this.scene){const mesh=new T.Mesh(new RoundedBoxGeometry(w,h,d,3,Math.min(r,w/3,h/3,d/3)),this.mat(color,.55));mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;}
  private box(w:number,h:number,d:number,x:number,y:number,z:number,color:string,parent:T.Object3D=this.scene){
   const mesh=new T.Mesh(new T.BoxGeometry(w,h,d),this.mat(color));mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;
  }
@@ -75,7 +92,7 @@ export class OfficeVisuals {
  }
  private build(){
   this.box(20.5,.5,16.5,0,-.28,0,'#78634c');
-  if(this.theme.id==='cyber'){
+  if(this.theme.architecture==='cyber'){
    for(let x=-9;x<=9;x+=2)for(let z=-7;z<=7;z+=2)this.box(1.96,.08,1.96,x,-.02,z,'#d4dfe4');
    for(const x of [-1.25,1.25])this.box(.035,.015,14,x,.03,0,'#48b9cf');
   }else for(let i=0;i<40;i++)this.box(.493,.08,16,-9.75+i*.5,-.02,0,i%3===0?'#c7a47d':i%3===1?'#cba980':'#c1a079');
@@ -92,7 +109,7 @@ export class OfficeVisuals {
   for(let i=0;i<18;i++){const h=(i+1)/18*3.4;this.box(2.1,h,.335,0,h/2,3-(i+.5)*6/18,'#b28a61');}
   for(let i=0;i<=6;i++){const z=3-i;const y=i/6*3.4;this.cylinder(.035,1,-1.07,y+.5,z,'#3f4c3d');this.cylinder(.035,1,1.07,y+.5,z,'#3f4c3d');}
   this.rail(-1.07,3,-1.07,-3,1,4.4);this.rail(1.07,3,1.07,-3,1,4.4);
-  if(this.theme.id==='cyber')for(let i=0;i<18;i++)this.box(1.92,.025,.035,0,(i+1)/18*3.4+.015,3-i*6/18-.30,'#48b9cf');
+  if(this.theme.architecture==='cyber')for(let i=0;i<18;i++)this.box(1.92,.025,.035,0,(i+1)/18*3.4+.015,3-i*6/18-.30,'#48b9cf');
   for(let x=1.35;x<10;x+=.65)this.cylinder(.025,1,x,3.95,-3,'#3f4c3d');this.rail(1.35,-3,10,-3,4.45);
   for(let z=-8;z<-3;z+=.7)this.cylinder(.025,1,-1.07,3.95,z,'#3f4c3d');this.rail(-1.07,-8,-1.07,-3.3,4.45);
   this.box(.19,3.3,.2,9,1.65,-3.2,'#806748');this.box(.19,3.3,.2,2.6,1.65,-3.2,'#806748');
@@ -138,7 +155,7 @@ export class OfficeVisuals {
   for(const z of [-.7,2.2]){
    this.box(5.7,.12,1.35,4.5,.79,z,'#d7ba91');
    for(const x of [2.1,6.9])for(const dz of [-.45,.45])this.box(.08,.74,.08,x,.37,z+dz,'#52594a');
-   for(const x of [3,6]){this.box(1,.65,.08,x,1.35,z-.25,'#34483b');this.box(.9,.52,.015,x,1.35,z-.2,'#b0c4aa');this.cylinder(.045,.28,x,.98,z-.25,'#34483b');this.text('本人工作台',.92,.20,x,1.36,z-.18,'#30483b','#b0c4aa');}
+   // Screens are replaceable fixed slots; no duplicate placeholder monitor geometry.
   }
   // Pendant lamps are local forms, not a post-processing color filter.
   for(const[x,z,y]of [[-5,1,5.7],[4.5,1,6.2],[5,-5.7,6.5]]){
@@ -150,11 +167,11 @@ export class OfficeVisuals {
   this.box(90,.2,90,0,-.8,-5,'#c3bc95');
   for(let i=0;i<9;i++){
    const x=-15-(i%3)*4,z=-15+i*4;
-   if(this.theme.id==='cyber'){this.box(2.2,8+i%3*3,2.2,x,2,z,'#aac6d4');this.box(2.25,.12,2.25,x,6+(i%3)*1.5,z,'#48b9cf');continue;}
+   if(this.theme.architecture==='cyber'){this.box(2.2,8+i%3*3,2.2,x,2,z,'#aac6d4');this.box(2.25,.12,2.25,x,6+(i%3)*1.5,z,'#48b9cf');continue;}
    this.cylinder(.14,2.6,x,.5,z,'#8a7959');
    const tree=new T.Mesh(new T.IcosahedronGeometry(2,2),this.mat(i%2?'#9ba977':'#acb887'));tree.scale.y=1.5;tree.position.set(x,3,z);tree.castShadow=true;this.scene.add(tree);
   }
-  if(this.theme.id==='cyber'){
+  if(this.theme.architecture==='cyber'){
    for(const z of [-.7,2.2])for(const x of [3,6]){
     this.box(1.25,.05,.9,x,1.95,z-.2,'#245a75');
     for(const dx of [-.59,.59])this.box(.05,1.1,.08,x+dx,1.4,z-.6,'#7194a4');
@@ -164,6 +181,58 @@ export class OfficeVisuals {
    for(const z of [4.9,6.9])this.box(2.3,.04,.025,6,.9,z,'#48b9cf');
    this.text('协作实验室',3.1,.42,-5.2,4.7,-7.83,'#e4f8ff','#245a75');
   }
+ }
+ private mergeStatic(){
+  // Only immutable, direct architectural meshes. Door/walls/characters and
+  // editable layers retain identity and their own lifecycle in the host.
+  this.root.updateMatrixWorld(true);const groups=new Map<T.Material,T.Mesh[]>();
+  for(const o of this.root.children)if(o instanceof T.Mesh&&o.material instanceof T.MeshStandardMaterial&&!this.officeWalls.includes(o)){const rows=groups.get(o.material)||[];rows.push(o);groups.set(o.material,rows);}
+  for(const [material,rows]of groups){if(rows.length<3)continue;const geometries=rows.map(o=>{const g=o.geometry.clone().applyMatrix4(o.matrix);return g.index?g.toNonIndexed():g;});const merged=mergeGeometries(geometries,false);geometries.forEach(g=>g.dispose());if(!merged)continue;const mesh=new T.Mesh(merged,material);mesh.castShadow=true;mesh.receiveShadow=true;mesh.name='batched-architecture';this.root.add(mesh);rows.forEach(o=>{o.geometry.dispose();o.removeFromParent();});}
+ }
+ private craftDetails(){
+  const cyber=this.theme.architecture==='cyber';
+  // A precise stair assembly: individual tread caps and shadow gaps follow the
+  // authoritative stair, without adding a new footprint or touching navigation.
+  for(let i=0;i<18;i++){const y=(i+1)/18*3.4,z=3-(i+.5)/3;this.box(2.04,.035,.31,0,y+.013,z,cyber?'#8cbdca':'#dcc39d');this.box(2.03,.018,.022,0,y+.035,z+.14,cyber?'#71dce1':'#8c7251');}
+  // Thin wall-mounted joinery and gallery; remains behind the circulation area.
+  for(let i=0;i<3;i++){
+   const x=-8.5+i*2.05;this.round(1.76,2.25,.09,x,2.15,-7.79,cyber?'#274d65':'#86694d',.04);
+   this.round(1.6,2.09,.035,x,2.15,-7.72,cyber?'#0f2d43':'#f0dfbc',.03);
+   const disc=new T.Mesh(new T.CircleGeometry(.48,48),this.mat(cyber?'#5db9ce':['#b7794c','#79916b','#c0a66e'][i]));disc.position.set(x,2.36,-7.69);this.root.add(disc);
+   for(let j=0;j<6;j++)this.box(.82+j*.08,.012,.015,x,1.5+j*.065,-7.68,cyber?'#6daebf':'#a2865f');
+  }
+  if(cyber){
+   // Ribbed portal and segmented luminous ceiling, replacing the warm pergola.
+   for(const x of [-8.5,-4.8,1.6,5.4,9.1]){
+    const spine=new T.Mesh(new T.TorusGeometry(2.9,.075,6,32,Math.PI),this.mat('#678e9d',.35));spine.rotation.y=Math.PI/2;spine.position.set(x,4.05,1.4);this.root.add(spine);
+    this.round(.13,1.65,.16,x,4.83,-1.5,'#24485b');this.round(.13,1.65,.16,x,4.83,4.3,'#24485b');
+   }
+   for(const z of [-1.45,4.2]){this.round(17.8,.11,.16,.15,5.7,z,'#294f63');this.box(17.55,.018,.05,.15,5.63,z,'#8ce8eb');}
+   // Reception shell with layered wings, concealed base and integrated display.
+   this.round(3.55,.68,.13,-5,.72,1.48,'#d5e7ed',.06);this.round(3.05,.36,.035,-5,.78,1.56,'#1c4058',.06);
+   for(let i=0;i<9;i++)this.box(.06,.12+i%3*.06,.015,-6+i*.25,.8,1.585,'#68c9d8');
+   this.round(3.1,.08,.10,-5,.16,1.48,'#193e55');
+   // Terraced vertical research garden, floating planters on the back wall.
+   for(let i=0;i<4;i++){this.round(1.2,.17,.32,8.5,1+i*.53,-7.65,'#274c62');for(let j=0;j<7;j++){const leaf=new T.Mesh(new T.OctahedronGeometry(.12,1),this.mat(j%2?'#60a49a':'#96c8b4'));leaf.scale.set(.5,1.9,.7);leaf.rotation.z=(j-3)*.15;leaf.position.set(8.07+j*.14,1.25+i*.53,-7.55);this.root.add(leaf);}}
+  }else{
+   // Slatted timber canopy with brass suspension. It frames the double-height
+   // space while keeping the main overview open to the two floors.
+   for(let i=0;i<9;i++)this.round(.09,.12,4.8,-8.7+i*.66,6.7,-4.5,'#806d50',.025);
+   for(const z of [-6.4,-2.65])this.round(5.75,.12,.1,-6.05,6.57,z,'#6c5e43',.025);
+   // Sculpted pendant shades (lathed profile), not a single cone with a bulb.
+   for(const [x,z,y]of [[-6,3.6,4.8],[4.5,.7,5.6]]){
+    const points=[[.05,0],[.13,.03],[.16,.22],[.29,.34],[.48,.37],[.51,.34]].map(p=>new T.Vector2(...p as [number,number]));
+    const mesh=new T.Mesh(new T.LatheGeometry(points,40),this.mat('#d4b683',.45));mesh.position.set(x,y,z);mesh.rotation.x=Math.PI;mesh.castShadow=true;this.root.add(mesh);
+    this.cylinder(.012,7-y,x,(7+y)/2,z,'#7f785f');this.cylinder(.46,.018,x,y-.34,z,'#f6e6c4');
+   }
+   // Fluted reception and upholstered meeting benches with rounded joinery.
+   this.round(3.7,.08,1.08,-5,1.12,1,'#e7d9b8',.035);
+   for(const z of [4.95,6.85]){this.round(1.94,.09,.45,6,.6,z,'#819270',.04);for(let i=0;i<5;i++)this.box(.012,.31,.014,5.28+i*.36,.94,z+(z<6?-.292:.292),'#a3ac88');}
+   // Wall books and storage give the mezzanine a furnished silhouette.
+   for(let row=0;row<2;row++){this.round(2.6,.08,.42,1.25,3.9+row*.5,-7.53,'#9c815f',.025);for(let i=0;i<12;i++){const h=.19+(i%4)*.04;this.box(.11,h,.19,.15+i*.19,3.94+row*.5+h/2,-7.48,['#697e62','#a97e59','#d0ba8a','#48605a'][i%4]);}}
+  }
+  // Deterministic grain in the actual timber material, not a screen overlay.
+  if(!cyber){const c=document.createElement('canvas');c.width=128;c.height=512;const ctx=c.getContext('2d')!;ctx.fillStyle='#eeeeee';ctx.fillRect(0,0,128,512);for(let i=0;i<100;i++){const x=(i*37)%128;ctx.strokeStyle=i%3?'#d2cebf':'#f8f5ea';ctx.lineWidth=i%3?.5:1;ctx.beginPath();ctx.moveTo(x,0);ctx.bezierCurveTo(x+4,180,x-4,320,x+2,512);ctx.stroke();}const map=new T.CanvasTexture(c);map.wrapS=map.wrapT=T.RepeatWrapping;map.repeat.set(1,4);map.colorSpace=T.SRGBColorSpace;for(const m of this.materials)if(['#c7a47d','#cba980','#c1a079','#d7ba91','#c9a983','#bd9973'].includes(m.userData.baseColor)){m.map=map;m.needsUpdate=true;}}
  }
  makeAvatar(kind:string){
   const g=new T.Group(),coat=kind==='reception'?'#e6d4ae':'#708c7b';
@@ -185,17 +254,14 @@ export class OfficeVisuals {
   const jobs=await Promise.allSettled(names.map(async name=>{const gltf=await loader.loadAsync(this.assetUrl(this.theme.models[name] || `furniture/${name}.glb`));this.models.set(name,gltf.scene);onProgress(`布置总部 ${++loaded}/${names.length}`);}));
   const failed=jobs.find(r=>r.status==='rejected');if(failed?.status==='rejected')throw failed.reason;
   for(const z of [-.7,2.2])for(const x of [3,6]){
-   this.furniture('computerscreen',x,.86,z-.42,.58);
    this.furniture('chairdesk',x,0,z+.95,1.18);
    this.furniture('plantsmall1',x+.85,.86,z,.34);
   }
-  this.furniture('desk',6,3.4,-5.8,.85);this.furniture('chairdesk',6,3.4,-6.9,1.17,Math.PI);this.furniture('laptop',6,4.25,-5.8,.38);
+  this.furniture('chairdesk',6,3.4,-6.9,1.17,Math.PI);this.furniture('laptop',6,4.25,-5.8,.38);
   this.furniture('books',7,4.25,-5.7,.16);
-  this.furniture('loungedesignsofa',-7.7,0,-4.6,1.05,Math.PI/2);
   this.furniture('loungedesignchair',-5.4,0,-6.1,.95,-.4);this.furniture('tablecoffee',-5.6,0,-4.3,.48);
   this.furniture('books',-5.6,.48,-4.3,.16);
   for(const[x,z,y]of [[-9,-7,0],[-9,6.8,0],[8.7,6.7,0],[8.9,-6.9,3.4],[-1.8,-7,0]])this.furniture('pottedplant',x,y,z,1.55);
-  this.furniture('bookcaseopen',8.6,0,5.5,2.1,-Math.PI/2);
   for(const x of [2.4,3.5])this.furniture('kitchencabinet',x,0,-7,.85);
   this.furniture('kitchencoffeemachine',2.5,.85,-7,.5);
   await Promise.all(this.projects.map(async(p,i)=>{
@@ -206,6 +272,7 @@ export class OfficeVisuals {
    const artwork=new T.Mesh(new T.PlaneGeometry(.86,.86),new T.MeshBasicMaterial({map:texture,transparent:true}));artwork.position.set(x,2.08,-7.66);this.scene.add(artwork);
    this.text(p.title,1.18,.25,x,1.37,-7.66,'#394832','#f5ecd7');
   }));
+  this.fixtureLayer.removeFromParent();this.fixtureLayer=this.createFixtures([]);this.root.add(this.fixtureLayer);
   onProgress('总部准备好了');
   }finally{draco.dispose();}
  }

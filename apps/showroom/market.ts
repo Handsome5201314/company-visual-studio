@@ -200,6 +200,16 @@ export function createMarket(options:MarketOptions){
    </section>
   </div>`;
  document.body.append(dialog);
+ const creator=document.createElement('details');creator.className='market-note';creator.innerHTML='<summary>创作者投稿完整主题包</summary><p>先在公司登录本人账号。上传后冻结此版本，再送总部审核；不会自动批准或上架。公司内部方案请在主游戏的“公司装修”导入。</p><label>完整包<input data-market-upload type="file" accept=".zip,.gz,application/zip,application/gzip"></label><label><input data-market-public type="checkbox"> 我确认可公开包内全部内容并有再分发权</label><button data-market-send>上传并提交总部审核</button><p data-market-submit-status role="status" aria-live="polite"></p>';
+ dialog.querySelector('.market-top')!.after(creator);
+ const upload=creator.querySelector<HTMLInputElement>('[data-market-upload]')!,publicCheck=creator.querySelector<HTMLInputElement>('[data-market-public]')!,send=creator.querySelector<HTMLButtonElement>('[data-market-send]')!,submitStatus=creator.querySelector<HTMLElement>('[data-market-submit-status]')!;
+ send.onclick=async()=>{const file=upload.files?.[0];if(!file||!publicCheck.checked){submitStatus.textContent='请选择完整包并确认公开范围与再分发权。';return;}send.disabled=true;upload.disabled=true;publicCheck.disabled=true;try{
+  if(file.size>31*1024*1024)throw Error('完整包不得超过31 MiB');submitStatus.textContent='正在上传并验证完整包…';
+  const r=await fetch('/api/market/submissions/upload',{method:'POST',credentials:'same-origin',headers:{'content-type':file.name.endsWith('.zip')?'application/zip':'application/gzip','idempotency-key':idempotencyKey(),'x-confirm-public':'yes'},body:file});const row=await r.json();if(!r.ok)throw Error(row.error||`上传失败 HTTP ${r.status}`);
+  submitStatus.textContent=`已冻结私有投稿 ${row.id}，正在提交审核…`;
+  const s=await fetch(`/api/market/submissions/${row.id}/submit`,{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({revision:row.revision,idempotencyKey:idempotencyKey()})});const result=await s.json();if(!s.ok)throw Error(`包已保存，提交失败：${result.error}。请在总部队列或本人投稿记录确认后再重试。`);
+  submitStatus.textContent=`投稿 ${result.id} 已提交总部审核（${result.state}）；尚未上架。`;upload.value='';
+ }catch(e){submitStatus.textContent=(e as Error).message;}finally{send.disabled=false;upload.disabled=false;publicCheck.disabled=false;}};
 
  const q=<T extends HTMLElement>(id:string)=>dialog.querySelector<T>(`#${id}`)!;
  const catalogView=q<HTMLElement>('market-catalog');
@@ -596,6 +606,7 @@ export function createMarket(options:MarketOptions){
   renderCatalog();
   setAlert(state.mode==='static'?staticError:'');
   dialog.showModal();
+  if(location.pathname.startsWith('/visual-studio/')&&state.mode==='static')void loadApiCatalog();
   closeButton.focus();
  }
 

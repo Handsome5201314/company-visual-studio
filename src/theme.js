@@ -11,7 +11,9 @@ export function assetPath(path){
 }
 export function validateTheme(input){
  const t=structuredClone(input);
- exact(t,['schemaVersion','id','name','version','author','description','compatibleContract','ui','environment','models','assets','character'],'主题');
+ exact(t,['schemaVersion','id','name','version','author','description','compatibleContract','ui','environment','models','assets','character','architecture'],'主题');
+ if(t.architecture===undefined)t.architecture=t.id==='cyber'?'cyber':'warm';
+ if(!['warm','cyber'].includes(t.architecture))throw Error('建筑视觉只能使用已经准入的暖木或星港组件');
  if(t.schemaVersion!==1||t.compatibleContract!==CONTRACT)throw new Error('主题布局契约不兼容；不得通过皮肤改变锚点、门禁或碰撞');
  if(!/^[a-z][a-z0-9-]{0,40}$/.test(t.id)||!/^\d+\.\d+\.\d+$/.test(t.version))throw new Error('主题ID或版本错误');
  for(const key of ['name','author','description'])if(typeof t[key]!=='string'||t[key].length<1||t[key].length>200)throw new Error(`主题${key}错误`);

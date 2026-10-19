@@ -1,5 +1,6 @@
 import {validateScene} from './decoration-package.js';
 import budgets from './model-budgets.json' with {type:'json'};
+export {SURFACE_IDS,FIXTURE_SLOTS} from './decoration-package.js';
 
 // Version-one editable volumes lie on existing blocked counters or inside existing
 // blocked furniture footprints. No new floor obstacle or navigation data is added.
@@ -8,6 +9,11 @@ export const DECORATION_ZONES=Object.freeze([
  {id:'work-counter-a',name:'工作台 A 陈设',min:[1.9,.86,-1.2],max:[7.1,1.5,-.2]},
  {id:'work-counter-b',name:'工作台 B 陈设',min:[1.9,.86,1.7],max:[7.1,1.5,2.7]},
  {id:'library',name:'书架装饰区',min:[8.1,0,4.1],max:[9.05,2.3,6.9]},
+ {id:'owner-counter',name:'二楼办公桌陈设',min:[4.3,4.26,-6.25],max:[7.7,4.95,-5.35]},
+ {id:'meeting-counter',name:'会客桌陈设',min:[4.9,.87,5.45],max:[7.1,1.5,6.35]},
+ {id:'lounge-inside',name:'会谈区家具组合（原阻挡范围）',min:[-8.3,0,-6.4],max:[-7.1,2.4,-2.8]},
+ {id:'upper-wall',name:'二楼背墙装饰带',min:[-.5,5.7,-7.48],max:[9.2,6.4,-7.12]},
+ {id:'ceiling',name:'挑空悬挂装饰（离地5.1米以上）',min:[-9.3,5.1,-2.7],max:[9.3,6.9,7.2]},
 ]);
 export function objectEnvelope(object){
  const b=budgets[object.model];if(!b)throw new Error('模型无尺寸预算');
