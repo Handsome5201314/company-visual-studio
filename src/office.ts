@@ -3,6 +3,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
 import {validateTheme,DEFAULT_THEME,applyCharacterSkin} from './theme.js';
 import budgets from './model-budgets.json';
+import {validateDecorationSafety} from './decoration-safety.js';
 
 export type ProjectArtwork={title:string;image:string};
 // Rendering only. Movement, access control, domain records and MCP stay in the host.
@@ -13,11 +14,12 @@ export class OfficeVisuals {
  private scene=this.root;
  private models=new Map<string,T.Object3D>();
  private materials:T.MeshStandardMaterial[]=[];
+ private decorationLayer=new T.Group();
  private theme=DEFAULT_THEME;
  private ambient=new T.HemisphereLight('#fff4df','#82735d',1.7);
  private sun=new T.DirectionalLight('#ffdfab',4.2);
  private fill=new T.DirectionalLight('#dae4de',1);
- constructor(private world:T.Scene,private baseUrl:string,private projects:ProjectArtwork[]=[],theme:unknown=DEFAULT_THEME) {
+ constructor(private world:T.Scene,private baseUrl:string,private projects:ProjectArtwork[]=[],theme:unknown=DEFAULT_THEME,private packageAssetBase?:string) {
   this.theme=validateTheme(theme);
   this.root.name='company-visual-root';world.add(this.root);
   this.sun.position.set(-14,13,1);this.sun.target.position.set(2,0,-3);
@@ -25,10 +27,10 @@ export class OfficeVisuals {
   Object.assign(this.sun.shadow.camera,{left:-18,right:18,top:16,bottom:-16,near:.5,far:50});
   this.sun.shadow.bias=-.00015;this.sun.shadow.normalBias=.035;
   this.fill.position.set(7,6,9);this.root.add(this.ambient,this.sun,this.sun.target,this.fill);
-  this.build();this.setTheme(this.theme);
+  this.build();this.root.add(this.decorationLayer);this.setTheme(this.theme);
  }
  attachTo(world:T.Scene){this.world=world;world.add(this.root);this.setTheme(this.theme);}
- private assetUrl(path:string){return this.baseUrl.replace(/\/$/,'')+'/'+path;}
+ private assetUrl(path:string){const base=this.packageAssetBase&&this.theme.assets.includes(path)?this.packageAssetBase:this.baseUrl;return base.replace(/\/$/,'')+'/'+path;}
  setTheme(input:unknown) {
   const theme=validateTheme(input);this.theme=theme;
   for(const material of this.materials){const base=material.userData.baseColor;material.color.set(theme.environment.palette[base] || base);}
@@ -39,6 +41,13 @@ export class OfficeVisuals {
   this.fill.color.set(theme.environment.fillColor);this.fill.intensity=theme.environment.fill;
  }
  recolorCharacter(root:T.Object3D,skin:string){applyCharacterSkin(root,skin);}
+ setDecoration(input:unknown){
+  const data=validateDecorationSafety(input),candidate=new T.Group();candidate.name='editable-decoration';
+  for(const o of data.objects){const object=this.furniture(o.model,...o.position as [number,number,number],1,o.rotationY,candidate);object.scale.fromArray(o.scale);object.userData.decorationId=o.id;}
+  for(const l of data.lights){const light=new T.PointLight(l.color,l.intensity,l.distance,2);light.position.fromArray(l.position);candidate.add(light);}
+  this.decorationLayer.removeFromParent();this.decorationLayer.clear();this.decorationLayer=candidate;this.root.add(candidate);
+ }
+ get decorations(){return this.decorationLayer;}
  dispose(){
   const geometries=new Set<T.BufferGeometry>(),materials=new Set<T.Material>(),textures=new Set<T.Texture>();
   this.root.traverse(o=>{if(o instanceof T.Mesh){geometries.add(o.geometry);for(const m of [o.material].flat()){materials.add(m);for(const v of Object.values(m))if(v instanceof T.Texture)textures.add(v);}}});
@@ -66,7 +75,10 @@ export class OfficeVisuals {
  }
  private build(){
   this.box(20.5,.5,16.5,0,-.28,0,'#78634c');
-  for(let i=0;i<40;i++)this.box(.493,.08,16,-9.75+i*.5,-.02,0,i%3===0?'#c7a47d':i%3===1?'#cba980':'#c1a079');
+  if(this.theme.id==='cyber'){
+   for(let x=-9;x<=9;x+=2)for(let z=-7;z<=7;z+=2)this.box(1.96,.08,1.96,x,-.02,z,'#d4dfe4');
+   for(const x of [-1.25,1.25])this.box(.035,.015,14,x,.03,0,'#48b9cf');
+  }else for(let i=0;i<40;i++)this.box(.493,.08,16,-9.75+i*.5,-.02,0,i%3===0?'#c7a47d':i%3===1?'#cba980':'#c1a079');
   this.box(20.3,7,.22,0,3.5,-8,'#e6dcc6');
   this.box(.2,.9,16,-10,.45,0,'#bbae90');
   // Left wall is a real wood window lattice; the sunlight crosses its mullions.
@@ -80,6 +92,7 @@ export class OfficeVisuals {
   for(let i=0;i<18;i++){const h=(i+1)/18*3.4;this.box(2.1,h,.335,0,h/2,3-(i+.5)*6/18,'#b28a61');}
   for(let i=0;i<=6;i++){const z=3-i;const y=i/6*3.4;this.cylinder(.035,1,-1.07,y+.5,z,'#3f4c3d');this.cylinder(.035,1,1.07,y+.5,z,'#3f4c3d');}
   this.rail(-1.07,3,-1.07,-3,1,4.4);this.rail(1.07,3,1.07,-3,1,4.4);
+  if(this.theme.id==='cyber')for(let i=0;i<18;i++)this.box(1.92,.025,.035,0,(i+1)/18*3.4+.015,3-i*6/18-.30,'#48b9cf');
   for(let x=1.35;x<10;x+=.65)this.cylinder(.025,1,x,3.95,-3,'#3f4c3d');this.rail(1.35,-3,10,-3,4.45);
   for(let z=-8;z<-3;z+=.7)this.cylinder(.025,1,-1.07,3.95,z,'#3f4c3d');this.rail(-1.07,-8,-1.07,-3.3,4.45);
   this.box(.19,3.3,.2,9,1.65,-3.2,'#806748');this.box(.19,3.3,.2,2.6,1.65,-3.2,'#806748');
@@ -137,8 +150,19 @@ export class OfficeVisuals {
   this.box(90,.2,90,0,-.8,-5,'#c3bc95');
   for(let i=0;i<9;i++){
    const x=-15-(i%3)*4,z=-15+i*4;
+   if(this.theme.id==='cyber'){this.box(2.2,8+i%3*3,2.2,x,2,z,'#aac6d4');this.box(2.25,.12,2.25,x,6+(i%3)*1.5,z,'#48b9cf');continue;}
    this.cylinder(.14,2.6,x,.5,z,'#8a7959');
    const tree=new T.Mesh(new T.IcosahedronGeometry(2,2),this.mat(i%2?'#9ba977':'#acb887'));tree.scale.y=1.5;tree.position.set(x,3,z);tree.castShadow=true;this.scene.add(tree);
+  }
+  if(this.theme.id==='cyber'){
+   for(const z of [-.7,2.2])for(const x of [3,6]){
+    this.box(1.25,.05,.9,x,1.95,z-.2,'#245a75');
+    for(const dx of [-.59,.59])this.box(.05,1.1,.08,x+dx,1.4,z-.6,'#7194a4');
+    this.box(1.1,.025,.025,x,1.9,z+.2,'#48b9cf');
+   }
+   const ring=new T.Mesh(new T.TorusGeometry(2.3,.045,8,64),new T.MeshBasicMaterial({color:'#79d7e2'}));ring.rotation.x=Math.PI/2;ring.position.set(4.5,4.8,1);this.scene.add(ring);
+   for(const z of [4.9,6.9])this.box(2.3,.04,.025,6,.9,z,'#48b9cf');
+   this.text('协作实验室',3.1,.42,-5.2,4.7,-7.83,'#e4f8ff','#245a75');
   }
  }
  makeAvatar(kind:string){
@@ -185,7 +209,7 @@ export class OfficeVisuals {
   onProgress('总部准备好了');
   }finally{draco.dispose();}
  }
- private furniture(name:string,x:number,y:number,z:number,height:number,ry=0){
+ private furniture(name:string,x:number,y:number,z:number,height:number,ry=0,parent:T.Object3D=this.scene){
   const source=this.models.get(name);if(!source)throw new Error(`家具缺失：${name}`);
   const mesh=source.clone(true),b=new T.Box3().setFromObject(mesh),size=b.getSize(new T.Vector3()),c=b.getCenter(new T.Vector3());
   if(![size.x,size.y,size.z].every(Number.isFinite)||size.y<=0)throw new Error(`模型尺寸无效：${name}`);
@@ -193,6 +217,6 @@ export class OfficeVisuals {
   if(!limit||size.x/size.y>limit.widthPerHeight||size.z/size.y>limit.depthPerHeight)throw new Error(`模型超出原家具包围盒：${name}。请缩减比例；布局变更须迁移碰撞。`);
   const s=height/size.y;mesh.scale.setScalar(s);mesh.position.set(-c.x*s,-b.min.y*s,-c.z*s);
   mesh.traverse(o=>{if(o instanceof T.Mesh){o.castShadow=true;o.receiveShadow=true;}});
-  const group=new T.Group();group.add(mesh);group.position.set(x,y,z);group.rotation.y=ry;this.scene.add(group);
+  const group=new T.Group();group.add(mesh);group.position.set(x,y,z);group.rotation.y=ry;parent.add(group);return group;
  }
 }

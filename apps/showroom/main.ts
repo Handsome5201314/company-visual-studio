@@ -15,7 +15,7 @@ import './showroom.css';
 import './market.css';
 
 document.querySelector('#app')!.innerHTML=`
- <header class="studio-header"><div><h1>公司视觉工作室</h1><p>童医魔盒 · 场景、界面与角色外观协作</p></div><div class="studio-header-actions"><button id="open-market" type="button" class="market-open">装修市场<span>公开目录</span></button><span>独立展厅 · 全部工作状态均为演示</span></div></header>
+ <header class="studio-header"><div><h1>公司视觉工作室</h1><p>童医魔盒 · 场景、界面与角色外观协作</p></div><div class="studio-header-actions"><a class="market-open" href="./apps/editor/index.html">装修创作台</a><button id="open-market" type="button" class="market-open">装修市场<span>公开目录</span></button><span>独立展厅 · 全部工作状态均为演示</span></div></header>
  <main class="studio-layout"><section class="studio-stage" aria-label="三维总部预览"><div id="canvas"></div><div class="stage-top"><span id="scene-name">暖阳木质总部</span><span id="metrics">正在加载…</span></div><nav class="views" aria-label="展厅镜头"><button data-view="all" aria-pressed="true">全景</button><button data-view="desk" aria-pressed="false">工作区</button><button data-view="upstairs" aria-pressed="false">二楼</button><button data-view="model" aria-pressed="false">模型台</button></nav><p id="progress" role="status" aria-live="polite">正在布置展厅…</p><p class="stage-guide">拖动环绕 · 滚轮缩放 · 右键平移</p></section>
  <aside class="studio-tools" aria-label="外观与模型工具"><section><h2>组合你的公司外观</h2><p class="tool-copy">只改变视觉，不连接正式账号、稿件、智能体或数据库。</p><label>空间装修<select id="environment">${THEMES.map(t=>`<option value="${t.id}">${t.name}</option>`).join('')}</select></label><p id="theme-description" class="tool-copy"></p><label>界面皮肤<select id="ui-theme"><option value="default">暖纸与森林绿</option><option value="cyber">矿物白与深海蓝</option></select></label><label>角色配色<select id="character"><option value="sage">鼠尾草绿</option><option value="cobalt">钴蓝</option></select></label><label class="check"><input id="anchors" type="checkbox">显示交互锚点</label><label class="check"><input id="walking" type="checkbox">播放演示步态</label><button id="reset">复位镜头</button></section>
  <section><h2>检查自己的模型</h2><p class="tool-copy">导入仅在当前浏览器处理，不上传。接受内嵌纹理的 GLB，最大 10 MB。</p><label>选择 GLB 文件<input id="model-file" type="file" accept=".glb,model/gltf-binary"></label><p id="model-info" class="tool-copy" role="status">还未导入模型。模型台显示通用角色，不包含老板肖像。</p><button id="clear-model" disabled>移除导入模型</button></section>
@@ -56,12 +56,13 @@ async function previewMarketTheme({detail,host,onProgress}:MarketPreviewRequest)
   try{
    candidate=new OfficeVisuals(previewScene,import.meta.env.BASE_URL,[],detail.theme,detail.assetBase);
    await candidate.load(text=>onProgress(text));
+   candidate.setDecoration(detail.scene);
    renderer=new T.WebGLRenderer({antialias:true});
    renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
    renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;
    const theme=detail.theme as {environment?:{exposure?:number}};
    renderer.toneMappingExposure=theme.environment?.exposure??1.08;
-   renderer.domElement.setAttribute('aria-label',`${detail.entry.title} 基础主题预览`);
+   renderer.domElement.setAttribute('aria-label',`${detail.entry.title} 完整装修预览`);
    const camera=new T.PerspectiveCamera(50,1,.08,180);camera.position.set(19,14,23);
    controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,2,0);controls.minDistance=1;controls.maxDistance=65;controls.maxPolarAngle=Math.PI*.49;controls.enableDamping=!matchMedia('(prefers-reduced-motion: reduce)').matches;
    const resizeView=()=>{const bounds=host.getBoundingClientRect();const width=Math.max(bounds.width,1),height=Math.max(bounds.height,1);renderer!.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();};
@@ -71,7 +72,7 @@ async function previewMarketTheme({detail,host,onProgress}:MarketPreviewRequest)
    renderer.domElement.addEventListener('webglcontextlost',lost);
    renderer.setAnimationLoop(()=>{if(disposed)return;controls?.update();renderer!.render(previewScene,camera);});
    host.replaceChildren(renderer.domElement);
-   return {dispose(){if(disposed)return;disposed=true;renderer?.setAnimationLoop(null);resize?.disconnect();controls?.dispose();renderer?.domElement.removeEventListener('webglcontextlost',lost);renderer?.dispose();candidate?.dispose();renderer?.domElement.remove();}};
+   return {setView(view){const at=view==='floor1'?[8,5,9]:view==='floor2'?[-5,8,2]:[19,14,23];const look=view==='floor1'?[4.4,1,.6]:view==='floor2'?[4.4,4.4,-5]:[0,2,0];camera.position.fromArray(at);controls!.target.fromArray(look);controls!.update();},dispose(){if(disposed)return;disposed=true;renderer?.setAnimationLoop(null);resize?.disconnect();controls?.dispose();renderer?.domElement.removeEventListener('webglcontextlost',lost);renderer?.dispose();candidate?.dispose();renderer?.domElement.remove();}};
   }catch(error){
    resize?.disconnect();controls?.dispose();renderer?.dispose();candidate?.dispose();throw error;
   }

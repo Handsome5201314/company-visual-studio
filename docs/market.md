@@ -90,7 +90,7 @@ UI 详情展示：
 - `theme.ui` 的七个界面颜色作为真实配色样本（来自详情 theme.json，不使用虚构色板）；
 - `manifest.files` 中的图片（包括 `previewPath`），加载失败显示文字，不用假图；
 - 下载按钮仅指向固定同源 `/download`；
-- 基础主题预览按钮；
+- 完整装修预览按钮；
 - 试装说明与按钮。
 
 截图/预览图片使用 `textContent` 和受控 URL 构造，不把标题、作者、描述或路径插入 `innerHTML`。
@@ -117,7 +117,7 @@ new OfficeVisuals(
 
 - 只有 `detail.theme.assets` 中列出的资源才从 `detail.assetBase` 取；默认家具与 Draco 解码器始终从可信 `trustedAssetBase` 取。
 - 先异步构建候选 `OfficeVisuals` 并等待加载成功，再替换旧预览；失败抛出错误，旧预览保留，页面显示错误。
-- 预览只渲染基础主题家具与灯光。**不应用 `scene.objects/lights`**；详情明确写“基础主题预览；可编辑物件待集成”。
+- 宿主加载后调用 `candidate.setDecoration(detail.scene)`，渲染真实物件与装饰灯。全景／一楼／二楼镜头复用同一渲染器。超出固定布局安全体积的场景拒绝预览。
 - 没有审批、安装或正式应用按钮。
 
 ## 5. 试装

@@ -26,7 +26,7 @@ export type MarketDetail={entry:MarketEntry;theme:unknown;scene:MarketScene;asse
 type MarketCatalog={schemaVersion:number;items:MarketEntry[];categories:Category[]};
 
 export type MarketPreviewRequest={entry:MarketEntry;detail:MarketDetail;host:HTMLElement;onProgress:(text:string)=>void};
-export type MarketPreviewHandle={dispose:()=>void};
+export type MarketPreviewHandle={dispose:()=>void;setView?:(view:'all'|'floor1'|'floor2')=>void};
 export type MarketTryOnResult={ok:boolean;status:number;message:string;draftId?:string};
 export type MarketOptions={
  openButton:HTMLElement;
@@ -83,13 +83,14 @@ async function defaultTryOn(entry:MarketEntry):Promise<MarketTryOnResult>{
  });
  const text=await response.text().catch(()=> '');
  let payload:unknown;
- try{payload=text?JSON.parse(text):undefined;}catch{payload=undefined;}
+ try{payload=text?JSON.parse(text):undefined;}catch{throw new Error(`试装接口返回无法解析的响应（HTTP ${response.status}），请重新读取草稿列表确认结果`);}
  if(!response.ok)throw new MarketHttpError(response.status,messageFromPayload(payload,text));
  const contentType=response.headers.get('content-type')??'';
  if(text.trim()&&!contentType.includes('application/json'))throw new Error(`试装接口返回非JSON响应（HTTP ${response.status}）；未修改正式装修`);
  const errorPayload=payload as {error?:unknown}|undefined;
  if(typeof errorPayload?.error==='string')throw new MarketHttpError(response.status,errorPayload.error);
  const data=payload as {message?:unknown;draftId?:unknown}|undefined;
+ if(!data||typeof data.draftId!=='string')throw new Error('试装接口未返回真实草稿ID，请重新读取草稿列表确认结果');
  return {
   ok:true,status:response.status,
   message:typeof data?.message==='string'?data.message:'服务器已接受试装请求；本展厅不会应用正式装修，请在公司草稿或审批流程中查看。',
@@ -132,7 +133,7 @@ export function createMarket(options:MarketOptions){
  dialog.setAttribute('aria-labelledby','market-title');
  dialog.innerHTML=`
   <header class="market-top">
-   <div class="market-heading"><p class="market-kicker">童医魔盒 · 公开装修目录</p><h2 id="market-title">装修市场</h2><p id="market-source" class="market-source"></p></div>
+   <div class="market-heading"><h2 id="market-title">装修市场</h2><p id="market-source" class="market-source"></p></div>
    <div class="market-top-actions" role="group" aria-label="市场数据源">
     <button type="button" id="market-mode-static" aria-pressed="true">独立静态目录</button>
     <button type="button" id="market-mode-api" aria-pressed="false">连接同源公司市场</button>
@@ -165,9 +166,9 @@ export function createMarket(options:MarketOptions){
        <div id="market-detail-tags" class="market-tags"></div>
        <div id="market-gallery" class="market-gallery"></div>
        <section id="market-preview" class="market-preview" hidden>
-        <div class="market-section-head"><h4>基础主题预览</h4><button type="button" id="market-preview-load">加载预览</button></div>
+        <nav aria-label="装修预览镜头"><button type="button" data-market-camera="all">全景</button><button type="button" data-market-camera="floor1">一楼</button><button type="button" data-market-camera="floor2">二楼</button></nav><div class="market-section-head"><h4>完整装修预览</h4><button type="button" id="market-preview-load">加载预览</button></div>
         <div id="market-preview-host" class="market-preview-host"></div>
-        <p class="market-note">基础主题预览；可编辑物件待集成。当前只加载主题家具与灯光，不应用 scene.objects/lights，也不修改碰撞、门禁或员工路径。</p>
+        <p class="market-note">预览完整主题、陈设与装饰灯；不修改碰撞、门禁或员工路径。</p>
         <p id="market-preview-status" class="market-status" role="status" aria-live="polite"></p>
        </section>
       </div>
@@ -376,7 +377,7 @@ export function createMarket(options:MarketOptions){
 
  function disposePreview(){
   previewToken++;
-  try{state.previewHandle?.dispose();}catch{}
+  state.previewHandle?.dispose();
   state.previewHandle=null;
   previewButton.disabled=false;
   previewButton.textContent='加载预览';
@@ -473,11 +474,11 @@ export function createMarket(options:MarketOptions){
   uiPreview.hidden=uiSwatches.childElementCount===0;
   previewSection.hidden=false;disposePreview();clearPreviewHost();
   previewButton.disabled=false;previewButton.textContent='加载预览';
-  previewStatus.textContent='尚未加载。预览只渲染基础主题；可编辑物件待集成。';
+  previewStatus.textContent='尚未加载。点击加载完整装修预览。';
   downloadLink.href=buildMarketDownloadUrl(entry.id);downloadLink.hidden=false;
   tryOnButton.hidden=false;tryOnButton.disabled=false;tryOnButton.textContent='在公司试装';tryOnStatus.textContent='';
   modeNote.textContent='同源公司市场：详情、图片与下载来自固定 /api/market 路径；试装只请求公司私有草稿，不会直接修改正式装修，也没有公开审批按钮。';
-  sceneNote.textContent=`详情 scene 已通过 ${entry.compatibleContract} 校验：${detail.scene.objects.length} 个可编辑物件、${detail.scene.lights.length} 盏装饰灯。当前 UI 只展示基础主题预览；可编辑物件待集成，未应用 scene.objects/lights。`;
+  sceneNote.textContent=`详情 scene 已通过 ${entry.compatibleContract} 校验：${detail.scene.objects.length} 个可编辑物件、${detail.scene.lights.length} 盏装饰灯。加载后将显示以上真实陈设和灯光。`;
   detailTitle.focus();
  }
 
@@ -554,13 +555,13 @@ export function createMarket(options:MarketOptions){
   if(!state.detail||state.mode!=='api')return;
   const detail=state.detail;
   const token=++previewToken;
-  previewButton.disabled=true;previewButton.textContent='正在加载预览…';previewStatus.textContent='正在加载基础主题预览…';
+  previewButton.disabled=true;previewButton.textContent='正在加载预览…';previewStatus.textContent='正在加载完整装修预览…';
   try{
    const handle=await options.preview({entry:detail.entry,detail,host:previewHost,onProgress:text=>{if(token===previewToken)previewStatus.textContent=text;}});
    if(token!==previewToken||state.detail!==detail||disposed){handle.dispose();return;}
-   try{state.previewHandle?.dispose();}catch{}
+   state.previewHandle?.dispose();
    state.previewHandle=handle;
-   previewStatus.textContent='基础主题预览已加载；可编辑物件待集成。';
+   previewStatus.textContent='完整装修预览已加载。';
   }catch(error){
    if(token===previewToken)previewStatus.textContent=`预览加载失败：${errorText(error)}。已保留原有预览（如有）。`;
   }finally{
@@ -618,6 +619,7 @@ export function createMarket(options:MarketOptions){
  closeButton.addEventListener('click',close);
  backButton.addEventListener('click',backToCatalog);
  previewButton.addEventListener('click',()=>void loadPreview());
+ dialog.querySelectorAll<HTMLButtonElement>('[data-market-camera]').forEach(b=>b.onclick=()=>{if(state.previewHandle?.setView)state.previewHandle.setView(b.dataset.marketCamera as 'all'|'floor1'|'floor2');else previewStatus.textContent='请先加载装修预览，再选择镜头。';});
  tryOnButton.addEventListener('click',()=>void requestTryOn());
  dialog.addEventListener('click',event=>{if(event.target===dialog)close();});
  dialog.addEventListener('cancel',event=>{if(!detailView.hidden){event.preventDefault();backToCatalog();}});
