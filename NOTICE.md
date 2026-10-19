@@ -1,5 +1,7 @@
 # 资源来源与排除项
 
+本仓库原创代码、UI、主题及配套文档按 [MIT License](LICENSE.md) 发布。第三方代码与素材保留各自许可，详见下文及 `public/licenses/`；MIT 不替代这些第三方许可，也不授予公司商标、名称或个人肖像的权利。
+
 Kenney Furniture Kit 的官方页面 https://kenney.nl/assets/furniture-kit 标为 Creative Commons CC0，2026-10-19核对。仓库内13个家具沿用本地已有的 Tiny Game Engine GLB 转换；保留原随附CC0说明。不是新下载的整套上游140件。
 
 `public/draco/` 是现有工程的 Google Draco 解码器，Apache-2.0；`public/licenses/` 保留 Draco 与 Three.js 许可。精确资源哈希及字节数见 `asset-catalog.json`。

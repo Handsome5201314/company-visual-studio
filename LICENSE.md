@@ -1,5 +1,21 @@
-# 原创部分许可待确认
+# MIT License
 
-本仓库原创代码、界面和主题的开源许可证尚待所有者确认。当前私有协作阶段不授予面向公众的再分发许可，不应被称为已经开源。
+Copyright (c) 2026 北京童医魔盒科技服务有限公司
 
-第三方素材不受上述状态改变：Kenney 家具按 CC0-1.0，Draco 按 Apache-2.0，Three.js 按 MIT；完整说明见 `NOTICE.md` 和 `public/licenses/`。个人肖像、商标或公司名称的权利不会因未来的代码开源自动转让。
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

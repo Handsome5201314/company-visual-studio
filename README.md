@@ -2,7 +2,7 @@
 
 北京童医魔盒科技服务有限公司模拟经营游戏的视觉协作仓库。设计师可独立改界面、装修和家具，主游戏直接使用同一份源码。
 
-当前是**待所有者确认开源许可的私有协作版**，不是完整游戏服务器。没有账号数据库、稿件、聊天记录、模型凭证、付款接口、MCP 服务或后端源代码。展厅中的人物与工作状态全是演示。
+这是**公开的视觉协作仓库，原创代码、UI 和主题采用 [MIT 许可证](LICENSE.md)**，第三方素材保留[各自许可](NOTICE.md)。本仓库不是完整游戏服务器，没有账号数据库、稿件、聊天记录、模型凭证、付款接口、MCP 服务或后端源代码。展厅中的人物与工作状态全是演示。
 
 ![默认暖阳木质总部与独立操作面板](docs/images/warm-showroom.png)
 
@@ -46,7 +46,7 @@ npm run build
 
 ## 参与协作
 
-先看 [贡献指南](CONTRIBUTING.md)、[主题规范](docs/themes.md)、[Blender 工作流](docs/blender.md) 和 [主游戏接入](docs/host-integration.md)。Fork/Clone → 独立分支 → 预览与检查 → Pull Request → 所有者审核。私有阶段需仓库所有者邀请；公开状态和许可证确认后才能面向社区开放。
+先看 [贡献指南](CONTRIBUTING.md)、[主题规范](docs/themes.md)、[Blender 工作流](docs/blender.md) 和 [主游戏接入](docs/host-integration.md)。任何人都可以 Fork/Clone → 独立分支 → 预览与检查 → Pull Request → 所有者审核；无需真实公司账号或个人凭证。
 
 模块拆分与不可随意修改的接口见[架构边界](docs/architecture.md)。
 现有颜色、排版、组件与响应式规则见[设计规范](DESIGN.md)，供设计师和开发智能体沿用；文档同时列出尚未令牌化的辅助样式。
