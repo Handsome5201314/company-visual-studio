@@ -1,0 +1,582 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-19T11:24:23.533Z",
+  "title": "Design System: 公司视觉工作室",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "森林绿",
+        "tonalRamp": [
+          "oklch(15.00% 0.05844 154.76)",
+          "oklch(26.43% 0.05844 154.76)",
+          "oklch(37.86% 0.05844 154.76)",
+          "oklch(49.29% 0.05844 154.76)",
+          "oklch(60.71% 0.05844 154.76)",
+          "oklch(72.14% 0.05844 154.76)",
+          "oklch(83.57% 0.05844 154.76)",
+          "oklch(95.00% 0.05844 154.76)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "暖纸",
+        "tonalRamp": [
+          "oklch(15.00% 0.01832 86.15)",
+          "oklch(26.43% 0.01832 86.15)",
+          "oklch(37.86% 0.01832 86.15)",
+          "oklch(49.29% 0.01832 86.15)",
+          "oklch(60.71% 0.01832 86.15)",
+          "oklch(72.14% 0.01832 86.15)",
+          "oklch(83.57% 0.01832 86.15)",
+          "oklch(95.00% 0.01832 86.15)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "深叶墨",
+        "tonalRamp": [
+          "oklch(15.00% 0.03231 156.49)",
+          "oklch(26.43% 0.03231 156.49)",
+          "oklch(37.86% 0.03231 156.49)",
+          "oklch(49.29% 0.03231 156.49)",
+          "oklch(60.71% 0.03231 156.49)",
+          "oklch(72.14% 0.03231 156.49)",
+          "oklch(83.57% 0.03231 156.49)",
+          "oklch(95.00% 0.03231 156.49)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "苔灰",
+        "tonalRamp": [
+          "oklch(15.00% 0.03273 133.96)",
+          "oklch(26.43% 0.03273 133.96)",
+          "oklch(37.86% 0.03273 133.96)",
+          "oklch(49.29% 0.03273 133.96)",
+          "oklch(60.71% 0.03273 133.96)",
+          "oklch(72.14% 0.03273 133.96)",
+          "oklch(83.57% 0.03273 133.96)",
+          "oklch(95.00% 0.03273 133.96)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "草灰线",
+        "tonalRamp": [
+          "oklch(15.00% 0.03534 108.95)",
+          "oklch(26.43% 0.03534 108.95)",
+          "oklch(37.86% 0.03534 108.95)",
+          "oklch(49.29% 0.03534 108.95)",
+          "oklch(60.71% 0.03534 108.95)",
+          "oklch(72.14% 0.03534 108.95)",
+          "oklch(83.57% 0.03534 108.95)",
+          "oklch(95.00% 0.03534 108.95)"
+        ]
+      },
+      "error": {
+        "role": "semantic",
+        "displayName": "砖红",
+        "tonalRamp": [
+          "oklch(15.00% 0.12778 32.92)",
+          "oklch(26.43% 0.12778 32.92)",
+          "oklch(37.86% 0.12778 32.92)",
+          "oklch(49.29% 0.12778 32.92)",
+          "oklch(60.71% 0.12778 32.92)",
+          "oklch(72.14% 0.12778 32.92)",
+          "oklch(83.57% 0.12778 32.92)",
+          "oklch(95.00% 0.12778 32.92)"
+        ]
+      },
+      "horizon": {
+        "role": "neutral",
+        "displayName": "沙色地平线",
+        "tonalRamp": [
+          "oklch(15.00% 0.04231 78.94)",
+          "oklch(26.43% 0.04231 78.94)",
+          "oklch(37.86% 0.04231 78.94)",
+          "oklch(49.29% 0.04231 78.94)",
+          "oklch(60.71% 0.04231 78.94)",
+          "oklch(72.14% 0.04231 78.94)",
+          "oklch(83.57% 0.04231 78.94)",
+          "oklch(95.00% 0.04231 78.94)"
+        ]
+      },
+      "cool-accent": {
+        "role": "primary",
+        "displayName": "深海蓝",
+        "tonalRamp": [
+          "oklch(15.00% 0.07175 233.45)",
+          "oklch(26.43% 0.07175 233.45)",
+          "oklch(37.86% 0.07175 233.45)",
+          "oklch(49.29% 0.07175 233.45)",
+          "oklch(60.71% 0.07175 233.45)",
+          "oklch(72.14% 0.07175 233.45)",
+          "oklch(83.57% 0.07175 233.45)",
+          "oklch(95.00% 0.07175 233.45)"
+        ]
+      },
+      "cool-paper": {
+        "role": "neutral",
+        "displayName": "矿物白",
+        "tonalRamp": [
+          "oklch(15.00% 0.00668 233.64)",
+          "oklch(26.43% 0.00668 233.64)",
+          "oklch(37.86% 0.00668 233.64)",
+          "oklch(49.29% 0.00668 233.64)",
+          "oklch(60.71% 0.00668 233.64)",
+          "oklch(72.14% 0.00668 233.64)",
+          "oklch(83.57% 0.00668 233.64)",
+          "oklch(95.00% 0.00668 233.64)"
+        ]
+      },
+      "cool-ink": {
+        "role": "neutral",
+        "displayName": "蓝墨",
+        "tonalRamp": [
+          "oklch(15.00% 0.04197 237.90)",
+          "oklch(26.43% 0.04197 237.90)",
+          "oklch(37.86% 0.04197 237.90)",
+          "oklch(49.29% 0.04197 237.90)",
+          "oklch(60.71% 0.04197 237.90)",
+          "oklch(72.14% 0.04197 237.90)",
+          "oklch(83.57% 0.04197 237.90)",
+          "oklch(95.00% 0.04197 237.90)"
+        ]
+      },
+      "cool-muted": {
+        "role": "neutral",
+        "displayName": "蓝灰",
+        "tonalRamp": [
+          "oklch(15.00% 0.03368 234.30)",
+          "oklch(26.43% 0.03368 234.30)",
+          "oklch(37.86% 0.03368 234.30)",
+          "oklch(49.29% 0.03368 234.30)",
+          "oklch(60.71% 0.03368 234.30)",
+          "oklch(72.14% 0.03368 234.30)",
+          "oklch(83.57% 0.03368 234.30)",
+          "oklch(95.00% 0.03368 234.30)"
+        ]
+      },
+      "cool-line": {
+        "role": "neutral",
+        "displayName": "冷灰线",
+        "tonalRamp": [
+          "oklch(15.00% 0.02772 226.84)",
+          "oklch(26.43% 0.02772 226.84)",
+          "oklch(37.86% 0.02772 226.84)",
+          "oklch(49.29% 0.02772 226.84)",
+          "oklch(60.71% 0.02772 226.84)",
+          "oklch(72.14% 0.02772 226.84)",
+          "oklch(83.57% 0.02772 226.84)",
+          "oklch(95.00% 0.02772 226.84)"
+        ]
+      },
+      "cool-error": {
+        "role": "semantic",
+        "displayName": "冷砖红",
+        "tonalRamp": [
+          "oklch(15.00% 0.14747 23.41)",
+          "oklch(26.43% 0.14747 23.41)",
+          "oklch(37.86% 0.14747 23.41)",
+          "oklch(49.29% 0.14747 23.41)",
+          "oklch(60.71% 0.14747 23.41)",
+          "oklch(72.14% 0.14747 23.41)",
+          "oklch(83.57% 0.14747 23.41)",
+          "oklch(95.00% 0.14747 23.41)"
+        ]
+      },
+      "cool-horizon": {
+        "role": "neutral",
+        "displayName": "冷雾地平线",
+        "tonalRamp": [
+          "oklch(15.00% 0.01775 229.01)",
+          "oklch(26.43% 0.01775 229.01)",
+          "oklch(37.86% 0.01775 229.01)",
+          "oklch(49.29% 0.01775 229.01)",
+          "oklch(60.71% 0.01775 229.01)",
+          "oklch(72.14% 0.01775 229.01)",
+          "oklch(83.57% 0.01775 229.01)",
+          "oklch(95.00% 0.01775 229.01)"
+        ]
+      },
+      "on-accent": {
+        "role": "primary",
+        "displayName": "奶白动作文字",
+        "tonalRamp": [
+          "oklch(15.00% 0.02478 89.21)",
+          "oklch(26.43% 0.02478 89.21)",
+          "oklch(37.86% 0.02478 89.21)",
+          "oklch(49.29% 0.02478 89.21)",
+          "oklch(60.71% 0.02478 89.21)",
+          "oklch(72.14% 0.02478 89.21)",
+          "oklch(83.57% 0.02478 89.21)",
+          "oklch(95.00% 0.02478 89.21)"
+        ]
+      },
+      "button-hover": {
+        "role": "neutral",
+        "displayName": "浅田野悬停",
+        "tonalRamp": [
+          "oklch(15.00% 0.02841 117.84)",
+          "oklch(26.43% 0.02841 117.84)",
+          "oklch(37.86% 0.02841 117.84)",
+          "oklch(49.29% 0.02841 117.84)",
+          "oklch(60.71% 0.02841 117.84)",
+          "oklch(72.14% 0.02841 117.84)",
+          "oklch(83.57% 0.02841 117.84)",
+          "oklch(95.00% 0.02841 117.84)"
+        ]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "深林悬停",
+        "tonalRamp": [
+          "oklch(15.00% 0.05670 155.61)",
+          "oklch(26.43% 0.05670 155.61)",
+          "oklch(37.86% 0.05670 155.61)",
+          "oklch(49.29% 0.05670 155.61)",
+          "oklch(60.71% 0.05670 155.61)",
+          "oklch(72.14% 0.05670 155.61)",
+          "oklch(83.57% 0.05670 155.61)",
+          "oklch(95.00% 0.05670 155.61)"
+        ]
+      },
+      "focus": {
+        "role": "semantic",
+        "displayName": "棕色焦点",
+        "tonalRamp": [
+          "oklch(15.00% 0.09993 50.23)",
+          "oklch(26.43% 0.09993 50.23)",
+          "oklch(37.86% 0.09993 50.23)",
+          "oklch(49.29% 0.09993 50.23)",
+          "oklch(60.71% 0.09993 50.23)",
+          "oklch(72.14% 0.09993 50.23)",
+          "oklch(83.57% 0.09993 50.23)",
+          "oklch(95.00% 0.09993 50.23)"
+        ]
+      },
+      "field": {
+        "role": "neutral",
+        "displayName": "浅米表单",
+        "tonalRamp": [
+          "oklch(15.00% 0.01073 95.16)",
+          "oklch(26.43% 0.01073 95.16)",
+          "oklch(37.86% 0.01073 95.16)",
+          "oklch(49.29% 0.01073 95.16)",
+          "oklch(60.71% 0.01073 95.16)",
+          "oklch(72.14% 0.01073 95.16)",
+          "oklch(83.57% 0.01073 95.16)",
+          "oklch(95.00% 0.01073 95.16)"
+        ]
+      },
+      "field-line": {
+        "role": "neutral",
+        "displayName": "草灰表单线",
+        "tonalRamp": [
+          "oklch(15.00% 0.03829 126.02)",
+          "oklch(26.43% 0.03829 126.02)",
+          "oklch(37.86% 0.03829 126.02)",
+          "oklch(49.29% 0.03829 126.02)",
+          "oklch(60.71% 0.03829 126.02)",
+          "oklch(72.14% 0.03829 126.02)",
+          "oklch(83.57% 0.03829 126.02)",
+          "oklch(95.00% 0.03829 126.02)"
+        ]
+      },
+      "status-fill": {
+        "role": "neutral",
+        "displayName": "淡草状态底",
+        "tonalRamp": [
+          "oklch(15.00% 0.02738 120.54)",
+          "oklch(26.43% 0.02738 120.54)",
+          "oklch(37.86% 0.02738 120.54)",
+          "oklch(49.29% 0.02738 120.54)",
+          "oklch(60.71% 0.02738 120.54)",
+          "oklch(72.14% 0.02738 120.54)",
+          "oklch(83.57% 0.02738 120.54)",
+          "oklch(95.00% 0.02738 120.54)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "入口楷体",
+        "purpose": "共享入口卡片标题；700px 以下 27px。"
+      },
+      "headline": {
+        "displayName": "展厅系统标题",
+        "purpose": "展厅 h1；800px 以下 21px。"
+      },
+      "title": {
+        "displayName": "共享弹窗标题",
+        "purpose": "共享 h2；700px 以下 21px。"
+      },
+      "body": {
+        "displayName": "共享对话正文",
+        "purpose": "聊天正文 14px / 1.85、最大 68ch；不代表根节点字号。"
+      },
+      "label": {
+        "displayName": "共享字段标签",
+        "purpose": "共享 label；展厅标签另为 12px。"
+      }
+    },
+    "shadows": [
+      {
+        "name": "entry-card",
+        "value": "0 16px 60px #463e2826",
+        "purpose": "共享入口卡片。"
+      },
+      {
+        "name": "interaction",
+        "value": "0 10px 25px #302f2829",
+        "purpose": "主游戏互动提示按钮。"
+      },
+      {
+        "name": "dialog-panel",
+        "value": "0 22px 90px #242d2847",
+        "purpose": "共享原生 dialog。"
+      }
+    ],
+    "motion": [
+      {
+        "name": "button-background",
+        "value": "background .15s",
+        "purpose": "共享按钮背景变化；源码没有显式 easing。"
+      },
+      {
+        "name": "reduced-motion-css",
+        "value": "@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}",
+        "purpose": "共享与展厅样式均实现；不是停止 WebGL 绘制的规则。"
+      },
+      {
+        "name": "avatar-walk-gate",
+        "value": "walking && !matchMedia('(prefers-reduced-motion: reduce)').matches",
+        "purpose": "仅控制展厅分层四肢步态，不能推断所有 GLB 动画均暂停。"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "shared-mobile",
+        "value": "700px",
+        "query": "(max-width:700px)"
+      },
+      {
+        "name": "showroom-mobile",
+        "value": "800px",
+        "query": "(max-width:800px)"
+      }
+    ],
+    "mediaQueries": [
+      {
+        "name": "coarse-pointer",
+        "value": "(pointer:coarse)",
+        "purpose": "共享触摸方向键与竖向相机控制。"
+      }
+    ],
+    "focus": {
+      "value": "outline:3px solid #8c4d26;outline-offset:4px",
+      "selector": ":focus-visible",
+      "purpose": "共享 button、a、input、select、textarea。"
+    },
+    "backdrop": {
+      "value": "#26372db8",
+      "purpose": "原生 dialog::backdrop。"
+    },
+    "sources": [
+      {
+        "path": "PRODUCT.md",
+        "lines": "1–9",
+        "scope": "产品、共享视觉范围、两套主题、通用角色边界；未扩展为页面编排规则。"
+      },
+      {
+        "path": ".impeccable/surfaces/showroom.md",
+        "lines": "1–11",
+        "scope": "已确认视觉语言、现有木质总部、系统字体、暖纸森林绿与冷蓝对照。"
+      },
+      {
+        "path": "src/ui/style.css",
+        "lines": "1–4",
+        "scope": "CSS 层顺序、根字体、六个暖色变量、按钮与焦点、固定辅助色、控件最小高度。"
+      },
+      {
+        "path": "src/ui/style.css",
+        "lines": "10–21",
+        "scope": "入口卡与楷体、任务与导航、dialog 与输入、状态、阴影、700px / coarse-pointer / reduced-motion。"
+      },
+      {
+        "path": "src/ui/style.css",
+        "lines": "24–34",
+        "scope": "聊天正文排版、68ch 行长、700px 输入与正文覆盖。"
+      },
+      {
+        "path": "apps/showroom/showroom.css",
+        "lines": "1–8",
+        "scope": "25px 系统字体标题、330px 栏、800px 单列、原生字段覆盖、镜头 aria-pressed、reduced-motion；未使用的 studio-surface / studio-border 不提取为 token。"
+      },
+      {
+        "path": "themes/default/theme.json",
+        "lines": "2–6",
+        "scope": "暖色七变量、环境五色及光照曝光、空材质映射、sage。"
+      },
+      {
+        "path": "themes/cyber/theme.json",
+        "lines": "2–7",
+        "scope": "冷色七变量、独立 WebGL 背景、光照曝光、标准材质颜色映射、cobalt。"
+      },
+      {
+        "path": "src/theme.js",
+        "lines": "18–24,34–38",
+        "scope": "七个 UI 变量实际应用、仅 system 字体、palette 与角色两色替换边界。"
+      },
+      {
+        "path": "src/office.ts",
+        "lines": "17–39,48–50,67–139",
+        "scope": "光源、投影、标准材质登记与背景雾、粗糙度、格窗、两层挑空、楼梯护栏；独立玻璃灯泡与文字未全部进入 palette。"
+      },
+      {
+        "path": "src/office.ts",
+        "lines": "141–157",
+        "scope": "通用角色为分层 limb 组与简化几何。"
+      },
+      {
+        "path": "apps/showroom/main.ts",
+        "lines": "15–28,39–59,82–85",
+        "scope": "实际 HTML 控件、native dialog、WebGL 配置、加载错误状态、UI 与环境独立切换、步态 reduced-motion 和 WebGL 丢失。"
+      }
+    ],
+    "extractionLimits": [
+      "仅提取实际复用的 UI 颜色与观察到的排版/间距/形状；没有把所有 one-off 常量提升为 token。",
+      "界面主题应用只覆写 paper、ink、muted、accent、line、error、horizon；固定辅助色不跟随主题。",
+      "未使用的 --studio-surface、--studio-border 不作为实际视觉 token。",
+      "8-step tonalRamp 为 sRGB 原色换算到 OKLCH 后维持 chroma/hue、lightness 15%–95% 的合成预览；未写回代码，极端明度可能超出 sRGB gamut。",
+      "组件片段为原控件视觉提取、ds- 前缀，无框架依赖；变量附暖色回退值。静态 card 与 chip 未添加源码没有的 hover/focus 行为。",
+      "未另行重跑浏览器；提取以本次代码及已确认 surface brief 为准，浏览器验证由主任务负责。"
+    ],
+    "themeCoverage": {
+      "uiVariables": [
+        "paper",
+        "ink",
+        "muted",
+        "accent",
+        "line",
+        "error",
+        "horizon"
+      ],
+      "font": "system only; existing CSS font stacks remain unchanged",
+      "warmEnvironmentSource": "themes/default/theme.json:5",
+      "coolEnvironmentSource": "themes/cyber/theme.json:5–6",
+      "paletteApplication": "src/office.ts:32–39,48",
+      "rendererSource": "apps/showroom/main.ts:27–28",
+      "warmLighting": {
+        "ambient": 1.7,
+        "sun": 4.2,
+        "fill": 1,
+        "exposure": 1.08
+      },
+      "coolLighting": {
+        "ambient": 2.3,
+        "sun": 2.8,
+        "fill": 1.9,
+        "exposure": 1.16
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "主要按钮",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "展厅保存等主要动作；主色跟随运行时变量，悬停仍是暖色固定值。",
+      "html": "<button class=\"ds-button\">保存演示稿</button>",
+      "css": ".ds-button{font-family:\"Microsoft YaHei\",\"PingFang SC\",sans-serif;font-size:12px;border:1px solid var(--line,#c7c8ae);border-radius:var(--radius,12px);padding:11px 17px;background:var(--paper,#fbf5e8);color:var(--ink,#293c30);cursor:pointer;min-height:44px;transition:background .15s;background:var(--accent,#365b43);color:#fff8e6;border-color:var(--accent,#365b43)}.ds-button:hover{background:#264a34}.ds-button:disabled{cursor:wait;opacity:.55}.ds-button:focus-visible,.ds-input:focus-visible,.ds-select:focus-visible,.ds-view:focus-visible,.ds-close:focus-visible{outline:3px solid #8c4d26;outline-offset:4px}@media(prefers-reduced-motion:reduce){.ds-button,.ds-view{transition:none!important}}"
+    },
+    {
+      "name": "次要按钮",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "复位和次要操作的基础纸色按钮。",
+      "html": "<button class=\"ds-button\">复位镜头</button>",
+      "css": ".ds-button{font-family:\"Microsoft YaHei\",\"PingFang SC\",sans-serif;font-size:12px;border:1px solid var(--line,#c7c8ae);border-radius:var(--radius,12px);padding:11px 17px;background:var(--paper,#fbf5e8);color:var(--ink,#293c30);cursor:pointer;min-height:44px;transition:background .15s;}.ds-button:hover{background:#e4e9d4}.ds-button:disabled{cursor:wait;opacity:.55}.ds-button:focus-visible,.ds-input:focus-visible,.ds-select:focus-visible,.ds-view:focus-visible,.ds-close:focus-visible{outline:3px solid #8c4d26;outline-offset:4px}@media(prefers-reduced-motion:reduce){.ds-button,.ds-view{transition:none!important}}"
+    },
+    {
+      "name": "展厅文本字段",
+      "kind": "input",
+      "refersTo": "input-showroom",
+      "description": "原生文本输入；展厅覆盖共享字段的底色与描边色。",
+      "html": "<label class=\"ds-label\">稿件标题<input class=\"ds-input\" type=\"text\" value=\"我的工作室装修提案\" maxlength=\"80\"></label>",
+      "css": ".ds-label{display:grid;gap:7px;font-family:\"Microsoft YaHei\",\"PingFang SC\",sans-serif;font-size:12px;font-weight:500;color:var(--ink,#293c30)}.ds-input{font-family:inherit;font-size:13px;width:100%;min-width:0;min-height:44px;padding:12px;border:1px solid var(--line,#c7c8ae);border-radius:8px;background:var(--paper,#fbf5e8);color:var(--ink,#293c30);caret-color:#365b43}.ds-input::placeholder{color:#66725b;font-size:13px}.ds-button:focus-visible,.ds-input:focus-visible,.ds-select:focus-visible,.ds-view:focus-visible,.ds-close:focus-visible{outline:3px solid #8c4d26;outline-offset:4px}@media(max-width:800px){.ds-input{font-size:16px}}"
+    },
+    {
+      "name": "展厅原生选择框",
+      "kind": "input",
+      "refersTo": "input-showroom",
+      "description": "界面皮肤选择；保持浏览器原生下拉行为和七变量覆盖范围。",
+      "html": "<label class=\"ds-label\">界面皮肤<select class=\"ds-select\"><option>暖纸与森林绿</option><option>矿物白与深海蓝</option></select></label>",
+      "css": ".ds-label{display:grid;gap:7px;font-family:\"Microsoft YaHei\",\"PingFang SC\",sans-serif;font-size:12px;font-weight:500;color:var(--ink,#293c30)}.ds-select{font-family:inherit;font-size:13px;width:100%;min-width:0;min-height:44px;padding:12px;border:1px solid var(--line,#c7c8ae);border-radius:8px;background:var(--paper,#fbf5e8);color:var(--ink,#293c30)}.ds-button:focus-visible,.ds-input:focus-visible,.ds-select:focus-visible,.ds-view:focus-visible,.ds-close:focus-visible{outline:3px solid #8c4d26;outline-offset:4px}@media(max-width:800px){.ds-select{font-size:16px}}"
+    },
+    {
+      "name": "展厅镜头导航",
+      "kind": "nav",
+      "refersTo": "camera-choice",
+      "description": "可换行的按钮导航；选中态由 aria-pressed 表示。",
+      "html": "<nav class=\"ds-views\" aria-label=\"展厅镜头\"><button class=\"ds-view\" aria-pressed=\"true\">全景</button><button class=\"ds-view\" aria-pressed=\"false\">工作区</button><button class=\"ds-view\" aria-pressed=\"false\">二楼</button></nav>",
+      "css": ".ds-views{display:flex;flex-wrap:wrap;gap:8px}.ds-view{font-family:\"Microsoft YaHei\",\"PingFang SC\",sans-serif;font-size:12px;border:1px solid var(--line,#c7c8ae);border-radius:var(--radius,12px);padding:11px 17px;background:var(--paper,#fbf5e8);color:var(--ink,#293c30);cursor:pointer;min-height:44px;transition:background .15s;padding:9px 14px}.ds-view:hover{background:#e4e9d4}.ds-view[aria-pressed=true]{background:var(--accent,#365b43);color:#fff8e6;border-color:var(--accent,#365b43)}.ds-view:disabled{cursor:wait;opacity:.55}.ds-button:focus-visible,.ds-input:focus-visible,.ds-select:focus-visible,.ds-view:focus-visible,.ds-close:focus-visible{outline:3px solid #8c4d26;outline-offset:4px}@media(prefers-reduced-motion:reduce){.ds-button,.ds-view{transition:none!important}}@media(max-width:800px){.ds-views{gap:6px}.ds-view{padding:8px 13px}}"
+    },
+    {
+      "name": "共享状态标签",
+      "kind": "chip",
+      "refersTo": "status-chip",
+      "description": "静态状态文字；没有悬停、选中或筛选行为。",
+      "html": "<span class=\"ds-status\">待编辑</span>",
+      "css": ".ds-status{font-family:\"Microsoft YaHei\",\"PingFang SC\",sans-serif;font-size:11px;background:#e2e8d4;color:var(--ink,#293c30);padding:6px 9px;white-space:nowrap;border-radius:6px}"
+    },
+    {
+      "name": "共享入口卡片",
+      "kind": "card",
+      "refersTo": "entry-card",
+      "description": "共享主游戏入口的纸色卡片，楷体标题与局部柔和阴影；不是所有工具分组的容器模板。",
+      "html": "<section class=\"ds-entry\"><h1 class=\"ds-entry-title\">把真实问题，做成真实作品</h1><p class=\"ds-entry-copy\">进入公司的三维工作空间。</p></section>",
+      "css": ".ds-entry{font-family:\"Microsoft YaHei\",\"PingFang SC\",sans-serif;background:var(--paper,#fbf5e8);color:var(--ink,#293c30);padding:30px 34px;border-radius:16px;max-width:510px;box-shadow:0 16px 60px #463e2826}.ds-entry-title{margin:0;font-family:\"STKaiti\",\"KaiTi\",serif;font-size:34px;line-height:1.4;font-weight:600;letter-spacing:-.02em;text-wrap:balance}.ds-entry-copy{margin:14px 0 0;font-size:14px;line-height:1.9;color:#4e5c47}@media(max-width:700px){.ds-entry{padding:23px;max-width:100%}.ds-entry-title{font-size:27px}.ds-entry-copy{font-size:12px}}"
+    },
+    {
+      "name": "共享弹窗表面",
+      "kind": "custom",
+      "refersTo": "dialog-panel",
+      "description": "静态展示原生 dialog 的视觉表面；实际打开、关闭、聚焦由原生 dialog 与应用事件负责。",
+      "html": "<section class=\"ds-dialog\" role=\"dialog\" aria-label=\"工作面板演示\"><div class=\"ds-panel-head\"><h2 class=\"ds-title\">工作面板 · 演示</h2><button class=\"ds-close\">关闭</button></div><p class=\"ds-intro\">通用写手角色 · 本人控制 · 待编辑。正式权限始终由主系统校验。</p></section>",
+      "css": ".ds-dialog{font-family:\"Microsoft YaHei\",\"PingFang SC\",sans-serif;color:var(--ink,#293c30);border:0;border-radius:16px;background:var(--paper,#fbf5e8);padding:28px;max-width:660px;width:calc(100% - 40px);max-height:calc(100dvh - 64px);overflow:auto;box-shadow:0 22px 90px #242d2847}.ds-panel-head{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:18px}.ds-title{margin:0;font-size:24px;font-weight:600}.ds-close{font-family:inherit;border:0;border-radius:var(--radius,12px);background:#e8e9da;color:var(--ink,#293c30);font-size:12px;padding:8px 13px;min-height:44px;cursor:pointer;transition:background .15s}.ds-close:hover{background:#e8e9da}.ds-intro{margin:0 0 20px;font-size:13px;line-height:1.85;color:#58664f}.ds-button:focus-visible,.ds-input:focus-visible,.ds-select:focus-visible,.ds-view:focus-visible,.ds-close:focus-visible{outline:3px solid #8c4d26;outline-offset:4px}@media(max-width:700px){.ds-dialog{width:calc(100% - 24px);padding:21px;max-height:calc(100dvh - 24px)}.ds-title{font-size:21px}}@media(prefers-reduced-motion:reduce){.ds-close{transition:none!important}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "暖阳木质工作室",
+    "overview": "现有世界以木地板、鼠尾草绿墙面、木格窗和两层挑空总部建立亲近感。空间由 Three.js 原生几何、材质和真实灯光构成；纸色界面与森林绿操作控件延续室内的材料关系。\n\n工具界面采用清楚、克制的系统字体与单列控件。主游戏入口保留楷体标题；展厅工具标题使用系统无衬线字体。冷蓝对照主题沿用同一空间及交互锚点，改变建筑配色、光照和界面颜色。\n\n本文件是现有代码的提取记录。颜色、排版、圆角和组件常量见 frontmatter；未建立全局 token 的值如实标为观察值。页面编排与访客路径保存在 surface brief，不提升为全局设计规则。",
+    "keyCharacteristics": [
+      "暖纸与森林绿连接木质、鼠尾草绿的总部空间。",
+      "真实三维几何与柔和投影提供深度，界面以平面分区为主。",
+      "系统字体、原生表单控件、明确焦点与可读操作状态。",
+      "矿物白与深海蓝作为同布局的冷色对照，保留现有主题覆盖边界。"
+    ],
+    "rules": [
+      {
+        "name": "The Theme Boundary Rule",
+        "body": "界面主题仅替换 paper、ink、muted、accent、line、error、horizon 七个 CSS 变量。当前悬停色、焦点色、部分表单、提示、状态和文字色仍为硬编码；冷色主题并非完整语义换肤。新增界面优先复用已存在的变量，不把本次提取当作辅助色已全部 token 化的证据。",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Do 以现有暖阳木质空间、暖纸界面和森林绿控件为默认视觉依据。",
+      "Do 复用七个现有界面变量，并对照两套主题检查控件的实际状态。",
+      "Do 保留系统字体、原生字段和可见的键盘焦点。",
+      "Do 按共享 700px、展厅 800px 断点及粗指针条件复核相关界面。",
+      "Do 从主题 JSON 与空间实现核对材质、光照和曝光，保留当前布局契约。"
+    ],
+    "donts": [
+      "Don't 把冷蓝对照主题描述为新地图或完整的全组件换肤。",
+      "Don't 将文档中合成的色带当作已实现的 CSS 颜色 scale。",
+      "Don't 声称所有辅助色、间距与圆角都已统一为运行时 token。",
+      "Don't 在提取文档时引入新字体、阴影、悬停动画或空间重设计。",
+      "Don't 把视觉主题、演示状态或通用角色外观当作真实业务与权限来源。"
+    ]
+  }
+}

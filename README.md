@@ -49,6 +49,7 @@ npm run build
 先看 [贡献指南](CONTRIBUTING.md)、[主题规范](docs/themes.md)、[Blender 工作流](docs/blender.md) 和 [主游戏接入](docs/host-integration.md)。Fork/Clone → 独立分支 → 预览与检查 → Pull Request → 所有者审核。私有阶段需仓库所有者邀请；公开状态和许可证确认后才能面向社区开放。
 
 模块拆分与不可随意修改的接口见[架构边界](docs/architecture.md)。
+现有颜色、排版、组件与响应式规则见[设计规范](DESIGN.md)，供设计师和开发智能体沿用；文档同时列出尚未令牌化的辅助样式。
 
 不要通过装修包改变楼梯、碰撞、工位和门禁位置。需要新地图时先提布局迁移方案。主题不含脚本入口，不会获得后端执行权限；源码 PR 仍需人工审查，CI 通过不代表自动上线。
 
