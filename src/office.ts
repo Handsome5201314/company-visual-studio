@@ -7,6 +7,7 @@ import {validateDecorationSafety} from './decoration-safety.js';
 import {FIXTURE_SLOTS} from './decoration-package.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {createLobbyExhibition} from './lobby-exhibition';
 
 export type ProjectArtwork={title:string;image:string};
 // Rendering only. Movement, access control, domain records and MCP stay in the host.
@@ -14,6 +15,8 @@ export class OfficeVisuals {
  readonly root=new T.Group();
  readonly officeDoor=new T.Group();
  readonly officeWalls:T.Object3D[]=[];
+ readonly lobbyTargets:T.Object3D[]=[];
+ readonly cameraOccluders:T.Object3D[]=[];
  private scene=this.root;
  private models=new Map<string,T.Object3D>();
  private materials:T.MeshStandardMaterial[]=[];
@@ -138,8 +141,6 @@ export class OfficeVisuals {
   // Sage green back wall, wood acoustic slats, warm practical lighting.
   this.box(8.5,2.8,.08,5.1,5.2,-7.83,'#6c805a');
   for(let i=0;i<24;i++)this.box(.065,2.8,.06,1.1+i*.35,5.2,-7.73,'#85936b');
-  this.text('童医魔盒科技',5.4,.75,4.8,5.45,-7.66);
-  this.text('把真实问题，做成真实作品',4.5,.38,4.8,4.8,-7.65,'#ede5cd','#6c805a');
   // A closed private office, with one server-authorized doorway on the west.
   this.officeWalls.push(this.box(6.9,3.15,.18,6.45,5.0,-3.35,'#788364'));
   this.officeWalls.push(this.box(.18,3.15,2.4,3,5.0,-6.8,'#bda883'));
@@ -157,8 +158,8 @@ export class OfficeVisuals {
   this.text('内容放映室',2.1,.34,1.25,5.55,-7.42,'#f9ecd0','#3e5544');
   this.text('行业观察 · 研究新知 · 医生故事',2.2,.25,1.25,5.12,-7.41,'#dfd6bb','#3e5544');
   this.text('靠近后按 E 阅读公告栏',2.0,.24,1.25,4.75,-7.41,'#dfd6bb','#3e5544');
-  this.text('接待 · 需求登记',2.6,.4,-5,1.0,1.49,'#f4ead6','#496051');
-  this.text('作品与进行中的事',4.6,.5,-5.4,3.2,-7.84,'#443e31','#e6dcc6');
+  this.text('前台 · 咨询与预约',2.6,.4,-5,1.0,1.49,'#f4ead6','#496051');
+  this.text('交流与等候',3.2,.42,-5.4,3.2,-7.84,'#443e31','#e6dcc6');
   this.text('个人工作区 · 可由本人或授权智能体操作',5.3,.42,5.2,2.55,-7.82,'#544d3c','#e6dcc6');
   this.box(3.6,1.05,.9,-5,.525,1,'#aa7954');
   for(let i=0;i<25;i++)this.box(.065,.88,.03,-6.65+i*.136,.49,1.467,'#895c3e');
@@ -173,7 +174,6 @@ export class OfficeVisuals {
   this.text('会客室 · 预约双方私密交流',3.8,.36,6,2.4,7.7,'#3a4f3e','#f0e6d1',Math.PI);
   this.receptionCharacter.name='reception-character';this.receptionCharacter.position.set(-5,0,-.05);this.scene.add(this.receptionCharacter);
   if(!this.receptionModelUrl)this.receptionCharacter.add(this.makeAvatar('reception'));
-  this.text('接待员 · 需求咨询',2.1,.34,-5,2.5,-.03,'#3a4f3e','#f0e6d1');
   // Pending workstations remain unoccupied, rather than acting out fake work.
   for(const z of [-.7,2.2]){
    this.box(5.7,.12,1.35,4.5,.79,z,'#d7ba91');
@@ -307,14 +307,8 @@ export class OfficeVisuals {
   for(const[x,z,y]of [[-9,-7,0],[-9,6.8,0],[8.7,6.7,0],[8.9,-6.9,3.4],[-1.8,-7,0]])this.furniture('pottedplant',x,y,z,1.55);
   for(const x of [2.4,3.5])this.furniture('kitchencabinet',x,0,-7,.85);
   this.furniture('kitchencoffeemachine',2.5,.85,-7,.5);
-  await Promise.all(this.projects.map(async(p,i)=>{
-   const x=-8.5+i*1.68;
-   this.box(1.36,1.6,.08,x,1.91,-7.75,'#937452');
-   this.box(1.24,1.48,.03,x,1.91,-7.69,'#f5ecd7');
-   const texture=await new T.TextureLoader().loadAsync(p.image);texture.colorSpace=T.SRGBColorSpace;
-   const artwork=new T.Mesh(new T.PlaneGeometry(.86,.86),new T.MeshBasicMaterial({map:texture,transparent:true}));artwork.position.set(x,2.08,-7.66);this.scene.add(artwork);
-   this.text(p.title,1.18,.25,x,1.37,-7.66,'#394832','#f5ecd7');
-  }));
+  const lobby=await createLobbyExhibition(this.projects,this.theme.architecture==='cyber'?'cyber':'warm');
+  this.root.add(lobby.root);this.lobbyTargets.push(...lobby.targets);this.cameraOccluders.push(...lobby.cameraOccluders);
   this.fixtureLayer.removeFromParent();this.fixtureLayer=this.createFixtures([]);this.root.add(this.fixtureLayer);
   this.batchStaticFurniture();this.batchContacts(this.root);
   this.invalidateShadows();
