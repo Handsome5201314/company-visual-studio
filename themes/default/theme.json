@@ -22,10 +22,10 @@
     "ground": "#82735d",
     "sunColor": "#ffdfab",
     "fillColor": "#dae4de",
-    "ambient": 1.7,
-    "sun": 4.2,
-    "fill": 1,
-    "exposure": 1.08,
+    "ambient": 0.62,
+    "sun": 2.05,
+    "fill": 0.32,
+    "exposure": 1.22,
     "palette": {}
   },
   "models": {
