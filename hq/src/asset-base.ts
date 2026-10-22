@@ -6,3 +6,9 @@ export const ASSET_BASE = import.meta.env.BASE_URL || '/';
 export function asset(path: string): string {
   return `${ASSET_BASE.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
 }
+
+// 数据文件里的图片地址（例如 projects.json 的 /projects/*.png）按站点根目录书写；
+// 部署在子路径时必须同样套用 base，绝对 URL 与 data: URI 保持原样。
+export function assetPath(url: string): string {
+  return /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(url) ? url : asset(url);
+}

@@ -1,6 +1,6 @@
 import * as T from 'three';
 import {createModelLoader} from '../../src/model-loader';
-import {ASSET_BASE,asset} from './asset-base';
+import {ASSET_BASE,asset,assetPath} from './asset-base';
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
 import {clone as cloneSkeleton} from 'three/addons/utils/SkeletonUtils.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
@@ -10,6 +10,9 @@ import projects from './data/projects.json';
 import {OfficeVisuals} from '../../src/office';
 import {createHeadquarters} from './headquarters-prototype/model-premium';
 import {createOutdoor,type OutdoorVisuals} from './headquarters-prototype/outdoor';
+
+// 展区图标等数据里的路径按站点根目录书写，部署到子路径时同样需要 base。
+const projectArtwork=projects.items.map(item=>({...item,image:assetPath(item.image)}));
 
 export type Peer={id:string;x:number;y:number;z:number;yaw:number;role:string;moving?:boolean};
 export type Mode='first'|'third'|'overview'|'character'|'lobby';
@@ -81,7 +84,7 @@ export class Headquarters {
   this.environmentTarget=pmrem.fromScene(roomEnvironment,.035);roomEnvironment.dispose();
   this.scene.environment=this.environmentTarget.texture;
   pmrem.dispose();
-  this.visuals=new OfficeVisuals(this.scene,ASSET_BASE,projects.items,undefined,undefined,asset('models/nurse-reference-20261020.glb?rev=head-sides-20261020'),true);
+  this.visuals=new OfficeVisuals(this.scene,ASSET_BASE,projectArtwork,undefined,undefined,asset('models/nurse-reference-20261020.glb?rev=head-sides-20261020'),true);
   this.officeDoor=this.visuals.officeDoor;this.officeWalls=this.visuals.officeWalls;
   this.scene.add(this.player);this.player.position.copy(this.pos);
   this.camera.position.set(18,12.5,34);this.camera.lookAt(0,4.2,3.5);
@@ -108,7 +111,7 @@ export class Headquarters {
   this.avatar=this.makeAvatar('visitor');this.player.add(this.avatar);
   onProgress('正在搭建三层暖木总部');
   const modelGeneration=this.visualGeneration;
-  const [headquarters,outdoor]=await Promise.all([createHeadquarters(projects.items),Promise.resolve(createOutdoor())]);
+  const [headquarters,outdoor]=await Promise.all([createHeadquarters(projectArtwork),Promise.resolve(createOutdoor())]);
   if(modelGeneration!==this.visualGeneration){headquarters.dispose();outdoor.dispose();throw new Error('总部装载已被更新的装修请求替代');}
   this.mountPremiumVisuals(headquarters,outdoor);
   const sample=await loader.loadAsync(asset('models/hq-office-employee.glb'));
@@ -142,11 +145,11 @@ export class Headquarters {
  private releaseAvatar(root?:T.Object3D){if(!root)return;root.traverse(o=>{if(o instanceof T.SkinnedMesh)o.skeleton.dispose();if(!root.userData.ownerRig&&o instanceof T.Mesh)o.geometry.dispose();});}
  async setTheme(theme:unknown,decoration?:unknown,assetBase?:string|null){
   if(decoration||(theme as {id?:string})?.id!=='default')throw new Error('当前三层总部不兼容 hq-fixed-layout-v1 装修；请在独立展厅预览，等待布局迁移审核');
-  const generation=++this.visualGeneration,candidate=new OfficeVisuals(new T.Scene(),ASSET_BASE,projects.items,theme,assetBase||undefined,asset('models/nurse-reference-20261020.glb?rev=head-sides-20261020'),true);
+  const generation=++this.visualGeneration,candidate=new OfficeVisuals(new T.Scene(),ASSET_BASE,projectArtwork,theme,assetBase||undefined,asset('models/nurse-reference-20261020.glb?rev=head-sides-20261020'),true);
   let headquarters:Awaited<ReturnType<typeof createHeadquarters>>|undefined,outdoor:OutdoorVisuals|undefined;
   try{
    if(decoration)candidate.setDecoration(decoration);
-   [headquarters,outdoor]=await Promise.all([createHeadquarters(projects.items),Promise.resolve(createOutdoor())]);
+   [headquarters,outdoor]=await Promise.all([createHeadquarters(projectArtwork),Promise.resolve(createOutdoor())]);
   }catch(error){headquarters?.dispose();outdoor?.dispose();candidate.dispose();throw error;}
   if(generation!==this.visualGeneration){headquarters?.dispose();outdoor?.dispose();candidate.dispose();throw new Error('装修加载已被较新的预览请求替代，请重试');}
   // All runtime characters/camera, server IDs and callbacks remain owned by this controller.
