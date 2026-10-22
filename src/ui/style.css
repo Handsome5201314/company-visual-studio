@@ -33,3 +33,6 @@
  #chat-form{gap:12px}
  @media(max-width:700px){.chat-turn p,.chat-empty{font-size:16px}.chat-log{max-height:32dvh}#panel input,#panel textarea,#panel select{font-size:16px}.chat-actions button{flex:1 1 auto}}
 }
+
+/* Founder link in the visit-entry note (personal IP merge, 2026-10-22). */
+.entry-copy p.entry-note a.entry-founder-link{color:#365b43;display:inline-block;margin-top:2px;text-underline-offset:4px}
