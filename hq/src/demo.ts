@@ -11,7 +11,9 @@ const enterButton = document.querySelector<HTMLButtonElement>('#enter')!;
 const modeButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-mode]')];
 
 const hq = new Headquarters(world);
+let problem = '';
 hq.onError = message => {
+  problem = message;
   status.textContent = message;
 };
 
@@ -56,7 +58,7 @@ void (async () => {
       status.textContent = text;
     });
     ready = true;
-    status.textContent = '总部已就绪 · 点“进入参观”开始走动';
+    status.textContent = problem ? `总部已就绪（部分资源提示：${problem}）` : '总部已就绪 · 点“进入参观”开始走动';
     enterButton.disabled = false;
   } catch (error) {
     status.textContent = `三维总部加载失败：${(error as Error).message}`;
