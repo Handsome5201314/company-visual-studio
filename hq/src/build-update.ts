@@ -1,3 +1,5 @@
+import {asset} from './asset-base';
+
 export function mountBuildUpdate(){
  const current=import.meta.env.VITE_COMPANY_BUILD_ID;
  if(!import.meta.env.PROD||!current)return;
@@ -7,7 +9,7 @@ export function mountBuildUpdate(){
  const controller=new AbortController();
  async function check(){
   if(document.hidden)return;
-  try{const response=await fetch('/build-info.json',{cache:'no-store',signal:AbortSignal.any([controller.signal,AbortSignal.timeout(5000)])});if(!response.ok)return;const version=await response.json();if(typeof version.id==='string'&&version.id!==current)button.hidden=false;}
+  try{const response=await fetch(asset('build-info.json'),{cache:'no-store',signal:AbortSignal.any([controller.signal,AbortSignal.timeout(5000)])});if(!response.ok)return;const version=await response.json();if(typeof version.id==='string'&&version.id!==current)button.hidden=false;}
   catch(error){if(!controller.signal.aborted)console.debug('版本检查暂不可用，将自动重试');}
  }
  const timer=setInterval(()=>void check(),30000);

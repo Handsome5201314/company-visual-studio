@@ -1,0 +1,53 @@
+name: Deploy 3D HQ demo to GitHub Pages
+
+# 只发布静态演示（hq/demo.html）：与线上同一套三维场景与视觉层，但不含服务端。
+# 需要服务端的页面（接待、案例、留言、后台）不在演示范围内。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'hq/**'
+      - 'src/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.15.0'
+          cache: npm
+          cache-dependency-path: hq/package-lock.json
+      - name: Install demo dependencies
+        working-directory: hq
+        run: npm ci
+      - name: Build static demo
+        working-directory: hq
+        run: npm run build:demo
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: hq/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

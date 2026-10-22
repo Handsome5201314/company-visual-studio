@@ -3,6 +3,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 import {RectAreaLightUniformsLib} from 'three/addons/lights/RectAreaLightUniformsLib.js';
 import {LEVEL_HEIGHT, STAIR} from './plan.js';
+import {asset} from '../asset-base';
 import oakTextureUrl from './textures/light-oak.jpg?inline';
 import stoneTextureUrl from './textures/cream-stone.jpg?inline';
 import fabricTextureUrl from './textures/forest-fabric.jpg?inline';
@@ -31,10 +32,10 @@ const FURNITURE_ASSETS={
   loungedesignsofa:loungeSofaUrl,
   plantsmall1:plantSmallUrl,
   pottedplant:pottedPlantUrl,
-  taskchair:'/furniture/warm/chairdesk.glb',
-  computerscreen:'/furniture/warm/computerscreen.glb',
-  officecabinet:'/furniture/warm/kitchencabinet.glb',
-  coffeemachine:'/furniture/warm/kitchencoffeemachine.glb',
+  taskchair:asset('/furniture/warm/chairdesk.glb'),
+  computerscreen:asset('/furniture/warm/computerscreen.glb'),
+  officecabinet:asset('/furniture/warm/kitchencabinet.glb'),
+  coffeemachine:asset('/furniture/warm/kitchencoffeemachine.glb'),
 } as const;
 
 type Vec3=[number,number,number];
@@ -1387,7 +1388,7 @@ export async function createHeadquarters(projects:Project[]){
   }
 
   try{
-    const stairAsset=await furnitureLoader.loadAsync('/models/headquarters-stair-system-v1.glb?rev=blender-20261021');
+    const stairAsset=await furnitureLoader.loadAsync(asset('/models/headquarters-stair-system-v1.glb?rev=blender-20261021'));
     const stair=stairAsset.scene;
     stair.name='Blender_Authored_Stair_System';
     stair.position.set(8,0,0);
@@ -1410,7 +1411,7 @@ export async function createHeadquarters(projects:Project[]){
   }
 
   try{
-    const receptionAsset=(await furnitureLoader.loadAsync('/models/hq-reception-v2.glb')).scene;
+    const receptionAsset=(await furnitureLoader.loadAsync(asset('/models/hq-reception-v2.glb'))).scene;
     receptionAsset.name='Blender_Authored_Reception_Desk';
     receptionAsset.position.set(-5.8,0,7.2);
     receptionAsset.rotation.y=0;
@@ -1450,7 +1451,7 @@ export async function createHeadquarters(projects:Project[]){
   }
   await Promise.all([
     (async()=>{try{
-      const source=(await furnitureLoader.loadAsync('/models/hq-workstation-joinery.glb')).scene;
+      const source=(await furnitureLoader.loadAsync(asset('/models/hq-workstation-joinery.glb'))).scene;
       for(const floorIndex of [1,2]){
         const positions:Vec3[]=[];for(const x of [-10,-6.5,6.5,10])for(const z of [-.3,6.5])positions.push([x,floorIndex*FLOOR_HEIGHT,z]);
         instanceJoinery(source,floors[floorIndex],positions,'Blender_Workstation_Joinery');
@@ -1458,14 +1459,14 @@ export async function createHeadquarters(projects:Project[]){
       workstationFallbacks.forEach(group=>group.visible=false);
     }catch(error){furnitureFailures.push(`共享木作资产: ${(error as Error).message}`);}})(),
     (async()=>{try{
-      const source=(await furnitureLoader.loadAsync('/models/hq-executive-joinery.glb')).scene;
+      const source=(await furnitureLoader.loadAsync(asset('/models/hq-executive-joinery.glb'))).scene;
       instanceJoinery(source,floors[2],[[10,2*FLOOR_HEIGHT,-7]],'Blender_Executive_Joinery');
       const fallback=root.getObjectByName('Executive_Joinery_Fallback');if(fallback)fallback.visible=false;
     }catch(error){furnitureFailures.push(`老板木作资产: ${(error as Error).message}`);}})(),
   ]);
 
   try{
-    const kit=(await furnitureLoader.loadAsync('/models/hq-building-v2.glb')).scene;
+    const kit=(await furnitureLoader.loadAsync(asset('/models/hq-building-v2.glb'))).scene;
     kit.name='Blender_Building_Kit_v2';
     kit.traverse((object)=>{
       if(!(object instanceof T.Mesh))return;

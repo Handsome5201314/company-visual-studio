@@ -1,5 +1,6 @@
 import * as T from 'three';
 import {createModelLoader} from '../../src/model-loader';
+import {ASSET_BASE,asset} from './asset-base';
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
 import {clone as cloneSkeleton} from 'three/addons/utils/SkeletonUtils.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
@@ -80,7 +81,7 @@ export class Headquarters {
   this.environmentTarget=pmrem.fromScene(roomEnvironment,.035);roomEnvironment.dispose();
   this.scene.environment=this.environmentTarget.texture;
   pmrem.dispose();
-  this.visuals=new OfficeVisuals(this.scene,'/',projects.items,undefined,undefined,'/models/nurse-reference-20261020.glb?rev=head-sides-20261020',true);
+  this.visuals=new OfficeVisuals(this.scene,ASSET_BASE,projects.items,undefined,undefined,asset('models/nurse-reference-20261020.glb?rev=head-sides-20261020'),true);
   this.officeDoor=this.visuals.officeDoor;this.officeWalls=this.visuals.officeWalls;
   this.scene.add(this.player);this.player.position.copy(this.pos);
   this.camera.position.set(18,12.5,34);this.camera.lookAt(0,4.2,3.5);
@@ -110,7 +111,7 @@ export class Headquarters {
   const [headquarters,outdoor]=await Promise.all([createHeadquarters(projects.items),Promise.resolve(createOutdoor())]);
   if(modelGeneration!==this.visualGeneration){headquarters.dispose();outdoor.dispose();throw new Error('总部装载已被更新的装修请求替代');}
   this.mountPremiumVisuals(headquarters,outdoor);
-  const sample=await loader.loadAsync('/models/hq-office-employee.glb');
+  const sample=await loader.loadAsync(asset('models/hq-office-employee.glb'));
   this.employeeSample.name='Office_Employee_Action_Sample';this.employeeSample.add(sample.scene);this.employeeSample.position.set(-6.5,4.2,7.46);this.employeeSample.rotation.y=Math.PI;
   this.scene.add(this.employeeSample);this.sampleMotion=new CharacterMotion(sample.scene,sample.animations);this.sampleMotion.setPose('Type');this.sampleMotion.update(0,0);
   onProgress('总部准备好了');
@@ -118,9 +119,9 @@ export class Headquarters {
  private ensureOwnerModel(){
   if(this.ownerLoad)return this.ownerLoad;
   this.ownerLoad=(async()=>{
-   const loader=createModelLoader(),draco=new DRACOLoader();draco.setDecoderPath('/draco/');loader.setDRACOLoader(draco);
+   const loader=createModelLoader(),draco=new DRACOLoader();draco.setDecoderPath(asset('draco/'));loader.setDRACOLoader(draco);
    try{
-    const gltf=await loader.loadAsync('/models/shuai-rigged.glb?rev=neck-proportion-20261020');
+    const gltf=await loader.loadAsync(asset('models/shuai-rigged.glb?rev=neck-proportion-20261020'));
     const model=gltf.scene,bounds=new T.Box3().setFromObject(model),size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
     if(!Number.isFinite(size.y)||size.y<=0)throw new Error('人物尺寸无效');
     model.scale.setScalar(1.85/size.y);model.position.set(-center.x*model.scale.x,-bounds.min.y*model.scale.x,-center.z*model.scale.x);
@@ -141,7 +142,7 @@ export class Headquarters {
  private releaseAvatar(root?:T.Object3D){if(!root)return;root.traverse(o=>{if(o instanceof T.SkinnedMesh)o.skeleton.dispose();if(!root.userData.ownerRig&&o instanceof T.Mesh)o.geometry.dispose();});}
  async setTheme(theme:unknown,decoration?:unknown,assetBase?:string|null){
   if(decoration||(theme as {id?:string})?.id!=='default')throw new Error('当前三层总部不兼容 hq-fixed-layout-v1 装修；请在独立展厅预览，等待布局迁移审核');
-  const generation=++this.visualGeneration,candidate=new OfficeVisuals(new T.Scene(),'/',projects.items,theme,assetBase||undefined,'/models/nurse-reference-20261020.glb?rev=head-sides-20261020',true);
+  const generation=++this.visualGeneration,candidate=new OfficeVisuals(new T.Scene(),ASSET_BASE,projects.items,theme,assetBase||undefined,asset('models/nurse-reference-20261020.glb?rev=head-sides-20261020'),true);
   let headquarters:Awaited<ReturnType<typeof createHeadquarters>>|undefined,outdoor:OutdoorVisuals|undefined;
   try{
    if(decoration)candidate.setDecoration(decoration);

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f2e8d8">
+<meta name="description" content="北京童医魔盒科技服务有限公司三层暖木总部的静态三维演示：可进入一楼大厅自由走动。">
+<title>童医魔盒 · 三层暖木总部（静态演示）</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f4a34'/%3E%3Cpath d='M8 22V12l8-5 8 5v10' fill='none' stroke='%23f2e8d8' stroke-width='2'/%3E%3C/svg%3E">
+</head>
+<body>
+<div id="world"></div>
+<section id="hud" aria-label="静态演示说明与镜头">
+  <p class="eyebrow">北京童医魔盒科技服务有限公司</p>
+  <h1>三层暖木总部 · 静态演示</h1>
+  <p class="note" id="load-status" role="status">正在加载三维总部…</p>
+  <div class="actions">
+    <button id="enter" class="primary" disabled>进入参观</button>
+    <button type="button" data-mode="overview" aria-pressed="false" disabled>等轴鸟瞰</button>
+    <button type="button" data-mode="lobby" aria-pressed="false" disabled>一楼大堂</button>
+    <button type="button" data-mode="first" aria-pressed="false" disabled>第一人称</button>
+    <button type="button" data-mode="third" aria-pressed="false" disabled>第三人称</button>
+  </div>
+  <p class="hint">进入后：WASD / 方向键走动，V 切换第一/第三人称，拖动画面转动视角。接待、案例、留言与后台等业务流程需要服务端，请前往<a href="https://company.tongyimoheai.top/" target="_blank" rel="noopener noreferrer">线上站点</a>。</p>
+  <p class="badge">GitHub Pages 静态演示 · 只含三维场景与走动</p>
+</section>
+<script type="module" src="/src/demo.ts"></script>
+</body>
+</html>
