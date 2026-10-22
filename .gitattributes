@@ -10,3 +10,4 @@
 *.json text eol=lf
 public/** -text
 hq/public/** -text
+*.webp binary

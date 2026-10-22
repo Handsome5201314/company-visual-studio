@@ -1,12 +1,14 @@
 # 公司视觉工作室
 
-北京童医魔盒科技服务有限公司模拟经营游戏的视觉协作仓库。设计师可独立改界面、装修和家具，主游戏直接使用同一份源码。
+北京童医魔盒科技服务有限公司模拟经营游戏的视觉协作仓库。设计师可独立改界面、装修和家具，主游戏直接使用同一份源码。线上站点的**场景宿主前端**（三维总部、页面与业务面板 UI）在本仓库 [`hq/`](hq/README.md)。
 
 这是**公开的视觉协作仓库，原创代码、UI 和主题采用 [MIT 许可证](LICENSE.md)**，第三方素材保留[各自许可](NOTICE.md)。本仓库不是完整游戏服务器，没有账号数据库、稿件、聊天记录、模型凭证、付款接口、MCP 服务或后端源代码。展厅中的人物与工作状态全是演示。
 
-![默认暖阳木质总部与独立操作面板](docs/images/warm-showroom.png)
+![线上三层暖木总部 · 等轴机位（2026-10-22 实拍）](docs/images/hq-20261022-isometric.webp)
 
-另见[冷蓝主题实际截图](docs/images/cyber-showroom.png)；均为本展厅截图，不是概念效果图。
+*上图是线上站点 [company.tongyimoheai.top](https://company.tongyimoheai.top/) 的实际运行画面，不是概念效果图。*
+
+另见线上实拍的[一楼接待大厅](docs/images/hq-20261022-reception.webp)与[第一人称视角](docs/images/hq-20261022-first-person.webp)。组件展厅（只展示视觉层组件，不等于总部全貌）见[暖阳展厅](docs/images/warm-showroom.png)与[冷蓝主题](docs/images/cyber-showroom.png)。
 
 ## 启动
 
