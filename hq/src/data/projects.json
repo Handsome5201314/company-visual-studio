@@ -1,0 +1,11 @@
+{
+ "source":"https://xiaozhiserver.cloud/",
+ "checkedAt":"2026-10-19",
+ "items":[
+  {"title":"AI 新青年 OPC","description":"把临床问题、产品试验和公开内容沉淀成可合作的项目记录。","status":"持续公开构建","image":"/projects/opc-icon.png"},
+  {"title":"小雪宝","description":"从儿童健康和家庭陪伴出发，把专业知识变成更容易被家庭使用的工具。","status":"已上线","image":"/projects/xiaoxuebao-icon.png"},
+  {"title":"童医魔盒","description":"在儿科科室真实工作流中运行的 AI 量表，连接采集、记录与追踪。","status":"儿科科室真实工作流中运行","image":"/projects/tongyimohe-icon.svg"},
+  {"title":"星桥计划","description":"面向孤独症儿童的数字化疗愈游戏，结合互动、陪伴和使用反馈。","status":"持续迭代","image":"/projects/starbridge-icon.svg"},
+  {"title":"小安 AI 健康助手","description":"尝试让 AI 主动理解和陪伴健康管理。","status":"比赛获奖","image":"/projects/xiaoan-icon.png"}
+ ]
+}

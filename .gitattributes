@@ -9,3 +9,4 @@
 *.md text eol=lf
 *.json text eol=lf
 public/** -text
+hq/public/** -text

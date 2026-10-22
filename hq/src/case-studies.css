@@ -1,0 +1,113 @@
+.case-studies,.case-page{--case-paper:var(--paper,#fbf5e8);--case-ink:var(--ink,#293c30);--case-muted:var(--muted,#5f6b58);--case-accent:var(--accent,#365b43);--case-line:var(--line,#c7c8ae);--case-error:var(--error,#973b29);color:var(--case-ink);font-family:"Microsoft YaHei","PingFang SC",sans-serif;font-size:15px;line-height:1.75;overflow-wrap:anywhere}
+.case-studies *,.case-page *{box-sizing:border-box}
+.case-studies h3,.case-studies h4,.case-studies p,.case-studies dl,.case-studies figure{margin:0}
+.case-studies h3{font-size:20px;line-height:1.5;letter-spacing:.01em}
+.case-studies h4{font-size:15px;line-height:1.6}
+.case-studies button,.case-studies input,.case-studies select,.case-studies textarea{font:inherit;color:inherit}
+.case-studies button{min-height:44px;max-width:100%;padding:9px 16px;border:1px solid var(--case-line);border-radius:8px;background:var(--case-paper);cursor:pointer;line-height:1.5;transition:background-color .12s ease,border-color .12s ease}
+.case-studies button:hover:not(:disabled){border-color:var(--case-accent);background:#eceddf}
+.case-studies button.case-primary{background:var(--case-accent);border-color:var(--case-accent);color:#fff8e6}
+.case-studies button.case-primary:hover:not(:disabled){background:#274a35}
+.case-studies button.case-quiet{border-color:transparent;background:transparent;text-decoration:underline;text-underline-offset:4px;padding-inline:7px}
+.case-studies button:disabled{opacity:.48;cursor:not-allowed}
+.case-studies a,.case-page a{color:var(--case-accent);text-underline-offset:4px;text-decoration-thickness:1px}
+.case-studies :is(button,a,input,textarea,select,summary):focus-visible,.case-page a:focus-visible,.case-page h1:focus-visible{outline:3px solid #8c4d26;outline-offset:4px}
+.case-studies .case-intro{padding:8px 0 22px;border-bottom:2px solid var(--case-accent)}
+.case-studies .case-intro h3{font-size:clamp(23px,4vw,32px);margin:9px 0 12px;font-weight:700}
+.case-studies .case-intro>p:last-child{max-width:43em;color:var(--case-muted)}
+.case-studies .case-eyebrow{font-size:12px;font-weight:600;color:var(--case-muted);letter-spacing:.08em}
+.case-studies .case-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:18px 0;flex-wrap:wrap}
+.case-studies .case-caption{font-size:12px;color:var(--case-muted);line-height:1.8}
+.case-studies .case-muted{color:var(--case-muted);font-size:14px}
+.case-studies .case-list{border-top:1px solid var(--case-line)}
+.case-studies .case-list-item{display:flex;gap:24px;align-items:start;border-bottom:1px solid var(--case-line);padding:26px 0}
+.case-studies .case-thumbnail{width:32%;flex:0 0 32%;aspect-ratio:4/3;overflow:hidden;border:1px solid var(--case-line);border-radius:5px;background:#eee8d9}
+.case-studies .case-thumbnail img{display:block;width:100%;height:100%;object-fit:cover}
+.case-studies .case-list-copy{flex:1;min-width:0}
+.case-studies .case-list-copy h3{margin:6px 0 9px;font-size:21px}
+.case-studies .case-list-copy>p:not(.case-eyebrow){color:var(--case-muted);white-space:pre-wrap}
+.case-studies .case-list-copy button{margin-top:16px}
+.case-studies .case-empty{display:flex;gap:24px;padding:35px 8px 39px;border-bottom:1px solid var(--case-line);align-items:start}
+.case-studies .case-empty-mark{flex:0 0 64px;border:1px solid var(--case-accent);padding:20px 8px;text-align:center;writing-mode:vertical-rl;letter-spacing:.45em;font-weight:700;background:#e9ecdc;border-radius:3px}
+.case-studies .case-empty h3{margin-bottom:10px}
+.case-studies .case-empty p{color:var(--case-muted);margin:8px 0}
+.case-studies .case-text-link{display:inline-block;min-height:44px;padding:10px 0;font-weight:600}
+.case-studies .case-account{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding-top:20px;flex-wrap:wrap;font-size:12px}
+.case-studies .case-facts-head{margin:26px 0 20px}
+.case-studies .case-title{font-size:clamp(24px,4.5vw,34px);line-height:1.45;margin:10px 0 16px;letter-spacing:.01em}
+.case-studies .case-summary{white-space:pre-wrap;color:var(--case-muted);font-size:16px}
+.case-studies .case-badge{display:inline-block;font-size:11px;font-weight:600;line-height:1.6;padding:3px 8px;border:1px solid #b8c8af;background:#e9eddf;color:#35563c;border-radius:4px;letter-spacing:0;vertical-align:middle}
+.case-studies .case-badge-demo,.case-studies .case-badge-pending{border-color:#cfb794;background:#f2e7d0;color:#74552d}
+.case-studies .case-image{margin:22px 0}
+.case-studies .case-image img{display:block;width:100%;max-height:640px;object-fit:contain;background:#eee8d9;border:1px solid var(--case-line);border-radius:5px}
+.case-studies .case-image figcaption{font-size:12px;color:var(--case-muted);margin-top:6px}
+.case-studies .case-image-failed{padding:18px;color:var(--case-muted);font-size:12px}
+.case-studies .case-facts{margin:24px 0;border-top:2px solid var(--case-accent)}
+.case-studies .case-facts>div{display:grid;grid-template-columns:100px 1fr;gap:20px;padding:16px 0;border-bottom:1px solid var(--case-line)}
+.case-studies dt{font-size:13px;font-weight:600;color:var(--case-muted)}
+.case-studies dd{margin:0;white-space:pre-wrap;min-width:0}
+.case-studies .case-section{margin:28px 0;padding-top:22px;border-top:1px solid var(--case-line)}
+.case-studies .case-section>h3{margin-bottom:12px}
+.case-studies .case-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;margin:15px 0}
+.case-studies .case-metric{padding:12px 0 16px;border-bottom:1px solid var(--case-line);font-size:12px}
+.case-studies .case-metric-value{font-size:28px;font-weight:600;line-height:1.4;font-variant-numeric:tabular-nums;margin:7px 0!important}
+.case-studies .case-metric-value span{font-size:13px;font-weight:400;margin-left:8px}
+.case-studies .case-links{display:flex;gap:22px;flex-wrap:wrap;margin:20px 0}
+.case-studies .case-links a{display:inline-flex;gap:6px;align-items:center;min-height:44px}
+.case-studies .case-next{padding:24px;margin-top:30px;background:#e9eddf;border:1px solid #c6d1bb;border-left:4px solid var(--case-accent);border-radius:5px;display:flex;flex-wrap:wrap;align-items:center;gap:18px}
+.case-studies .case-next>div{flex:1 1 250px}
+.case-studies .case-next h3{font-size:19px;margin-bottom:6px}
+.case-studies .case-next p{font-size:13px;color:var(--case-muted)}
+.case-studies .case-status{min-height:1.75em;font-size:13px;flex-basis:100%;white-space:pre-wrap}
+.case-studies .case-status:empty{display:none}
+.case-studies .case-feedback{padding:20px;margin:18px 0;border:1px solid var(--case-line);border-radius:6px;background:#f6f0e2}
+.case-studies .case-feedback p{margin:8px 0 16px}
+.case-studies .case-error,.case-studies .case-error-text{color:var(--case-error)}
+.case-studies .case-error{border-color:#d9b3a6;background:#faeee6}
+.case-studies .case-success{background:#e9eddf;border-color:#b8c8af;font-size:13px}
+.case-studies .case-actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.case-studies .case-loading{padding:35px 0;color:var(--case-muted)}
+.case-studies .case-intro-note{margin:15px 0;color:var(--case-muted)}
+.case-studies .case-manage-row{display:flex;justify-content:space-between;align-items:center;gap:18px;border-bottom:1px solid var(--case-line);padding:20px 0}
+.case-studies .case-manage-row>div{min-width:0}
+.case-studies .case-manage-row h3{margin-bottom:8px;font-size:18px}
+.case-studies .case-manage-row button{flex-shrink:0}
+.case-studies .case-notice{background:#f1e8d5;border-left:3px solid #b58c58;padding:13px 15px;margin:20px 0;font-size:13px;color:#6b5436}
+.case-studies .case-form{display:grid;gap:18px;margin:20px 0}
+.case-studies .case-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.case-studies label{display:grid;gap:7px;font-size:13px;font-weight:600;min-width:0}
+.case-studies label .case-caption{font-weight:400}
+.case-studies .case-full{grid-column:1/-1}
+.case-studies input:not([type=checkbox]),.case-studies select,.case-studies textarea{width:100%;min-width:0;min-height:44px;border:1px solid var(--case-line);border-radius:6px;padding:10px 12px;background:#fffdf5;line-height:1.6;font-size:14px;font-weight:400}
+.case-studies textarea{resize:vertical}
+.case-studies input[type=file]{padding:8px;font-size:12px}
+.case-studies input[type=file]::file-selector-button{font:inherit;min-height:32px;border:1px solid var(--case-line);background:var(--case-paper);border-radius:4px;margin-right:8px;color:var(--case-ink)}
+.case-studies :is(input,select,textarea):disabled{opacity:.6}
+.case-studies .case-checkbox{display:flex;align-items:flex-start;font-size:13px;font-weight:400;gap:9px}
+.case-studies .case-checkbox input{flex:0 0 18px;width:18px;height:18px;margin:3px 0 0;accent-color:var(--case-accent)}
+.case-studies .case-form>.case-primary{justify-self:start}
+.case-studies .case-metric-form{padding:17px;margin:16px 0;border:1px solid var(--case-line);border-radius:6px;min-width:0}
+.case-studies .case-metric-form legend{font-size:13px;font-weight:600;padding:0 8px}
+.case-studies .case-metric-form>button{margin-top:12px}
+.case-studies .case-preview,.case-studies .case-evidence-add{margin:20px 0;border:1px solid var(--case-line);border-radius:6px;padding:0 16px}
+.case-studies summary{cursor:pointer;min-height:48px;padding:12px 0;font-weight:600;font-size:14px}
+.case-studies .case-preview[open]{padding-bottom:20px}
+.case-studies .case-evidence{padding:18px 0;border-bottom:1px solid var(--case-line)}
+.case-studies .case-evidence-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.case-studies .case-evidence dl>div{display:grid;grid-template-columns:80px minmax(0,1fr);gap:15px;margin:8px 0;font-size:13px}
+.case-studies .case-evidence>button{margin-top:12px}
+.case-studies .case-empty-inline{padding:20px 0;color:var(--case-muted)}
+.case-studies .case-checklist{padding-left:22px;font-size:13px;line-height:2}
+.case-studies .case-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.case-page{min-height:100vh;background:#f5efdf;padding:0 max(22px,calc((100vw - 980px)/2));isolation:isolate}
+.case-page .case-page-top{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:25px 0;border-bottom:1px solid var(--case-line);font-size:13px}
+.case-page .case-page-top a{min-height:44px;display:inline-flex;align-items:center}
+.case-page .case-brand{font-size:22px;font-weight:700;letter-spacing:.08em;text-decoration:none}
+.case-page .case-brand span{font-size:11px;font-weight:400;border-left:1px solid var(--case-line);padding-left:12px;margin-left:12px;letter-spacing:.02em}
+.case-page .case-page-heading{padding:43px 0 26px}
+.case-page .case-page-heading p{font-size:12px;color:var(--case-muted);margin:0 0 8px;letter-spacing:.06em}
+.case-page .case-page-heading h1{font-size:clamp(30px,5vw,44px);line-height:1.35;margin:0;font-weight:700;letter-spacing:.02em}
+.case-page .case-studies{max-width:820px;padding-bottom:30px}
+.case-page .case-page-foot{font-size:12px;color:var(--case-muted);border-top:1px solid var(--case-line);padding:24px 0 32px;margin-top:24px}
+@media(max-width:600px){.case-studies .case-list-item{gap:16px;flex-direction:column;padding:22px 0}.case-studies .case-thumbnail{width:100%;max-height:260px;flex-basis:auto;aspect-ratio:16/10}.case-studies .case-list-copy{width:100%}.case-studies .case-facts>div{grid-template-columns:1fr;gap:5px}.case-studies .case-empty{gap:15px;padding:25px 0}.case-studies .case-empty-mark{flex-basis:44px;padding:15px 5px}.case-studies .case-metrics,.case-studies .case-form-grid{grid-template-columns:1fr}.case-studies .case-next{padding:18px}.case-studies .case-next>button{width:100%}.case-studies .case-manage-row{align-items:flex-start;flex-direction:column;gap:12px}.case-studies .case-evidence dl>div{grid-template-columns:1fr;gap:3px}.case-studies .case-evidence-title{align-items:start}.case-studies .case-actions>button{flex:1 1 140px}.case-studies .case-toolbar{align-items:start}.case-page{padding-inline:20px}.case-page .case-page-top{padding:15px 0}.case-page .case-brand{font-size:18px}.case-page .case-brand span{display:none}.case-page .case-page-heading{padding:30px 0 20px}}
+@media(prefers-reduced-motion:reduce){.case-studies button{transition:none}}

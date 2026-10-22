@@ -1,0 +1,24 @@
+.spatial-review .top-actions{max-width:calc(100vw - 265px)}
+.spatial-review .top-actions a{font-size:12px;background:var(--paper);padding:12px;border-radius:8px;white-space:nowrap}
+.spatial-review #camera-controls{max-width:calc(100vw - 240px);overflow:auto;bottom:62px}
+.spatial-review #camera-controls button{white-space:nowrap}
+.spatial-review #touch{display:block;bottom:65px}
+.spatial-review #mission{top:100px;max-width:250px;background:#fbf5e8eb}
+#review-metrics{position:fixed;bottom:43px;left:18px;color:#4c594b;background:#fbf5e8dc;border-radius:4px;padding:3px 6px;font-size:10px;pointer-events:none}
+.spatial-review .entry-copy{background:#fbf5e8f5}
+@media(max-width:700px){
+ .spatial-review .top-actions{max-width:100%;width:100%}
+ .spatial-review #connection{display:none}
+ .spatial-review .top-actions a{padding:8px;font-size:11px}
+ .spatial-review #mission{top:127px;right:12px;width:168px;padding:9px 11px}
+ .spatial-review #mission b{font-size:11px}
+ .spatial-review #mission span{font-size:10px}
+ .spatial-review #camera-controls{max-width:130px;max-height:245px;bottom:65px;right:12px}
+ .spatial-review #camera-controls button{min-height:36px;padding:7px}
+ .spatial-review #touch{left:12px;bottom:65px}
+ .spatial-review #touch button{min-width:44px;min-height:44px;padding:7px}
+ .spatial-review #guide{padding:10px 12px}
+ .spatial-review #guide>span:first-child{display:none}
+ .spatial-review #entry{padding-top:130px}
+ #review-metrics{bottom:38px;font-size:8px;max-width:calc(100vw - 24px)}
+}

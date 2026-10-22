@@ -1,0 +1,21 @@
+.founder{--founder-ink:#293c30;--founder-muted:#5f6b58;--founder-line:#c7c8ae;--founder-card:#fffdf6;border-top:1px solid var(--founder-line);background:linear-gradient(180deg,#fbf5e8 0%,#f6efe0 100%);color:var(--founder-ink);padding:52px 32px 60px}
+.founder-head{max-width:1100px;margin:0 auto 36px;display:grid;grid-template-columns:132px minmax(0,1fr) 190px;gap:28px;align-items:center}
+.founder-portrait{margin:0;border-radius:18px;overflow:hidden;background:#efe6d3;aspect-ratio:1;box-shadow:0 10px 28px rgba(60,50,30,.14)}
+.founder-portrait img{width:100%;height:100%;object-fit:cover;display:block}
+.founder-copy{min-width:0}
+.founder-eyebrow{margin:0 0 6px;font-size:12px;letter-spacing:.22em;color:var(--founder-muted);text-transform:uppercase}
+.founder h2{margin:0 0 10px;font-size:30px;line-height:1.15;letter-spacing:.02em}
+.founder-line{margin:0 0 10px;font-size:16px;line-height:1.7}
+.founder-note{margin:0 0 14px;font-size:13px;line-height:1.7;color:var(--founder-muted);padding-left:12px;border-left:3px solid var(--founder-line)}
+.founder-links{margin:0;display:flex;gap:20px;flex-wrap:wrap;font-size:14px}
+.founder-links a{color:var(--founder-ink);min-height:44px;display:inline-flex;align-items:center;text-underline-offset:5px}
+.founder-links a:hover{text-decoration:underline}
+.founder-hero{margin:0;justify-self:center;max-width:190px}
+.founder-hero img{width:100%;height:auto;display:block;filter:drop-shadow(0 14px 22px rgba(60,50,30,.18))}
+.founder-projects{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.founder-project{margin:0;background:var(--founder-card);border:1px solid var(--founder-line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.founder-project img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.founder-project figcaption{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;font-size:13px;line-height:1.5;color:var(--founder-muted)}
+.founder-project figcaption strong{font-size:15px;color:var(--founder-ink)}
+@media(max-width:860px){.founder-head{grid-template-columns:104px minmax(0,1fr);grid-template-areas:"portrait copy" "hero hero";row-gap:24px}.founder-portrait{grid-area:portrait}.founder-copy{grid-area:copy}.founder-hero{grid-area:hero;max-width:150px}.founder-projects{grid-template-columns:1fr}}
+@media(max-width:600px){.founder{padding:36px 20px 44px}.founder h2{font-size:25px}.founder-head{grid-template-columns:88px minmax(0,1fr);gap:18px}.founder-projects{gap:14px}}

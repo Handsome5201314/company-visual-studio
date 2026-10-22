@@ -1,0 +1,64 @@
+@import '../../src/ui/style.css';
+
+#panel.decoration-panel { width: min(1360px, calc(100vw - 32px)); max-width: calc(100vw - 32px); }
+
+/* Keep the public foyer in view while choosing how to enter. */
+#entry { justify-content:flex-end; padding:110px 32px 32px; }
+.entry-copy { width:350px; max-width:350px; padding:25px 28px; box-shadow:0 12px 42px #463e281c; }
+.entry-copy .entry-eyebrow { font-size:12px; margin:0 0 10px; color:var(--muted); }
+.entry-copy h1 { font-family:inherit; font-size:27px; line-height:1.35; font-weight:600; }
+.entry-copy>p { font-size:12px; margin-top:12px; }
+.entry-copy .entry-actions { margin-top:20px; gap:8px; }
+.entry-actions button { font-size:12px; padding:11px 12px; }
+.entry-links button { font-size:12px; padding:6px 0; }
+.entry-copy .entry-recruitment { margin-top:14px; padding-top:10px; }
+.entry-recruitment a { font-size:13px; }
+.entry-recruitment p { font-size:11px; }
+.entry-copy p.entry-note { margin-top:10px; font-size:11px; }
+#load-status { font-size:11px; margin-top:10px; }
+.brand { flex-shrink:0; }
+.top-actions { max-width:calc(100vw - 280px); overflow-x:auto; flex-wrap:nowrap; padding-bottom:4px; }
+.top-actions>* { flex-shrink:0; white-space:nowrap; }
+#mission { left:auto; right:28px; max-width:245px; }
+#mission { transition:opacity .18s ease, transform .18s ease; }
+body.company-entered[data-camera-mode="overview"] #mission,
+body.company-entered[data-camera-mode="lobby"] #mission { opacity:0; transform:translateY(-8px); pointer-events:none; }
+#exhibit-interaction { position:fixed; left:50%; bottom:185px; transform:translateX(-50%); }
+#exhibit-interaction button { background:var(--paper); box-shadow:0 6px 20px #302f2820; }
+.company-introduction { display:grid; gap:16px; line-height:1.85; }
+.company-introduction p { font-size:14px; }
+.exhibit-kicker { color:var(--muted); font-size:12px; }
+.exhibit-detail { border:0; padding-top:0; }
+.exhibit-detail img { width:96px; height:96px; }
+@media(max-width:1100px) {
+ header { padding:18px; gap:16px; }
+ .top-actions { max-width:calc(100vw - 250px); overflow-x:auto; scrollbar-width:thin; flex-wrap:nowrap; }
+ .top-actions>* { flex-shrink:0; }
+}
+@media(max-width:700px) {
+ header { flex-wrap:wrap; padding:12px; gap:9px; }
+ .brand { font-size:14px; }
+ .top-actions { width:100%; max-width:100%; justify-content:flex-start; padding-bottom:4px; }
+ #entry { padding:128px 12px 12px; }
+ .entry-copy { width:100%; max-width:none; padding:17px 19px; }
+ .entry-copy .entry-eyebrow { font-size:11px; margin-bottom:6px; }
+ .entry-copy h1 { font-size:22px; }
+ .entry-copy>p { font-size:11px; margin-top:7px; }
+ .entry-copy .entry-actions { margin-top:12px; }
+ .entry-copy .entry-recruitment { margin-top:8px; padding-top:4px; }
+ .entry-recruitment p { display:none; }
+ .entry-copy p.entry-note { margin-top:5px; font-size:10px; }
+ .entry-links { margin-top:3px; }
+ .entry-links button { min-height:36px; }
+ #load-status { margin-top:5px; font-size:10px; }
+ #mission { right:12px; top:116px; max-width:177px; padding:10px 12px; }
+ #mission span { font-size:10px; }
+ #mission small { display:none; }
+ #exhibit-interaction { bottom:300px; max-width:calc(100vw - 24px); white-space:nowrap; }
+ #camera-controls { bottom:65px; right:12px; flex-direction:column; max-height:220px; overflow:auto; }
+ #camera-controls button { padding:8px; min-height:36px; }
+}
+
+
+/* Immutable delivery checksums remain readable in the narrow project desk. */
+.artifact-checksum{display:block;overflow-wrap:anywhere;}

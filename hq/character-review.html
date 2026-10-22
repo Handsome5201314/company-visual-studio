@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>人物模型对照</title></head>
+<body><header><a href="/">返回公司</a><h1>人物模型对照</h1><select aria-label="选择人物" id="character"><option value="shuai">帅帅 · 游戏使用中</option><option value="shuai-alpha">新图重建 · 静态候选</option><option value="nurse">护士 · 游戏使用中</option></select></header>
+<main><aside><h2>原图</h2><img id="reference" alt="角色原始参考图"><p id="reference-note"></p></aside><section><h2 id="model-title">3D 模型</h2><div id="stage" aria-label="可拖动旋转和缩放的三维模型"></div><nav aria-label="模型视角"><button data-view="front">正面</button><button data-view="reference">原图平视</button><button data-view="quarter">斜侧面</button><button data-view="quarter30">30°斜侧</button><button data-view="quarter45">45°斜侧</button><button data-view="side">右侧面</button><button data-view="left">左侧面</button><button data-view="back">背面</button><button id="walk">播放走路</button></nav><p id="status" role="status">正在加载模型…</p></section></main>
+<footer>拖动旋转，滚轮缩放。当前模型的脸型、头颈衔接、耳朵、头发与衣物结构仍有明显差异，未通过保真验收。</footer><script type="module" src="/src/character-review.ts"></script></body></html>
