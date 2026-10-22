@@ -1,0 +1,23 @@
+{
+  "note": "公开副本里超过 10MB 的二进制。tools/check-publish.mjs 会逐个核对字节数与 SHA-256；新增、替换或删除模型时必须同步更新本表，否则 CI 会失败。",
+  "assets": [
+    {
+      "path": "hq/public/models/shuai-transparent-20261020.glb",
+      "bytes": 62167428,
+      "sha256": "425699502d4b707c92768ef15aa43dfbff8fc0d9744f1c96a6842b32a086e45d",
+      "reason": "人物对照页的透明底候选模型（静态展示，不替换线上角色）"
+    },
+    {
+      "path": "hq/public/models/shuai-rigged.glb",
+      "bytes": 17483072,
+      "sha256": "baaa32ec20e814e75530f9eb9c7bd0d4e940fcb330bcb5580da433c9717a57ba",
+      "reason": "老板角色的骨骼动画模型（仅老板身份入场时加载）"
+    },
+    {
+      "path": "hq/public/models/nurse-reference-20261020.glb",
+      "bytes": 14526308,
+      "sha256": "049c0dc0c65b94c6e1f8ad3cf795b4a7809a41007afcc5dd43cd865a33fd74e8",
+      "reason": "护士接待员参考模型（用于非 shellOnly 的展厅装配）"
+    }
+  ]
+}

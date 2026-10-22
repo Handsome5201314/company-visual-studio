@@ -31,7 +31,13 @@ jobs:
         with:
           node-version: '24.15.0'
           cache: npm
-          cache-dependency-path: hq/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            hq/package-lock.json
+      # hq 的 tsc 会把根目录 src/（视觉层）一起编译，视觉层的 three 类型
+      # 从其所在目录解析，因此仓库根也必须装依赖。
+      - name: Install visual layer dependencies
+        run: npm ci
       - name: Install demo dependencies
         working-directory: hq
         run: npm ci

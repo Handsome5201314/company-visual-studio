@@ -5,6 +5,7 @@
 - **视觉层在本仓库根目录**（`src/office.ts`、`src/ui/`、`themes/`、`furniture/` 等）；`hq/src` 通过 `../../src/...` 引用它们。
 - **不含服务端**：`/api` 需要私有主工程提供；没有它时，3D 场景与模型仍可本地浏览，业务页面显示未连接/空态（预期行为）。
 - **不含的素材**：`public/ip/story/`（个人生活照）与 `public/models/shuai-clean-20261020.glb`（超大本地模型）。
+- **大文件须登记**：[public/models/LARGE-ASSETS.json](public/models/LARGE-ASSETS.json) 记录超过 10MB 的 3 个模型（字节数 + SHA-256），由 `tools/check-publish.mjs` 逐个核对；新增或替换模型必须同步更新。
 
 ## 运行
 
