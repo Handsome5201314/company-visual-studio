@@ -10,6 +10,8 @@
 
 另见线上实拍的[一楼接待大厅](docs/images/hq-20261022-reception.webp)与[第一人称视角](docs/images/hq-20261022-first-person.webp)。组件展厅（只展示视觉层组件，不等于总部全貌）见[暖阳展厅](docs/images/warm-showroom.png)与[冷蓝主题](docs/images/cyber-showroom.png)。
 
+**在线静态演示**：[handsome5201314.github.io/company-visual-studio](https://handsome5201314.github.io/company-visual-studio/) —— 由 [`hq/`](hq/README.md) 在 GitHub Pages 构建，只含三维场景与走动（同一套 `Headquarters` 与视觉层）；接待、案例、留言与后台需要服务端，请到线上站点体验。推送 `main` 改动 `hq/**` 或根目录 `src/**` 会自动重新发布。
+
 ## 启动
 
 需要 Node.js 24.15+。
