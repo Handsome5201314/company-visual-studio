@@ -16,9 +16,10 @@ const projectArtwork=projects.items.map(item=>({...item,image:assetPath(item.ima
 
 export type Peer={id:string;x:number;y:number;z:number;yaw:number;role:string;moving?:boolean};
 export type Mode='first'|'third'|'overview'|'character'|'lobby';
-export type LobbyExhibit={kind:'company'|'project'|'business'|'cases'|'dashboard'|'messages';projectIndex?:number};
+export type LobbyExhibit={kind:'company'|'project'|'business'|'cases'|'dashboard'|'messages'|'navigation';projectIndex?:number};
 export type CasesPresentation={publishedCases:number;items:{title:string;serviceType:string;image?:string}[];updatedAt:string|null};
-export type DashboardPresentation={visitors:number;publishedCases:number;publicProjects:number;confirmedDeliveries:number;updatedAt:string};
+export type ConsultingDashboard={total:number;byStatus:Record<string,number>;upcoming:number;outbox:{total:number;byStatus:Record<string,number>}};
+export type DashboardPresentation={visitors:number;publishedCases:number;publicProjects:number;confirmedDeliveries:number;updatedAt:string;consulting?:ConsultingDashboard|null};
 export type MessagesPresentation={approvedCount:number;items:{name:string;body:string;createdAt:string}[]};
 type Activity={accountId:string;name:string;state:string;stage:string};
 export class Headquarters {
@@ -210,7 +211,7 @@ export class Headquarters {
   geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());
   this.environmentTarget?.dispose();this.renderer.dispose();this.renderer.domElement.remove();this.activityLayer.remove();this.workBubble.remove();this.scene.clear();this.peers.clear();this.peerMotions.clear();
  }
- private readExhibit(object:T.Object3D):LobbyExhibit|null{const value=object.userData;if(value.lobbyExhibit==='cases')return {kind:'cases'};if(value.lobbyExhibit==='business')return {kind:'business'};if(value.lobbyExhibit==='company')return {kind:'company'};if(value.lobbyExhibit==='dashboard')return {kind:'dashboard'};if(value.lobbyExhibit==='messages')return {kind:'messages'};if(value.lobbyExhibit==='project'&&Number.isInteger(value.projectIndex)&&projects.items[value.projectIndex])return {kind:'project',projectIndex:value.projectIndex};return null;}
+ private readExhibit(object:T.Object3D):LobbyExhibit|null{const value=object.userData;if(value.lobbyExhibit==='navigation')return {kind:'navigation'};if(value.lobbyExhibit==='cases')return {kind:'cases'};if(value.lobbyExhibit==='business')return {kind:'business'};if(value.lobbyExhibit==='company')return {kind:'company'};if(value.lobbyExhibit==='dashboard')return {kind:'dashboard'};if(value.lobbyExhibit==='messages')return {kind:'messages'};if(value.lobbyExhibit==='project'&&Number.isInteger(value.projectIndex)&&projects.items[value.projectIndex])return {kind:'project',projectIndex:value.projectIndex};return null;}
  private nearestExhibit():LobbyExhibit|null{
   if(!this.entered)return null;
   let best:T.Object3D|undefined,distance=3;
@@ -302,3 +303,4 @@ export class Headquarters {
  }
  private resize(){const w=this.container.clientWidth,h=this.container.clientHeight;this.camera.aspect=w/Math.max(h,1);this.camera.updateProjectionMatrix();this.renderer.setSize(w,h);}
 }
+

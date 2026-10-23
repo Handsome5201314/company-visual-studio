@@ -122,7 +122,7 @@ export function createOutdoor():OutdoorVisuals {
   plane(terrain,'Road_Asphalt',56,6,[0,.012,31],materials.asphalt);
   plane(terrain,'Near_Pavement',56,1.7,[0,.035,27.15],materials.stoneLight);
   plane(terrain,'Far_Pavement',56,1.7,[0,.035,34.85],materials.stone);
-  plane(terrain,'Main_Stone_Walk',5.4,15.2,[0,.028,19.6],materials.stoneLight);
+  plane(terrain,'Main_Stone_Walk',5.4,11.1,[0,.028,20.75],materials.stoneLight);
   plane(terrain,'Entrance_Plaza',12.8,3.3,[0,.031,13.55],materials.stone);
   plane(terrain,'Entry_Runner',4.4,.65,[0,.053,(ENTRANCE_Z-0.2)],materials.stoneLight);
   plane(terrain,'Crosswalk',4.5,5.8,[0,.04,31],materials.stoneLight);

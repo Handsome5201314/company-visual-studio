@@ -52,6 +52,7 @@ export async function createHeadquarters(projects:Project[]){
   const businessScreens:T.CanvasTexture[]=[];
   let caseScreen:T.CanvasTexture|undefined,caseFingerprint='';
   let dashboardScreen:T.CanvasTexture|undefined,dashboardFingerprint='';
+  let entranceScreen:T.CanvasTexture|undefined;
   let messageScreen:T.CanvasTexture|undefined,messageFingerprint='';
   const sectionLights:T.RectAreaLight[]=[];
   const occluders:T.Object3D[]=[];
@@ -83,8 +84,8 @@ export async function createHeadquarters(projects:Project[]){
     oakDark:physical('#503727',.37,0,{map:oakMap,bumpMap:oakMap,bumpScale:.045,clearcoat:.2,clearcoatRoughness:.33,envMapIntensity:.98}),
     oakLight:physical('#b77f50',.37,0,{map:oakMap,bumpMap:oakMap,bumpScale:.04,clearcoat:.18,clearcoatRoughness:.33,envMapIntensity:1.02}),
     stone:physical('#c9b9a5',.28,0,{map:stoneMap,bumpMap:stoneMap,bumpScale:.028,clearcoat:.36,clearcoatRoughness:.18,envMapIntensity:1.34}),
-    floor:physical('#918270',.5,0,{map:stoneMap,bumpMap:stoneMap,bumpScale:.025,envMapIntensity:.8}),
-    floorTint:physical('#aa9781',.28,0,{map:stoneMap,bumpMap:stoneMap,bumpScale:.035,clearcoat:.44,clearcoatRoughness:.17,envMapIntensity:1.4}),
+    floor:physical('#918270',.5,0,{map:stoneMap,envMapIntensity:.8}),
+    floorTint:physical('#aa9781',.34,0,{map:stoneMap,clearcoat:.2,clearcoatRoughness:.3,envMapIntensity:1.1}),
     plaster:physical('#dbccb7',.76,0,{envMapIntensity:.54}),
     plasterWarm:physical('#bfa27a',.72,0,{envMapIntensity:.7}),
     charcoal:physical('#202522',.44,.42,{envMapIntensity:1.0}),
@@ -779,6 +780,17 @@ export async function createHeadquarters(projects:Project[]){
     }
   }
 
+  const benchCushionMaterial=new T.MeshStandardMaterial({color:'#e8e0d3',roughness:.86,metalness:0});
+  function lowBench(parent:T.Object3D,name:string,x:number,z:number,w=1.25,d=.9,h=.5){
+    const group=new T.Group();
+    group.name=name;
+    group.position.set(x,0,z);
+    parent.add(group);
+    box(group,`${name}_Stone_Base`,[w,h-.16,d],[0,(h-.16)/2,0],materials.stone,.04);
+    box(group,`${name}_Ivory_Cushion`,[w-.1,.14,d-.1],[0,h-.07,0],benchCushionMaterial,.04);
+    return group;
+  }
+
   function meetingRoom(parent:T.Object3D,y:number){
     const group=new T.Group();
     group.name='Glass_Meeting_Room';
@@ -831,10 +843,10 @@ export async function createHeadquarters(projects:Project[]){
   box(foundation,'Entrance_Runner_Shadow_Right',[.025,.01,15.2],[3.4,.014,4.2],materials.charcoal);
   const groutMaterial=new T.MeshStandardMaterial({color:'#d6cec2',roughness:.92});
   const jointsX:Vec3[]=[];
-  for(let x=-14;x<=14;x+=2)jointsX.push([x,.01,0]);
+  for(let x=-14;x<=14;x+=2)jointsX.push([x,.004,0]);
   instances(foundation,'Floor_Joints_Long',[.007,.006,24],jointsX,groutMaterial);
   const jointsZ:Vec3[]=[];
-  for(let z=-11;z<=11;z+=2)jointsZ.push([0,.01,z]);
+  for(let z=-11;z<=11;z+=2)jointsZ.push([0,.004,z]);
   instances(foundation,'Floor_Joints_Cross',[30,.006,.007],jointsZ,groutMaterial);
 
   areaLight(root,'Lobby_Softbox','#ffe1bd',7.8,12.5,6.4,[0,3.58,6.6],[0,.9,2.2]);
@@ -1108,17 +1120,63 @@ export async function createHeadquarters(projects:Project[]){
       targets.push(dashboardMesh);floor.add(dashboardMesh);
       dashboardScreen=dashboardTexture;
 
-      // Visitor message board on the west feature wall by the entrance.
-      box(floor,'Lobby_Message_Board_Frame',[.09,2.62,4.72],[-14.24,2.02,6.8],materials.charcoal,.03);
+      // Entry data + navigation panels sit just inside the front glass, left of
+      // the door. They are thin wall-mounted panels, so they add no floor obstacle.
+      const entranceDataTexture=canvasTexture(960,500,(c)=>{
+        c.fillStyle='#0b1416';c.fillRect(0,0,960,500);
+        c.fillStyle='#7fd8c2';c.font=`600 30px ${FONT}`;c.fillText('入口数据 · 公开口径',40,58);
+        c.fillStyle='#58806f';c.font=`18px ${FONT}`;c.fillText('等待服务端实时数据…',40,92);
+        const cards=[['当前在线访客','—'],['已公开案例','—'],['授权公开项目','—'],['确认交付','—']];
+        cards.forEach(([label,value],i)=>{
+          const x=40+(i%2)*460,y=125+Math.floor(i/2)*170;
+          c.fillStyle='#123227';c.fillRect(x,y,430,145);
+          c.fillStyle='#58806f';c.font=`18px ${FONT}`;c.fillText(label,x+22,y+34);
+          c.fillStyle='#e9f5ee';c.font=`600 42px ${FONT}`;c.fillText(value,x+22,y+105);
+        });
+      });
+      const entranceData=new T.Mesh(new T.PlaneGeometry(2.4,1.25),new T.MeshBasicMaterial({map:entranceDataTexture,toneMapped:false}));
+      entranceData.name='Entrance_Data_Screen';
+      entranceData.position.set(-5.25,2.15,11.72);
+      entranceData.userData.lobbyExhibit='dashboard';
+      targets.push(entranceData);floor.add(entranceData);
+      entranceScreen=entranceDataTexture;
+      box(floor,'Entrance_Data_Frame',[2.56,1.41,.04],[-5.25,2.15,11.68],materials.charcoal,.02);
+      for(const x of [-6.15,-4.35])line(floor,'Entrance_Data_Suspension',[x,3.85,11.7],[x,2.78,11.7],.012,materials.brass);
+
+      const navigationTexture=canvasTexture(600,900,(c)=>{
+        c.fillStyle='#0b1f19';c.fillRect(0,0,600,900);
+        c.fillStyle='#7fd8c2';c.font=`600 30px ${FONT}`;c.fillText('欢迎来到童医魔盒',40,70);
+        c.fillStyle='#e9f5ee';c.font=`600 44px ${FONT}`;c.fillText('快速导航',40,135);
+        c.fillStyle='#58806f';c.font=`20px ${FONT}`;c.fillText('真实空间导视 · 按 E 查看完整导航',40,172);
+        const items=[['01','前台接待','→'],['02','作品展廊','←'],['03','实时数据','→'],['04','会客沙发区','→'],['05','楼梯 / 2F · 3F','↑'],['06','访客留言板','→']];
+        items.forEach(([no,label,arrow],i)=>{
+          const y=235+i*95;
+          c.fillStyle=i%2?'#102a22':'#14362b';c.fillRect(30,y-42,540,78);
+          c.fillStyle='#d8c08a';c.font=`600 22px ${FONT}`;c.fillText(no,52,y+4);
+          c.fillStyle='#e9f5ee';c.font=`500 26px ${FONT}`;c.fillText(label,112,y+4);
+          c.fillStyle='#7fd8c2';c.font=`600 28px ${FONT}`;c.fillText(arrow,500,y+4);
+        });
+        c.fillStyle='#58806f';c.font=`18px ${FONT}`;c.fillText('中国 · 北京 · 童医魔盒数字总部',40,850);
+      });
+      const navigationScreen=new T.Mesh(new T.PlaneGeometry(1.1,1.7),new T.MeshBasicMaterial({map:navigationTexture,toneMapped:false}));
+      navigationScreen.name='Entry_Navigation_Screen';
+      navigationScreen.position.set(-3.0,1.45,11.72);
+      navigationScreen.userData.lobbyExhibit='navigation';
+      targets.push(navigationScreen);floor.add(navigationScreen);
+      box(floor,'Entry_Navigation_Frame',[1.26,1.86,.04],[-3.0,1.45,11.68],materials.charcoal,.02);
+      for(const x of [-3.45,-2.55])line(floor,'Entry_Navigation_Suspension',[x,3.85,11.7],[x,2.32,11.7],.012,materials.brass);
+
+      // Visitor message board on the east feature wall, clear of the west gallery frames.
+      box(floor,'Lobby_Message_Board_Frame',[.09,1.6,2.6],[14.24,2.02,10.4],materials.charcoal,.03);
       const messageTexture=canvasTexture(880,460,(c)=>{
         c.fillStyle='#12211c';c.fillRect(0,0,880,460);
         c.fillStyle='#e9dcae';c.font=`bold 30px ${FONT}`;c.fillText('访客留言板',44,62);
         c.fillStyle='#9fb8a6';c.font=`19px ${FONT}`;c.fillText('按 E 留言 · 经负责人审核后公开',44,94);
       });
-      const messageMesh=new T.Mesh(new T.PlaneGeometry(4.4,2.3),new T.MeshBasicMaterial({map:messageTexture,toneMapped:false}));
+      const messageMesh=new T.Mesh(new T.PlaneGeometry(2.4,1.26),new T.MeshBasicMaterial({map:messageTexture,toneMapped:false}));
       messageMesh.name='Lobby_Message_Board';
-      messageMesh.position.set(-14.19,2.02,6.8);
-      messageMesh.rotation.y=Math.PI/2;
+      messageMesh.position.set(14.19,2.02,10.4);
+      messageMesh.rotation.y=-Math.PI/2;
       messageMesh.userData.lobbyExhibit='messages';
       targets.push(messageMesh);floor.add(messageMesh);
       messageScreen=messageTexture;
@@ -1171,6 +1229,25 @@ export async function createHeadquarters(projects:Project[]){
           Math.PI/2,
         );
       }
+      const wallGlassMaterial=new T.MeshStandardMaterial({color:'#dfe8e4',transparent:true,opacity:.08,roughness:.04,metalness:0,envMapIntensity:1.6,depthWrite:false,side:T.DoubleSide});
+      const wallGlass=new T.InstancedMesh(new T.PlaneGeometry(1.86,1.70),wallGlassMaterial,projects.length-1);
+      wallGlass.name='Project_Wall_Glass';
+      wallGlass.renderOrder=3;
+      const wallGlassMatrix=new T.Matrix4();
+      const wallGlassQuat=new T.Quaternion().setFromEuler(new T.Euler(0,Math.PI/2,0));
+      const pictureBarPositions:Vec3[]=[];
+      const pictureLedPositions:Vec3[]=[];
+      for(let i=1;i<projects.length;i++){
+        const z=7.8-(i-1)*2.65;
+        wallGlassMatrix.compose(new T.Vector3(-14.12,1.98,z),wallGlassQuat,new T.Vector3(1,1,1));
+        wallGlass.setMatrixAt(i-1,wallGlassMatrix);
+        pictureBarPositions.push([-14.06,3.16,z]);
+        pictureLedPositions.push([-14.02,3.10,z]);
+      }
+      wallGlass.instanceMatrix.needsUpdate=true;
+      floor.add(wallGlass);
+      instances(floor,'Project_Wall_Picture_Light_Bars',[.07,.06,2.05],pictureBarPositions,materials.charcoal);
+      instances(floor,'Project_Wall_Picture_Light_LED',[.028,.022,1.86],pictureLedPositions,materials.lightSoft);
       signPlane(
         floor,
         'Gallery_Title',
@@ -1233,23 +1310,23 @@ export async function createHeadquarters(projects:Project[]){
         [0,.69,.607],
       );
 
-      // The reception wall becomes the first uninterrupted oak backdrop in the room.
-      box(floor,'Reception_Backdrop',[6.4,3.66,.18],[-5.8,1.83,6.0],materials.oakDark,.025);
-      slatWallX(floor,'Reception_Backdrop_Flutes',-5.8,1.83,6.11,6.25,3.55);
-      box(floor,'Reception_Backdrop_Sign',[5.76,.88,.075],[-5.8,2.56,6.2],materials.stone,.03);
+      // Lower the reception back wall so the west gallery stays visible from the
+      // entrance; the identity plaque becomes a suspended sign instead of a wall.
+      box(floor,'Reception_Backdrop',[5.4,2.45,.18],[-5.8,1.225,6.0],materials.oakDark,.025);
+      slatWallX(floor,'Reception_Backdrop_Flutes',-5.8,1.175,6.11,5.25,2.35);
+      box(floor,'Reception_Backdrop_Sign',[4.8,.62,.075],[-5.8,2.0,6.2],materials.stone,.03);
       signPlane(
         floor,
         'Company_Identity',
         '北京童医魔盒科技服务有限公司',
         'TONGYI MOHE TECHNOLOGY · 把真实问题做成真实作品',
-        [5.54,.72],
-        [-5.8,2.56,6.248],
+        [4.7,.56],
+        [-5.8,2.0,6.248],
       );
       const companyTarget=floor.getObjectByName('Company_Identity')!;companyTarget.userData.lobbyExhibit='company';targets.push(companyTarget as T.Mesh);
-      box(floor,'Reception_Backdrop_Cove_Top',[5.98,.016,.022],[-5.8,3.08,6.24],materials.lightSoft);
-      box(floor,'Reception_Backdrop_Cove_Bottom',[5.98,.016,.022],[-5.8,2.08,6.24],materials.lightSoft);
+      box(floor,'Reception_Backdrop_Cove_Top',[4.95,.016,.022],[-5.8,2.34,6.24],materials.lightSoft);
+      box(floor,'Reception_Backdrop_Cove_Bottom',[4.95,.016,.022],[-5.8,1.67,6.24],materials.lightSoft);
       plant(floor,-9.25,0,5.82,1.2,3);
-      plant(floor,-2.55,0,5.82,1.2,7);
 
       // Central glass corridor and the real, usable-looking rooms behind it.
       box(floor,'Corridor_Left_Glass',[.035,3.1,7.4],[-3.25,1.55,-7.4],materials.glassDark);
@@ -1260,29 +1337,15 @@ export async function createHeadquarters(projects:Project[]){
         }
       }
       box(floor,'Corridor_Black_Head',[6.5,.13,.12],[0,3.16,-7.4],materials.charcoal,.012);
-      windowBackdrop(floor,'Rear_Workspace_Garden_View',[6.2,2.55],[0,1.48,-11.87]);
-      box(floor,'Rear_Window_Glass',[6.2,2.55,.035],[0,1.48,-11.83],materials.glass);
-      for(let x=-3;x<=3.01;x+=1.5)box(floor,'Rear_Window_Mullion',[.065,2.7,.07],[x,1.55,-11.72],materials.charcoal,.008);
+      // The rear wall is the public data wall on level 1. A garden window here
+      // sat in front of Public_Realtime_Dashboard and hid it from every visitor
+      // viewpoint (raycast first hit was Rear_Window_Glass); keep the wall solid.
       meetingRoom(floor,0);
 
-      // Lounge furniture sits clear of the walkable central aisle and stairs.
-      const rugGroup=new T.Group();
-      rugGroup.name='Circular_Lobby_Rug';
-      floor.add(rugGroup);
-      const rug=new T.Mesh(new T.CylinderGeometry(3.1,3.1,.035,72),materials.rug);
-      rug.position.set(11.0,.032,7.5);
-      rug.receiveShadow=true;
-      rugGroup.add(rug);
-      for(let r=1.3;r<2.85;r+=.38){
-        const ring=new T.Mesh(new T.TorusGeometry(r,.012,8,96),materials.oakDark);
-        ring.rotation.x=Math.PI/2;
-        ring.position.set(11.0,.055,7.5);
-        rugGroup.add(ring);
-      }
-      furniture(floor,'loungedesignsofa',11.2,0,6.05,1.02,Math.PI);
+      // The entrance fronts are low gallery benches, not hotel sofas: keep the
+      // east side open to the stairs and the west side low enough for the frames.
+      lowBench(floor,'East_Low_Lounge_Bench',11.2,6.05,3.0,.9,.52);
       furniture(floor,'tablecoffee',11.2,0,8.9,.47);
-      furniture(floor,'loungedesignchair',8.25,0,9.35,.94,-.88);
-      furniture(floor,'loungedesignchair',13.55,0,9.05,.94,.9);
       furniture(floor,'bookcaseopen',14.16,0,1.8,2.7,-Math.PI/2);
       furniture(floor,'lamproundfloor',13.72,0,5.82,1.72);
       for(const [x,z]of [[7.72,2.68],[9.15,2.68],[10.58,2.68],[12.0,2.68]]){
@@ -1301,8 +1364,8 @@ export async function createHeadquarters(projects:Project[]){
       }
       box(floor,'Corridor_Oak_Portal_Head',[6.34,.18,.28],[0,3.03,-3.66],materials.oakDark,.03);
       box(floor,'Corridor_Portal_Linear_Light',[5.96,.025,.035],[0,2.91,-3.5],materials.lightSoft);
-      box(floor,'Central_Aisle_Rug_Base',[5.4,.026,3.4],[0,.022,2.65],materials.rug,.03);
-      box(floor,'Central_Aisle_Rug_Inlay',[4.9,.012,2.9],[0,.038,2.65],materials.floorTint,.02);
+      box(floor,'Central_Aisle_Rug_Base',[5.4,.026,3.4],[0,.029,2.65],materials.rug,.03);
+      box(floor,'Central_Aisle_Rug_Inlay',[4.9,.012,2.9],[0,.049,2.65],materials.floorTint,.02);
       signPlane(
         floor,
         'Lobby_Business_Ribbon',
@@ -1321,9 +1384,8 @@ export async function createHeadquarters(projects:Project[]){
       for(const [x,z] of [[-4.2,6.9],[-4.2,3.7],[4.25,6.6],[4.25,10.0]]){
         furniture(floor,'pottedplant',x,0,z,1.62,Math.PI*(x+z)*.07);
       }
-      furniture(floor,'loungedesignsofa',-10.8,0,10.1,1.02,0);
-      furniture(floor,'tablecoffee',-10.8,0,8.25,.47,0);
-      furniture(floor,'loungedesignchair',-13.0,0,7.8,.94,-1.1);
+      lowBench(floor,'West_Low_Bench_A',-11.65,8.6,1.25,.9,.5);
+      lowBench(floor,'West_Low_Bench_B',-9.75,8.6,1.25,.9,.5);
     }
 
     if(floorIndex===2){
@@ -1411,24 +1473,95 @@ export async function createHeadquarters(projects:Project[]){
   }
 
   try{
-    const receptionAsset=(await furnitureLoader.loadAsync(asset('/models/hq-reception-v2.glb'))).scene;
+    const receptionAsset=(await furnitureLoader.loadAsync(asset('/models/hq-reception-v3.glb'))).scene;
     receptionAsset.name='Blender_Authored_Reception_Desk';
     receptionAsset.position.set(-5.8,0,7.2);
     receptionAsset.rotation.y=0;
+    receptionAsset.scale.x=.9;
+    const oakGrain=oakMap.clone();
+    oakGrain.repeat.set(1.15,1.15);
+    const marbleCanvas=document.createElement('canvas');
+    marbleCanvas.width=512;marbleCanvas.height=256;
+    const marbleCtx=marbleCanvas.getContext('2d')!;
+    marbleCtx.fillStyle='#e6dccb';marbleCtx.fillRect(0,0,512,256);
+    for(let i=0;i<11;i++){
+      marbleCtx.strokeStyle=`rgba(${105+i*2},${96+i*2},${86+i*2},.22)`;
+      marbleCtx.lineWidth=i%3===0?2:1;
+      marbleCtx.beginPath();
+      for(let x=0;x<=512;x+=16){
+        const y=22+i*21+Math.sin(x*.024+i*1.6)*9+Math.sin(x*.057+i)*4;
+        if(x===0)marbleCtx.moveTo(x,y);else marbleCtx.lineTo(x,y);
+      }
+      marbleCtx.stroke();
+    }
+    const stoneGrain=new T.CanvasTexture(marbleCanvas);
+    stoneGrain.colorSpace=T.SRGBColorSpace;
+    stoneGrain.wrapS=stoneGrain.wrapT=T.RepeatWrapping;
+    stoneGrain.repeat.set(1.2,1.0);
+    stoneGrain.anisotropy=8;
     receptionAsset.traverse((object)=>{
       if(!(object instanceof T.Mesh))return;
       object.castShadow=true;
       object.receiveShadow=true;
       for(const material of [object.material].flat()){
-        if(material.name?.includes('LED')&&material instanceof T.MeshStandardMaterial){
+        if(!(material instanceof T.MeshStandardMaterial))continue;
+        if(material.name?.includes('LED')){
           material.color.set('#ffe2b0');
           material.emissive.set('#ff8b2d');
           material.emissiveIntensity=7;
           material.toneMapped=false;
-          material.needsUpdate=true;
+        }else if(material.name==='Reception_Oak'){
+          material.map=oakGrain;
+          material.color.set('#d4aa80');
+          material.roughness=.36;
+          material.metalness=0;
+          material.envMapIntensity=1.08;
+        }else if(material.name==='Reception_Oak_Light'){
+          material.color.set('#c99a6d');
+          material.roughness=.38;
+          material.metalness=0;
+          material.envMapIntensity=1.04;
+        }else if(material.name==='Reception_Stone'){
+          material.map=stoneGrain;
+          material.color.set('#e2d4c2');
+          material.roughness=.26;
+          material.metalness=0;
+          material.envMapIntensity=1.3;
+        }else if(material.name==='Reception_Brass'){
+          material.roughness=.27;
+          material.envMapIntensity=1.32;
+        }else if(material.name==='Reception_Metal'){
+          material.roughness=.3;
+          material.envMapIntensity=1.18;
+        }else if(material.name==='Reception_Screen'){
+          material.color.set('#091b17');
+          material.emissive.set('#0c2b22');
+          material.emissiveIntensity=.35;
+          material.roughness=.18;
+          material.envMapIntensity=.9;
         }
+        material.needsUpdate=true;
       }
     });
+    const screenCanvas=document.createElement('canvas');
+    screenCanvas.width=512;screenCanvas.height=288;
+    const screenCtx=screenCanvas.getContext('2d')!;
+    screenCtx.fillStyle='#0b1f19';screenCtx.fillRect(0,0,512,288);
+    screenCtx.strokeStyle='#2e5a4b';screenCtx.lineWidth=4;screenCtx.strokeRect(12,12,488,264);
+    screenCtx.fillStyle='#7fd8c2';screenCtx.font='bold 24px "Microsoft YaHei"';screenCtx.fillText('接待台 · 今日',32,58);
+    screenCtx.fillStyle='#e9f5ee';screenCtx.font='bold 54px "Microsoft YaHei"';screenCtx.fillText('来访 0',32,140);
+    screenCtx.fillStyle='#9fb8a6';screenCtx.font='20px "Microsoft YaHei"';screenCtx.fillText('在线 0 · 已确认 0',32,180);
+    screenCtx.fillStyle='#d8c08a';screenCtx.font='20px "Microsoft YaHei"';screenCtx.fillText('按 E 预约真人咨询',32,235);
+    const screenTexture=new T.CanvasTexture(screenCanvas);
+    screenTexture.colorSpace=T.SRGBColorSpace;
+    screenTexture.anisotropy=4;
+    const screenMaterial=new T.MeshBasicMaterial({map:screenTexture,toneMapped:false,side:T.DoubleSide});
+    const screenPlane=new T.Mesh(new T.PlaneGeometry(.78,.44),screenMaterial);
+    screenPlane.name='Reception_Live_Screen';
+    screenPlane.position.set(1.62,1.54,-.175);
+    screenPlane.castShadow=false;
+    screenPlane.receiveShadow=false;
+    receptionAsset.add(screenPlane);
     floors[0].add(receptionAsset);
     const fallbackReception=root.getObjectByName('Reception_Cabinet_5_6m');
     if(fallbackReception)fallbackReception.visible=false;
@@ -1436,8 +1569,8 @@ export async function createHeadquarters(projects:Project[]){
     furnitureFailures.push(`接待台资产: ${(error as Error).message}`);
   }
 
-  // Leave the countertop monitor to the right; the wall display is unobstructed.
-  monitorScreen(floors[0],'Public_Business_Terminal',[-6.55,1.65,6.29],0,[3.25,.65]);
+  // The reception now reads as an open welcome counter; the old wall display is
+  // replaced by the entrance data + navigation screens.
 
   function instanceJoinery(source:T.Group,parent:T.Object3D,positions:Vec3[],name:string){
     source.updateMatrixWorld(true);
@@ -1493,6 +1626,12 @@ export async function createHeadquarters(projects:Project[]){
     place('Lounge_Rug',7.6,0,7.4);
     place('Planter_Box_L',-9.2,0,10.2);
     place('Planter_Plant_L',-9.2,0,10.2);
+    // The kit's east lounge duplicates the collidable lounge and is not part of
+    // world.js collision; hide it so the entrance stops reading as a hotel sofa.
+    for(const name of ['Lounge_Sofa_Unit','Coffee_Table_Round','Coffee_Table_Leg','Lounge_Rug','Planter_Box_L','Planter_Plant_L']){
+      const object=kit.getObjectByName(name);
+      if(object)object.visible=false;
+    }
     root.add(kit);
   }catch(error){
     furnitureFailures.push(`建筑外观套件: ${(error as Error).message}`);
@@ -1560,13 +1699,19 @@ export async function createHeadquarters(projects:Project[]){
       const src=typeof sourceImage==='string'&&sourceImage.trim()?sourceImage.trim():'';
       if(src){const img=new Image();img.crossOrigin='anonymous';img.src=src;img.decode().then(()=>{if(img.naturalWidth>0)draw(img);}).catch(()=>{});}
     },
-    updateDashboard(data:{visitors:number;publishedCases:number;publicProjects:number;confirmedDeliveries:number;updatedAt:string}|null){
+    updateDashboard(data:{visitors:number;publishedCases:number;publicProjects:number;confirmedDeliveries:number;updatedAt:string;consulting?:{total:number;byStatus:Record<string,number>;upcoming:number;outbox:{total:number;byStatus:Record<string,number>}}|null}|null){
       if(!dashboardScreen)return;const fingerprint=JSON.stringify(data);if(fingerprint===dashboardFingerprint)return;dashboardFingerprint=fingerprint;
       const canvas=dashboardScreen.image as HTMLCanvasElement,c=canvas.getContext('2d')!;
       c.fillStyle='#0b1416';c.fillRect(0,0,1600,440);
-      c.fillStyle='#7fd8c2';c.font=`500 26px ${FONT}`;c.fillText('总部实时数据 · 公开视图',56,58);
+      c.fillStyle='#7fd8c2';c.font=`500 26px ${FONT}`;c.fillText(data?.consulting?'总部实时数据 · 老板视图':'总部实时数据 · 公开视图',160,58);
       c.fillStyle='#58806f';c.font=`19px ${FONT}`;
-      c.fillText(data?`来源：公司服务端实时统计 · REAL · 更新 ${new Date(data.updatedAt).toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false})}`:'连接中断 · 等待服务端实时数据',56,92);
+      c.fillText(data?`来源：公司服务端实时统计 · REAL · 更新 ${new Date(data.updatedAt).toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false})}`:'连接中断 · 等待服务端实时数据',160,92);
+      if(data?.consulting){
+        const s=data.consulting;
+        c.fillStyle='#d8c08a';c.font=`bold 19px ${FONT}`;c.fillText('真人咨询 · 实时计数',1048,48);
+        c.fillStyle='#e9f5ee';c.font=`18px ${FONT}`;c.fillText(`总 ${s.total} · 待确认 ${s.byStatus.requested??0} · 已确认 ${s.byStatus.confirmed??0}`,1048,80);
+        c.fillStyle='#9fb8a6';c.font=`16px ${FONT}`;c.fillText(`进行中 ${s.byStatus.in_progress??0} · 已完成 ${s.byStatus.completed??0} · 未来已确认 ${s.upcoming}`,1048,108);
+      }
       const stats:[string,string][]=data
         ?[['当前在线访客',String(data.visitors)],['已公开案例',String(data.publishedCases)],['授权公开项目',String(data.publicProjects)],['确认交付',String(data.confirmedDeliveries)]]
         :[];
@@ -1578,6 +1723,24 @@ export async function createHeadquarters(projects:Project[]){
         c.fillStyle='#3f5f52';c.font=`17px ${FONT}`;c.fillText('服务端真实计数',x+24,330);
       });
       if(!data){c.fillStyle='#8aa396';c.font=`26px ${FONT}`;c.fillText('实时数据暂不可用，可点击查看公开口径说明',56,230);}
+      if(entranceScreen){
+        const ec=entranceScreen.image as HTMLCanvasElement,e=ec.getContext('2d')!;
+        e.fillStyle='#0b1416';e.fillRect(0,0,960,500);
+        e.fillStyle='#7fd8c2';e.font=`600 30px ${FONT}`;e.fillText('入口数据 · 公开口径',40,58);
+        e.fillStyle='#58806f';e.font=`18px ${FONT}`;
+        e.fillText(data?`来源：公司服务端实时统计 · REAL · 更新 ${new Date(data.updatedAt).toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false})}`:'连接中断 · 等待服务端实时数据',40,92);
+        const cards:[string,string][]=data
+          ?[['当前在线访客',String(data.visitors)],['已公开案例',String(data.publishedCases)],['授权公开项目',String(data.publicProjects)],['确认交付',String(data.confirmedDeliveries)]]
+          :[];
+        cards.forEach(([label,value],i)=>{
+          const x=40+(i%2)*460,y=125+Math.floor(i/2)*170;
+          e.fillStyle='#123227';e.fillRect(x,y,430,145);
+          e.fillStyle='#58806f';e.font=`18px ${FONT}`;e.fillText(label,x+22,y+34);
+          e.fillStyle='#e9f5ee';e.font=`600 42px ${FONT}`;e.fillText(value,x+22,y+105);
+        });
+        if(!data){e.fillStyle='#8aa396';e.font=`24px ${FONT}`;e.fillText('实时数据暂不可用 · 点击查看公开口径说明',40,220);}
+        entranceScreen.needsUpdate=true;
+      }
       dashboardScreen.needsUpdate=true;
     },
     updateMessages(data:{approvedCount:number;items:{name:string;body:string;createdAt:string}[]}|null){
@@ -1632,3 +1795,10 @@ export async function createHeadquarters(projects:Project[]){
     },
   };
 }
+
+
+
+
+
+
+

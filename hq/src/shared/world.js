@@ -38,14 +38,14 @@ export const SURFACES = Object.freeze(floorSurfaces);
 // Furniture and wall volumes share the scene's centre line, stair footprint and
 // owner-office door. Collision is enforced; these records never grant access.
 export const OBSTACLES = Object.freeze([
-  {id:'reception',x:-5.8,z:7.2,w:6.06,d:1.96,y:0},
-  {id:'reception-backdrop',x:-5.8,z:6,w:6.4,d:.2,y:0},
+  {id:'reception',x:-5.8,z:7.2,w:5.45,d:1.96,y:0},
+  {id:'reception-backdrop',x:-5.8,z:6,w:5.4,d:.2,y:0},
   {id:'gallery-wall',x:-14.2,z:2.1,w:.42,d:9.6,y:0},
-  {id:'lobby-sofa',x:11.2,z:6.05,w:4.7,d:1.65,y:0},
+  {id:'east-low-bench',x:11.2,z:6.05,w:3.1,d:1.0,y:0},
   {id:'lobby-table',x:11.2,z:8.9,w:1.5,d:1.5,y:0},
   {id:'lobby-bookcase',x:14.16,z:1.8,w:.45,d:2.5,y:0},
-  {id:'lobby-bench-sofa',x:-10.8,z:10.1,w:4.7,d:1.65,y:0},
-  {id:'lobby-bench-table',x:-10.8,z:8.25,w:1.5,d:1.5,y:0},
+  {id:'west-low-bench-a',x:-11.65,z:8.6,w:1.35,d:1.0,y:0},
+  {id:'west-low-bench-b',x:-9.75,z:8.6,w:1.35,d:1.0,y:0},
   {id:'meeting-wall-front-left',x:7.15,z:-3.5,w:2.05,d:.18,y:0,margin:.05},
   {id:'meeting-wall-front-right',x:13.05,z:-3.5,w:2.05,d:.18,y:0,margin:.05},
   {id:'meeting-wall-west',x:7,z:-6.7,w:.18,d:6.4,y:0,margin:.05},
@@ -192,3 +192,4 @@ export function canMove(x,z,fromY,role='visitor',fromX,fromZ,fromSupport){
   }
   return true;
 }
+

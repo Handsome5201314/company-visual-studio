@@ -14,6 +14,7 @@ import {createCommercialDesk} from './commercial';
 import {mountBuildUpdate} from './build-update';
 import {createCaseStudiesDesk,type CaseRequestSeed} from './case-studies';
 import {mountIntake} from './intake';
+import {mountConsulting} from './consulting';
 
 type Session={id:string;worldId?:string;role:'owner'|'visitor'};
 type RequestRecord={id:string;service:string;name:string;contact:string;brief:string;status:string;reviewNote:string|null;version:number;createdAt:string;updatedAt:string};
@@ -36,9 +37,12 @@ const marketReviewDesk=createMarketReviewDesk({api,open:(title,html)=>{panel(tit
 const commercialDesk=createCommercialDesk({api,open:(title,html)=>{panel(title,html);return $('#panel-body');},cleanup:fn=>{panelCleanup=fn;},login:after=>void content.openLogin(after),reception:async()=>{if(!session)session=await api<Session>('/session','POST',{});await travel('desk');return (await api<{nonce:string}>('/reception','POST',{})).nonce;}});
 const commercialButton=document.createElement('button');commercialButton.textContent='商业项目与交付';document.querySelector('.top-actions')!.append(commercialButton);commercialButton.onclick=()=>{void commercialDesk.home();};
 function openIntake(seed?:CaseRequestSeed){panel('需求与真人预约','');const intake=mountIntake($('#panel-body'),{api,seed});panelCleanup=()=>intake.destroy();}
+function openConsulting(){panel('真人咨询','');const consulting=mountConsulting($('#panel-body'),{api});panelCleanup=()=>consulting.destroy();}
 const caseStudies=createCaseStudiesDesk({api,open:(title,html)=>{panel(title,html);return $('#panel-body');},cleanup:fn=>{panelCleanup=fn;},login:after=>void content.openLogin(after),onRequest:seed=>openIntake(seed)});
 const casesButton=document.createElement('button');casesButton.textContent='可信案例';document.querySelector('.top-actions')!.append(casesButton);casesButton.onclick=()=>void caseStudies.home();
 const contactLink=document.createElement('a');contactLink.href='/contact';contactLink.textContent='2D 留单与预约';document.querySelector('.top-actions')!.append(contactLink);
+const consultingButton=document.createElement('button');consultingButton.textContent='真人咨询';document.querySelector('.top-actions')!.append(consultingButton);consultingButton.onclick=()=>{if(ready)openConsulting();};
+const consultingNear=document.createElement('button');consultingNear.textContent='预约真人咨询';document.querySelector('#interaction')!.append(consultingNear);consultingNear.onclick=()=>{if(ready)openConsulting();};
 $('#company-desk').onclick=()=>companyDesk.home();
 $('#content-room').onclick=()=>void content.openBoard();$('#content-desk').onclick=()=>void content.openDesk();
 async function api<T>(path:string,method='GET',data?:unknown,signal?:AbortSignal):Promise<T>{
@@ -62,7 +66,7 @@ function connectWorld(){
  stream?.close();stream=new EventSource('/api/world');
  stream.onopen=()=>{$('#connection').textContent='已连接 · 公司总部';$('#connection').classList.remove('offline');};
  stream.onerror=()=>{hq.updateBusiness(null);hq.updateCases(null);$('#connection').textContent='连接中断 · 正在重连';$('#connection').classList.add('offline');};
- stream.onmessage=event=>{try{const data=JSON.parse(event.data) as {caseStudies?:CasesPresentation;lobbyMessages?:{approvedCount:number;items:{name:string;body:string;createdAt:string}[]};ownCommercial?:{workingTasks:number}|null;commercial?:{publicProjects:number;confirmedDeliveries:number};peers:Peer[];activity?:{accountId:string;name:string;state:string;stage:string}[]};const own=data.peers.find(p=>p.id===(session.worldId||session.id));if(own&&(own.moving||serverMoving)){hq.applyServerPosition(own);serverMoving=Boolean(own.moving);}hq.updatePeers(data.peers);hq.updateActivity(data.activity||[]);hq.updateCases(data.caseStudies||null);hq.updateBusiness(data.commercial||null);hq.updateOwnBusiness(data.ownCommercial||null);hq.updateMessages(data.lobbyMessages||null);hq.updateDashboard({visitors:(data.peers?.length||0)+1,publishedCases:data.caseStudies?.publishedCases||0,publicProjects:data.commercial?.publicProjects||0,confirmedDeliveries:data.commercial?.confirmedDeliveries||0,updatedAt:new Date().toISOString()});}catch{notify('多人状态更新失败，请刷新后重新进入');}};
+ stream.onmessage=event=>{try{const data=JSON.parse(event.data) as {caseStudies?:CasesPresentation;lobbyMessages?:{approvedCount:number;items:{name:string;body:string;createdAt:string}[]};ownCommercial?:{workingTasks:number}|null;commercial?:{publicProjects:number;confirmedDeliveries:number};consulting?:{total:number;byStatus:Record<string,number>;upcoming:number;outbox:{total:number;byStatus:Record<string,number>}}|null;peers:Peer[];activity?:{accountId:string;name:string;state:string;stage:string}[]};const own=data.peers.find(p=>p.id===(session.worldId||session.id));if(own&&(own.moving||serverMoving)){hq.applyServerPosition(own);serverMoving=Boolean(own.moving);}hq.updatePeers(data.peers);hq.updateActivity(data.activity||[]);hq.updateCases(data.caseStudies||null);hq.updateBusiness(data.commercial||null);hq.updateOwnBusiness(data.ownCommercial||null);hq.updateMessages(data.lobbyMessages||null);hq.updateDashboard({visitors:(data.peers?.length||0)+1,publishedCases:data.caseStudies?.publishedCases||0,publicProjects:data.commercial?.publicProjects||0,confirmedDeliveries:data.commercial?.confirmedDeliveries||0,consulting:data.consulting??null,updatedAt:new Date().toISOString()});}catch{notify('多人状态更新失败，请刷新后重新进入');}};
 }
 const appearance=document.createElement('button');appearance.textContent='外观';appearance.disabled=true;document.querySelector('.top-actions')!.append(appearance);
 const decorationButton=document.createElement('button');decorationButton.textContent='公司装修';document.querySelector('.top-actions')!.append(decorationButton);decorationButton.onclick=()=>{if(ready)void decorationDesk.home();};
@@ -136,7 +140,20 @@ async function records(){
  panel(session.role==='owner'?'老板工作台':'我的需求','<p role="status">正在读取公司记录…</p>');
  try{
   const {items}=await api<{items:RequestRecord[]}>('/requests');
-  $('#panel-body').innerHTML=`${session.role==='owner'?'<button id="review-applications">招聘 · 审核写手申请</button>':''}<p class="intro">${session.role==='owner'?'这里只显示真实登记的需求。审核备注会出现在客户自己的需求记录中；尚未连接对外消息或交付渠道。':'这些需求仅你和老板可见。状态以公司保存的记录为准。'}</p><div id="request-list"></div>`;
+  let consultingCard='';
+  if(session.role==='owner'){
+   try{
+    const board=await api<{stats:{total:number;byStatus:Record<string,number>;upcoming:number;outbox:{total:number;byStatus:Record<string,number>}}|null}>('/consulting');
+    const stats=board.stats;
+    if(stats){
+     const n=(key:string)=>stats.byStatus?.[key]??0;
+     const outbox=stats.outbox?.byStatus??{};
+     consultingCard=`<section class="owner-consulting" aria-label="真人咨询真实统计"><div class="owner-consulting-head"><h3>真人咨询 · 真实统计</h3><span>来源：公司数据库 · REAL</span></div><div class="owner-consulting-kpis"><span><b>${stats.total}</b>总记录</span><span><b>${n('requested')}</b>待确认</span><span><b>${n('confirmed')}</b>已确认</span><span><b>${n('in_progress')}</b>进行中</span><span><b>${n('completed')}</b>已完成</span><span><b>${n('cancelled')}</b>已取消</span><span><b>${n('archived')}</b>已归档</span></div><p class="owner-consulting-note">未来已确认 ${stats.upcoming} 条 · 通知未配置 ${outbox.not_configured??0} 条 · 已发送 ${outbox.sent??0} 条。这里只有真实记录数，不包含营收、成交或估算。</p><button id="open-consulting-from-records" type="button">打开咨询队列</button></section>`;
+    }
+   }catch{consultingCard='<p class="intro">真人咨询统计暂不可用；咨询队列仍可从顶栏“真人咨询”打开。</p>';}
+  }
+  $('#panel-body').innerHTML=`${consultingCard}${session.role==='owner'?'<button id="review-applications">招聘 · 审核写手申请</button>':''}<p class="intro">${session.role==='owner'?'这里只显示真实登记的需求。审核备注会出现在客户自己的需求记录中；尚未连接对外消息或交付渠道。':'这些需求仅你和老板可见。状态以公司保存的记录为准。'}</p><div id="request-list"></div>`;
+  const openConsultingFromRecords=document.querySelector<HTMLButtonElement>('#open-consulting-from-records');if(openConsultingFromRecords)openConsultingFromRecords.onclick=()=>{dialog.close();openConsulting();};
   const reviewApplications=document.querySelector<HTMLButtonElement>('#review-applications');if(reviewApplications)reviewApplications.onclick=()=>void applications();
   if(!items.length){$('#request-list').innerHTML='<p class="empty">还没有需求记录。客户走到接待台确认后，记录会出现在这里。</p>';return;}
   for(const item of items){
@@ -192,6 +209,17 @@ async function messagesPanel(){
 function openExhibit(exhibit:LobbyExhibit){
  if(exhibit.kind==='cases'){void caseStudies.home();return;}
  if(exhibit.kind==='business'){void commercialDesk.home();return;}
+ if(exhibit.kind==='navigation'){
+  panel('总部导航',`<div class="company-introduction"><p class="exhibit-kicker">快速导航</p><h3>你要去哪里？</h3><div class="nav-actions"><button id="nav-reception">前台接待</button><button id="nav-gallery">作品展廊</button><button id="nav-data">实时数据</button><button id="nav-consulting">真人咨询</button><button id="nav-messages">访客留言板</button><button id="nav-upstairs">上二楼 / 三楼</button></div><p class="intro">这是空间导视，不会瞬移；请按提示步行前往。</p></div>`);
+  const bind=(id:string,fn:()=>void)=>{const b=document.querySelector<HTMLButtonElement>('#'+id);if(b)b.onclick=fn;};
+  bind('nav-reception',()=>notify('向前台走约 4 米，接待员在左侧。'));
+  bind('nav-gallery',()=>{dialog.close();document.querySelector<HTMLButtonElement>('#works')?.click();});
+  bind('nav-data',()=>{dialog.close();openExhibit({kind:'dashboard'});});
+  bind('nav-consulting',()=>{dialog.close();openConsulting();});
+  bind('nav-messages',()=>{dialog.close();void messagesPanel();});
+  bind('nav-upstairs',()=>notify('沿右侧楼梯上二楼：内容房、员工工作区；三楼是管理与老板私室。'));
+  return;
+ }
  if(exhibit.kind==='dashboard'){
   void api<{publicProjects:number;confirmedDeliveries:number}>('/public/commercial-dashboard').then(d=>{
    panel('总部实时数据 · 公开口径',`<div class="company-introduction"><p class="exhibit-kicker">实时大屏</p><h3>只显示服务端真实计数</h3><p>授权公开项目 ${d.publicProjects} · 确认交付 ${d.confirmedDeliveries}</p><p>在线访客数来自当前实时会话；公开案例数来自案例库。交易金额、客户身份、对话内容与医疗资料不在公开范围。</p><p>收款方式为人工核验账本；AI 成本未接入，不虚构 Token 数据。</p></div>`);
@@ -223,7 +251,7 @@ async function boot(){
   hq.onProximity=value=>{near=value;$('#interaction').hidden=!value||dialog.open||hq.mode==='overview'||hq.mode==='lobby';$('#location').textContent=hq.pos.y>6.4?'三楼 · 管理与老板私室':hq.pos.y>2.4?'二楼 · 内容房与员工工作区':hq.pos.x<-2.3?'一楼 · 接待大厅与作品展区':hq.pos.z>11.4?'总部入口与户外园区':'一楼 · 内部办公与会客区';document.body.dataset.cameraMode=hq.mode;for(const b of document.querySelectorAll<HTMLButtonElement>('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode===hq.mode));};
   hq.onExhibitInteract=openExhibit;
   hq.onBusinessInteract=()=>void commercialDesk.home();
-  hq.onExhibitNear=exhibit=>{const changed=exhibit?.kind!==nearbyExhibit?.kind||exhibit?.projectIndex!==nearbyExhibit?.projectIndex;nearbyExhibit=exhibit;$('#exhibit-interaction').hidden=!exhibit||hq.paused||hq.mode==='overview'||hq.mode==='lobby';if(exhibit&&changed)$('#read-exhibit').textContent=exhibit.kind==='cases'?'可信案例 · 我要类似项目':exhibit.kind==='business'?'商业项目 · 提交与审核':exhibit.kind==='company'?'阅读公司介绍':'阅读 · '+projects.items[exhibit.projectIndex!].title;};
+  hq.onExhibitNear=exhibit=>{const changed=exhibit?.kind!==nearbyExhibit?.kind||exhibit?.projectIndex!==nearbyExhibit?.projectIndex;nearbyExhibit=exhibit;$('#exhibit-interaction').hidden=!exhibit||hq.paused||hq.mode==='overview'||hq.mode==='lobby';if(exhibit&&changed)$('#read-exhibit').textContent=exhibit.kind==='navigation'?'使用导航屏 · 前台/展廊/咨询':exhibit.kind==='cases'?'可信案例 · 我要类似项目':exhibit.kind==='business'?'商业项目 · 提交与审核':exhibit.kind==='company'?'阅读公司介绍':'阅读 · '+projects.items[exhibit.projectIndex!].title;};
   let movePending=false;
   hq.onMove=p=>{if(movePending||!session)return;movePending=true;pendingMove=(async()=>{try{const accepted=await api<Peer>('/presence','PUT',p);hq.applyPosition(accepted,false);}catch(e){$('#connection').textContent=(e as Error).message;$('#connection').classList.add('offline');try{hq.applyPosition(await api<Peer>('/presence'));}catch(recovery){notify((recovery as Error).message);}}finally{movePending=false;pendingMove=null;}})();};
   hq.onInteract=()=>void reception();hq.onContentInteract=()=>void content.openBoard();hq.onCompanyInteract=()=>companyDesk.home();
@@ -240,3 +268,5 @@ async function boot(){
  }catch(e){hq?.dispose();$('#load-status').textContent=`总部加载失败：${(e as Error).message}`;$('#retry').hidden=false;$('#connection').textContent='画面尚未就绪';}
 }
 void boot();
+
+
